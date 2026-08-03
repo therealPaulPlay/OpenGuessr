@@ -154,7 +154,7 @@
 <Popup
 	verySlim={true}
 	bind:open={successPopup}
-	onclose={() => {
+	onUserClose={() => {
 		goto("/competitions");
 	}}
 >

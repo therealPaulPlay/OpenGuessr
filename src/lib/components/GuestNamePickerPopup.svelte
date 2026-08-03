@@ -49,7 +49,7 @@
 	verySlim={true}
 	z={980}
 	bind:open={$guestNamePickerPopup}
-	onclose={() => {
+	onUserClose={() => {
 		$guestNamePromise = null;
 		leaveMultiplayer();
 		if (page.url.pathname.startsWith("/multiplayer/")) goto("/multiplayer"); // If on host or other multiplayer child page, return to multiplayer home

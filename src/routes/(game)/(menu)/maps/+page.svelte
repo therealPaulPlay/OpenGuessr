@@ -503,11 +503,8 @@
 				class="standard-button white"
 				onclick={() => {
 					playSound("basic_button");
-					if ($isAuthenticated) {
-						goto("/maps/create");
-					} else {
-						signupPrompt();
-					}
+					if ($isAuthenticated) goto("/maps/create");
+					else signupPrompt(() => goto("/maps/create"));
 				}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
 			>
 			<div class="categories-bar of-left of-right">

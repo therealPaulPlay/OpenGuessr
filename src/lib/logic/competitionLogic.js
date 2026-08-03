@@ -13,6 +13,7 @@ import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { navigationMenu } from "$lib/stores/uiStore";
+import { openCompetitionLeaderboard } from "$lib/utils/openCompetitionLeaderboard";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 let competitionCombinedScore = 0;
@@ -60,8 +61,10 @@ export async function leaveCompetition(showResult) {
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
-
-        if (showResult) goto("/competitions?leaderboard-submit=" + get(competitionData).id);
+        if (showResult) {
+            openCompetitionLeaderboard(get(competitionData).id, true);
+            goto("/competitions");
+        }
     }
 }
 

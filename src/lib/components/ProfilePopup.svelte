@@ -167,7 +167,7 @@
 	z={970}
 	slim={true}
 	bind:open={$profilePopup}
-	onclose={() => {
+	onUserClose={() => {
 		if ($profileId == localStorage.getItem("id")) saveProfileAboutIfChanges(textarea?.value?.trim());
 	}}
 >
@@ -296,9 +296,8 @@
 					{@attach tooltip({ text: "Send friend request" })}
 					onclick={(e) => {
 						playSound("basic_button");
-						// Send friend request (also shows ingame notification)
 						if ($isAuthenticated) sendFriendRequest($profileId, e.target);
-						else signupPrompt();
+						else signupPrompt(() => sendFriendRequest($profileId, e.target));
 					}}
 				>
 					{#if !$profileData?.areFriends}

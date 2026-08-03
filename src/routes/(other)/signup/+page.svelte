@@ -13,7 +13,6 @@
 	let actionButtonBusy = $state(false);
 
 	function notifyIframeParent(id, token) {
-		window.parent.postMessage("loadAccountStatus", "*");
 		window.parent.postMessage(`id ${id}`, "*");
 		window.parent.postMessage(`token ${token}`, "*");
 		window.parent.postMessage("close", "*");

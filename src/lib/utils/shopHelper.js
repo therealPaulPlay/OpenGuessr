@@ -8,12 +8,14 @@ import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, sho
 import { errorPopup } from "./errorHandling";
 
 export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
-    if (!get(isAuthenticated)) return signupPrompt();
-    if (price > get(tokens)) {
-        showNotification("Not enough tokens!");
-    } else {
-        showConfirmPopup("Purchase?", `Do you want to purchase this item for ${price?.toLocaleString()} tokens?`, () => (sendPurchaseRequest(type, price, pinId, bundleItems)));
+    const action = () => {
+        if (price > get(tokens)) showNotification("Not enough tokens!");
+        else {
+            showConfirmPopup("Purchase?", `Do you want to purchase this item for ${price?.toLocaleString()} tokens?`, () => (sendPurchaseRequest(type, price, pinId, bundleItems)));
+        }
     }
+    if (!get(isAuthenticated)) return signupPrompt(action);
+    else action();
 }
 
 export async function handleShopFreeTokens() {

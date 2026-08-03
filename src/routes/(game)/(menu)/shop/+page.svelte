@@ -263,10 +263,15 @@
 							disabled={offer.price == 0 && $freeDailyTokensClaimed}
 							onclick={() => {
 								playSound("basic_button");
+
+								const action = () => {
+									if (offer.price == 0) handleShopFreeTokens();
+									else purchaseTokenTier(offer.tier);
+								};
+
 								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
-								if (!$isAuthenticated) return signupPrompt();
-								if (offer.price == 0) handleShopFreeTokens();
-								else purchaseTokenTier(offer.tier);
+								if (!$isAuthenticated) return signupPrompt(action);
+								action();
 							}}
 						>
 							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
@@ -354,7 +359,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
-						if (!$isAuthenticated) return signupPrompt();
+						if (!$isAuthenticated) return signupPrompt(() => purchaseSupporterTier(tier));
 						purchaseSupporterTier(tier);
 					}}
 					>{getSupporterTierPrice(tier)}

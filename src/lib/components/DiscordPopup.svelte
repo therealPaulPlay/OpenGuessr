@@ -11,7 +11,7 @@
 	}
 </script>
 
-<Popup verySlim={true} bind:open={$discordPopup} onclose={closePopup}>
+<Popup verySlim={true} bind:open={$discordPopup} onUserClose={closePopup}>
 	<div class="popup-title">
 		<h1>Join the community</h1>
 	</div>

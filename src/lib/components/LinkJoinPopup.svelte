@@ -6,7 +6,7 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 </script>
 
-<Popup verySlim={true} bind:open={$linkJoinPopup} onclose={leaveMultiplayer}>
+<Popup verySlim={true} bind:open={$linkJoinPopup} onUserClose={leaveMultiplayer}>
 	<div class="popup-title">
 		<h1>Room</h1>
 	</div>

@@ -16,7 +16,7 @@
 	z={999}
 	verySlim={true}
 	bind:open={$popupOpen}
-	onclose={() => {
+	onUserClose={() => {
 		if (get(reload)) window.location.reload();
 	}}
 >

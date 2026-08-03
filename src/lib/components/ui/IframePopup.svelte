@@ -1,6 +1,6 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	let { open = $bindable(false), src, wide = false, onClose } = $props();
+	let { open = $bindable(false), src, wide = false, onClose, onUserClose } = $props();
 
 	// Upwards reactivity via callback for ReportIframePopup.svelte to avoid a two-way bind Svelte issue #18404
 	let wasOpen = false;
@@ -11,7 +11,7 @@
 	});
 </script>
 
-<Popup z={971} frameless={true} bind:open verySlim={!wide}>
+<Popup z={971} frameless={true} {onUserClose} bind:open verySlim={!wide}>
 	<div class="absolute-center">
 		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="page-browser-loading" />
 	</div>

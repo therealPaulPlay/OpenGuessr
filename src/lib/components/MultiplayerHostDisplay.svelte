@@ -19,7 +19,7 @@
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
-	import { onMount } from "svelte";
+	import { onDestroy } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { multiplayer } from "$lib/stores/modeStore";
@@ -57,16 +57,20 @@
 	// Refresh friends periodically
 	let friendsRefreshInterval;
 
-	onMount(async () => {
-		await loadFriends();
+	$effect(() => {
+		$isAuthenticated;
+
+		loadFriends();
 		clearInterval(friendsRefreshInterval);
 
 		// Re-fetch friends every X seconds
 		friendsRefreshInterval = setInterval(() => {
 			loadFriends();
 		}, 15_000);
+	});
 
-		return () => clearInterval(friendsRefreshInterval);
+	onDestroy(() => {
+		clearInterval(friendsRefreshInterval);
 	});
 </script>
 

@@ -23,7 +23,7 @@
 	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
-	import { onDestroy, onMount } from "svelte";
+	import { onDestroy } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
@@ -38,14 +38,16 @@
 
 	let friendsRefreshInterval;
 
-	onMount(async () => {
-		await loadFriends();
+	$effect(() => {
+		$isAuthenticated;
+
+		loadFriends();
 		clearInterval(friendsRefreshInterval);
 
 		// Re-fetch friends every X seconds
 		friendsRefreshInterval = setInterval(() => {
 			loadFriends();
-		}, 15000);
+		}, 15_000);
 
 		// Check warnlist if logged in and not already (async)
 		fetchWarnlistStatus();
@@ -128,7 +130,7 @@
 					class="standard-button multiplayer-select large-button"
 					onclick={() => {
 						playSound("basic_button");
-						findDuel("division-duel");
+						findDuel();
 					}}
 				>
 					Duel
@@ -193,7 +195,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) messagesPopup.set(true);
-					else signupPrompt();
+					else signupPrompt(); // No immediate action since messages popup requires async SSE connection to work
 				}}
 			>
 				{#if $hasNewMessageOrInvite}
@@ -208,7 +210,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) friendBrowserPopup.set(true);
-					else signupPrompt();
+					else signupPrompt(); // No immediate action since friends shall be first fetched (+ for parity with messagesPopup)
 				}}
 			>
 				<Plus strokeWidth={2.25} size={22} />
