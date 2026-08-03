@@ -3,12 +3,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import {
-		competitionData,
-		competitionResultId,
-		competitionResultRating,
-	} from "$lib/stores/context-specific/competitionStore";
-	import { competitionResultPopup } from "$lib/stores/uiStore";
+	import { competitionData } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -19,6 +14,7 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
+	import { openCompetitionLeaderboard } from "$lib/utils/openCompetitionLeaderboard";
 	import { page } from "$app/state";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
@@ -47,21 +43,6 @@
 
 	// Enter Competition ------------------------------------------------------------------------------------------------------------------------------
 	async function enterCompetition(id) {
-		if (!$isAuthenticated) {
-			showConfirmPopup(
-				"Account required",
-				"In order to enter competitions, an account is needed.",
-				() => {
-					signupPrompt();
-				},
-				null,
-				null,
-				"Sign up",
-			);
-
-			return;
-		}
-
 		try {
 			const response = await fetch(competitionsEndpoint + "/details/" + id, {
 				method: "POST",
@@ -119,24 +100,15 @@
 		}
 	}
 
-	// Leaderboard ---------------------------------------------------------------------------------------------------------
-	function openLeaderboard(id, displayRatingBox = false) {
-		$competitionResultId = id;
-		$competitionResultRating = displayRatingBox;
-		$competitionResultPopup = true;
-	}
-
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
 	$effect(() => {
 		const leaderboardIdFromLink = page.url.searchParams.get("leaderboard");
-		const leaderboardIdFromLinkAfterSubmit = page.url.searchParams.get("leaderboard-submit");
 		const competitionIdFromLink = page.url.searchParams.get("enter");
 
-		if (!leaderboardIdFromLink && !leaderboardIdFromLinkAfterSubmit && !competitionIdFromLink) return;
+		if (!leaderboardIdFromLink && !competitionIdFromLink) return;
 
 		// Load leaderboard via link
-		if (leaderboardIdFromLink) openLeaderboard(leaderboardIdFromLink);
-		if (leaderboardIdFromLinkAfterSubmit) openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
+		if (leaderboardIdFromLink) openCompetitionLeaderboard(leaderboardIdFromLink);
 
 		// Enter competition via link
 		if (competitionIdFromLink) {
@@ -144,6 +116,7 @@
 				"Enter competition?",
 				"This will start the competition from your link immediately. You can only enter a competition once.",
 				() => {
+					if (!$isAuthenticated) return signupPrompt(() => enterCompetition(competitionIdFromLink));
 					enterCompetition(competitionIdFromLink);
 				},
 			);
@@ -403,7 +376,7 @@
 				class="standard-button competition-button white"
 				onclick={() => {
 					playSound("basic_button");
-					openLeaderboard(id);
+					openCompetitionLeaderboard(id);
 				}}
 				>Results
 				<img class="leaderboard-icon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
@@ -416,7 +389,7 @@
 					onclick={() => {
 						playSound("basic_button");
 
-						if ($isAuthenticated) {
+						const action = () => {
 							showConfirmPopup(
 								"Enter " + name + "?",
 								"This will start the game immediately. You can only enter a competition once.",
@@ -424,9 +397,10 @@
 									enterCompetition(id);
 								},
 							);
-						} else {
-							signupPrompt();
-						}
+						};
+
+						if ($isAuthenticated) action();
+						else signupPrompt(action);
 					}}
 					>{entered
 						? "Entered"
@@ -499,11 +473,8 @@
 			class="standard-button white"
 			onclick={() => {
 				playSound("basic_button");
-				if ($isAuthenticated) {
-					goto("/competitions/create");
-				} else {
-					signupPrompt();
-				}
+				if ($isAuthenticated) goto("/competitions/create");
+				else signupPrompt(() => goto("/competitions/create"));
 			}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
 		>
 		<Tabs

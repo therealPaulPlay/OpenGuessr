@@ -72,6 +72,7 @@
 
 			// Check if the response is successful
 			if (!response.ok) throw new Error(response.status);
+			return true;
 		} catch (error) {
 			console.error("Failed to track calendar save:", error);
 			errorPopup(
@@ -79,6 +80,7 @@
 				"An error occured attempting to track the calendar save.",
 				error.message,
 			);
+			return false;
 		}
 	}
 </script>
@@ -172,38 +174,47 @@
 			class="standard-button bottom-button large-button"
 			onclick={async () => {
 				playSound("basic_button");
-				if (!$isAuthenticated) return signupPrompt();
-				const code = await enterTournament($selectedTournament?.id);
-				if (code) {
-					$tournamentInfoPopup = false;
-					joinFromAnywhere(code);
-				}
+				const action = async () => {
+					const code = await enterTournament($selectedTournament?.id);
+					if (code) {
+						$tournamentInfoPopup = false;
+						joinFromAnywhere(code);
+					}
+				};
+				if (!$isAuthenticated) return signupPrompt(action);
+				action();
 			}}
 		>
 			Enter
 		</button>
 	{:else if $selectedTournament?.status == "upcoming"}
 		<button
-			class="standard-button bottom-button large-button white {$selectedTournament?.saved ? 'disabled' : ''}"
+			class="standard-button bottom-button large-button white"
+			disabled={$selectedTournament?.saved}
 			onclick={async () => {
 				playSound("basic_button");
-				if (!$isAuthenticated) return signupPrompt();
-				await trackCalendarSave($selectedTournament?.id);
-				await fetchTournaments();
 
-				const date = new Date($selectedTournament?.date);
-				const startTime = date
-					.toISOString()
-					.replace(/[-:]/g, "")
-					.replace(/\.\d{3}/, "");
-				const endTime = new Date(date.getTime() + 60 * 60 * 1000)
-					.toISOString()
-					.replace(/[-:]/g, "")
-					.replace(/\.\d{3}/, ""); // +1 hour
+				const action = async () => {
+					const success = await trackCalendarSave($selectedTournament?.id);
+					if (success) await fetchTournaments();
 
-				const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent($selectedTournament?.name + " (OpenGuessr)")}&dates=${startTime}/${endTime}&details=${encodeURIComponent("Tournament")}`;
+					const date = new Date($selectedTournament?.date);
+					const startTime = date
+						.toISOString()
+						.replace(/[-:]/g, "")
+						.replace(/\.\d{3}/, "");
+					const endTime = new Date(date.getTime() + 60 * 60 * 1000)
+						.toISOString()
+						.replace(/[-:]/g, "")
+						.replace(/\.\d{3}/, ""); // +1 hour
 
-				window.open(calendarUrl, "_blank");
+					const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent($selectedTournament?.name + " (OpenGuessr)")}&dates=${startTime}/${endTime}&details=${encodeURIComponent("Tournament")}`;
+
+					window.open(calendarUrl, "_blank");
+				};
+
+				if (!$isAuthenticated) return signupPrompt(action);
+				else action();
 			}}
 		>
 			<CalendarPlus style="margin-bottom: -3px; margin-right: 3px;" />
@@ -227,11 +238,6 @@
 		right: 35%;
 		z-index: -1;
 		opacity: 0.05;
-	}
-
-	.disabled {
-		opacity: 0.5;
-		pointer-events: none;
 	}
 
 	.opacity-hover {

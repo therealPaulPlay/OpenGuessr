@@ -99,17 +99,22 @@
 	let isLiked = $state(false);
 	let likesCount = $state("...");
 
-	onMount(() => {
+	$effect(() => {
+		$isAuthenticated;
 		fetchMapLikeStatus(nameId);
 	});
 
-	async function likeOrDislikeMap(mapName) {
-		if (get(isAuthenticated)) {
+	function likeOrDislikeMap(mapName) {
+		const like = !isLiked; // Captured on click, so a post signup run applies the intent instead of re-toggling
+
+		const action = async () => {
+			if (isLiked == like) return; // Already in the requested state, e.g. after signing in on a map you liked before
+
 			const previousLiked = isLiked;
 			const previousCount = likesCount;
 
-			isLiked = !isLiked;
-			likesCount = Math.max(0, likesCount + (isLiked ? 1 : -1));
+			isLiked = like;
+			likesCount = Math.max(0, likesCount + (like ? 1 : -1));
 
 			try {
 				const response = await fetch($apiUrl + `/maps/like/${mapName}`, {
@@ -118,7 +123,7 @@
 						Authorization: "Bearer " + localStorage.getItem("bearer"),
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ id: localStorage.getItem("id") }),
+					body: JSON.stringify({ id: localStorage.getItem("id"), like }),
 				});
 
 				if (!response.ok) {
@@ -130,9 +135,10 @@
 				likesCount = previousCount;
 				console.error("Error liking or disliking map:", error);
 			}
-		} else {
-			signupPrompt();
-		}
+		};
+
+		if (get(isAuthenticated)) action();
+		else signupPrompt(action);
 	}
 
 	async function fetchMapLikeStatus(name) {
@@ -144,7 +150,7 @@
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ id: playerId }), // playerId is optional
+				body: JSON.stringify({ id: playerId }), // PlayerId is optional
 			});
 
 			const data = await response.json();

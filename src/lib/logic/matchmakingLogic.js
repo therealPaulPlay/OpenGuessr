@@ -48,17 +48,21 @@ export async function safeCancel() {
 // Division duel -----------------------
 
 // This initiates the find duel system
-export async function findDuel() {
-    if (!get(isAuthenticated)) return signupPrompt();
-    // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found,
-    // which causes the multiplayer instance to recreate & the player to lose the game
-    if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
-    goto("/multiplayer/duel"); // Visit duel load page
-    matchmakingActive.set(true);
+export function findDuel() {
+    const action = async () => {
+        // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found,
+        // which causes the multiplayer instance to recreate & the player to lose the game
+        if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
+        goto("/multiplayer/duel"); // Visit duel load page
+        matchmakingActive.set(true);
 
-    // Create & submit a room, which the server then pairs up with another queued room
-    const created = await createMatchmakingRoom("division-duel", get(skillBasedMatchmaking), matchmakingRoomConfigs["division-duel"]);
-    if (created && await submitRoomCodeForMatchmaking("division-duel", get(skillBasedMatchmaking))) attemptFind("division-duel");
+        // Create & submit a room, which the server then pairs up with another queued room
+        const created = await createMatchmakingRoom("division-duel", get(skillBasedMatchmaking), matchmakingRoomConfigs["division-duel"]);
+        if (created && await submitRoomCodeForMatchmaking("division-duel", get(skillBasedMatchmaking))) attemptFind("division-duel");
+    };
+
+    if (!get(isAuthenticated)) signupPrompt(action);
+    else action();
 }
 
 // Team duel (2v2) -----------------------

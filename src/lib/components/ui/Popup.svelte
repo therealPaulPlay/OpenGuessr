@@ -1,21 +1,35 @@
 <!-- Universal Popup component, used as the "enclosure" for (basically) all Popups -->
 
+<script module>
+	const openZ = []; // Z of every open popup
+</script>
+
 <script>
 	import { X } from "@lucide/svelte";
 	import { backOut } from "svelte/easing";
 	import { fade, scale } from "svelte/transition";
 
-	let { children, z = 100, frameless, slim, verySlim, open = $bindable(false), onclose } = $props();
+	let { children, z = 100, frameless, slim, verySlim, open = $bindable(false), onUserClose } = $props();
+
+	$effect(() => {
+		if (!open) return;
+		openZ.push(z);
+		return () => openZ.splice(openZ.lastIndexOf(z), 1);
+	});
 
 	function close() {
-		onclose?.();
+		onUserClose?.();
 		open = false;
 	}
 </script>
 
 <svelte:window
 	onkeydown={(e) => {
-		if (e.key == "Escape") open = false;
+		// Only the topmost popup closes (defaultPrevented breaks ties between equal z values)
+		if (e.key == "Escape" && open && z >= Math.max(...openZ) && !e.defaultPrevented) {
+			e.preventDefault();
+			close();
+		}
 	}}
 />
 

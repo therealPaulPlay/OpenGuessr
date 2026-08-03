@@ -11,21 +11,18 @@ export function supporterSlideupProbability() {
     if (Math.random() < 0.05 && get(supporterLevel) == 0) {
         getMonthlySupportedAmount();
         showResultScreenSlideup("Enjoy playing?", "Consider supporting to unlock awesome perks including ad-free!", "Support", () => {
-            if (get(isAuthenticated)) {
-                goto("/shop#supporter");
-                return true;
-            } else {
+            if (get(isAuthenticated)) goto("/shop#supporter");
+            else {
                 showConfirmPopup(
                     "Account required",
                     "A one-time payment requires an account so you can enjoy supporter perks on all your devices.",
                     () => {
-                        signupPrompt();
+                        signupPrompt(() => goto("/shop#supporter"));
                     },
                     null,
                     null,
                     "Sign up",
                 );
-                return false;
             }
         });
     }
