@@ -54,6 +54,7 @@
 	import Notification from "$lib/components/Notification.svelte";
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
+	import CompetitionResultPopup from "$lib/components/CompetitionResultPopup.svelte";
 	import Authentication from "$lib/components/Authentication.svelte";
 	import TutorialOverlay from "$lib/components/TutorialOverlay.svelte";
 	import TutorialNote from "$lib/components/TutorialNote.svelte";
@@ -129,6 +130,7 @@
 <TournamentMatchResultsPopup />
 <InboxPopup />
 <TutorialOverlay />
+<CompetitionResultPopup />
 <DuelResultPopup />
 <SignupIframe />
 <SettingsPopup />

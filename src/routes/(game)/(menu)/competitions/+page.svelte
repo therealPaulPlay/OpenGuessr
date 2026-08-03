@@ -3,22 +3,22 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import Popup from "$lib/components/ui/Popup.svelte";
-	import { competitionData } from "$lib/stores/context-specific/competitionStore";
+	import {
+		competitionData,
+		competitionResultId,
+		competitionResultRating,
+	} from "$lib/stores/context-specific/competitionStore";
+	import { competitionResultPopup } from "$lib/stores/uiStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Frown, Link, Plus, Search, Smile, TriangleAlert } from "@lucide/svelte";
+	import { Plus, Search } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { blur } from "svelte/transition";
-	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
-	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
-	import { showNotification } from "$lib/utils/notifications";
 	import { page } from "$app/state";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
@@ -120,74 +120,10 @@
 	}
 
 	// Leaderboard ---------------------------------------------------------------------------------------------------------
-	let leaderboardPopup = $state(false);
-	let showRatingBox = $state(false);
-	let leaderboardCompetitionId;
-
-	function openLeaderboard(id, displaywRatingBox = false) {
-		leaderboardCompetitionId = id; // Used for e.g. the ratings requests
-		leaderboardPopup = true;
-		leaderboardEntries = undefined;
-		friendsEntries = undefined;
-		leaderboardName = "...";
-
-		// Load data from endpoint using id here
-		loadLeaderboardFromServer(id);
-
-		if (!displaywRatingBox) showRatingBox = false;
-		if (displaywRatingBox) displayRatingBox();
-	}
-
-	let leaderboardEntries = $state([]);
-	let friendsEntries = $state([]);
-	let leaderboardName = $state("Default");
-
-	async function loadLeaderboardFromServer(id) {
-		try {
-			const userId = localStorage.getItem("id");
-			const url = competitionsEndpoint + "/leaderboard/" + id + (userId ? "?id=" + userId : "");
-
-			const response = await fetch(url, {
-				method: "GET",
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				leaderboardEntries = data.leaderboard;
-				friendsEntries = data?.friendsLeaderboard || [];
-				leaderboardName = data.name;
-			} else {
-				let responseData = null;
-
-				try {
-					responseData = await response.json();
-					let errorMessages = [];
-
-					if (responseData.error) errorMessages.push(responseData.error);
-					if (responseData.message) errorMessages.push(responseData.message);
-
-					if (responseData.errors && Array.isArray(responseData.errors)) {
-						responseData.errors.forEach((err) => {
-							if (err.msg) {
-								errorMessages.push(err.msg);
-							} else {
-								errorMessages.push(JSON.stringify(err));
-							}
-						});
-					}
-
-					errorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", errorMessages.join(" "));
-				} catch {
-					errorPopup(
-						"Unknown error loading a leaderboard",
-						"An unknown erorr occured loading a leaderboard.",
-						"Please inspect console logs and network requests for more details.",
-					);
-				}
-			}
-		} catch (error) {
-			console.error("Error occurred during leaderboard load: ", error);
-		}
+	function openLeaderboard(id, displayRatingBox = false) {
+		$competitionResultId = id;
+		$competitionResultRating = displayRatingBox;
+		$competitionResultPopup = true;
 	}
 
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
@@ -352,51 +288,6 @@
 
 		getCompetitionsFromServer(false, query);
 	}
-
-	// Rating -------------------------------------------------------------------------------------------
-	let ratingText = $state();
-	let ratingsButtonBox = $state(false);
-
-	function displayRatingBox() {
-		showRatingBox = true;
-		ratingsButtonBox = true;
-		ratingText = "How did you like this competition?";
-	}
-
-	async function submitRating(factor) {
-		ratingsButtonBox = false;
-		ratingText = "Submitting rating...";
-
-		try {
-			const body = {
-				id: localStorage.getItem("id"),
-				compId: Number(leaderboardCompetitionId),
-				updateFactor: factor,
-			};
-
-			const response = await fetch(competitionsEndpoint + "/ranking", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ` + localStorage.getItem("bearer"),
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(body),
-			});
-
-			if (!response.ok) {
-				let error = await response.json().error;
-				if (!error) error = response.status;
-
-				console.error("An occured submitting the competition rating: " + error);
-				ratingText = "Error: " + error;
-			} else {
-				ratingText = "Rating received. Thank you!";
-			}
-		} catch (error) {
-			console.error("A network error occured submitting the competition rating: " + error);
-			ratingText = "Network error.";
-		}
-	}
 </script>
 
 <svelte:head>
@@ -414,135 +305,6 @@
 		<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
 	</button>
 {/snippet}
-
-<Popup slim={true} bind:open={leaderboardPopup}>
-	<div class="popup-title">
-		<h1 id="leaderboard-header" class="text-header-left">Results for <i>{leaderboardName}</i></h1>
-	</div>
-	<TitleSeparator text="You & friends" />
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	{#if !$isAuthenticated}
-		<div class="friends-not-played-container">
-			<p class="friends-not-played" style:text-align="center">Sign up to compete with friends!</p>
-		</div>
-	{:else}
-		{const friendsPlayed = $derived(friendsEntries?.some((entry) => entry.id != localStorage.getItem("id")))}
-		{#if friendsEntries?.length > 0}
-			<div class="ranking-display" style:margin-bottom="var(--box-margin)">
-				<div class="ranking-display-scroll of-top of-bottom">
-					{#each friendsEntries as entry}
-						<div class="rank-item" transition:blur class:rank-you={entry.id == localStorage.getItem("id")}>
-							<p>#{entry.position}</p>
-							<p
-								class="center-entry"
-								onclick={() => {
-									showProfile(entry.id);
-								}}
-							>
-								{entry.userName}
-								{#if entry.supporter_level > 0}
-									<SupporterTag />
-								{/if}
-							</p>
-							<p>{entry.score.toLocaleString()} Pts.</p>
-						</div>
-					{/each}
-				</div>
-			</div>
-		{/if}
-		<div class="friends-not-played-container">
-			<p class="friends-not-played">
-				{!friendsEntries
-					? "Loading..."
-					: friendsPlayed
-						? "Invite more friends to play this competition."
-						: "None of your friends played yet, consider inviting them."}
-			</p>
-			<button
-				class="standard-button white"
-				onclick={() => {
-					playSound("basic_button");
-					navigator.clipboard
-						.writeText(window.location.origin + "/competitions?enter=" + leaderboardCompetitionId)
-						.then(() => showNotification("Copied!"))
-						.catch((error) => showNotification("Error: " + error));
-				}}>Copy link<Link size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 7px;" /></button
-			>
-		</div>
-	{/if}
-	<TitleSeparator text="All" />
-	<div class="ranking-display">
-		<div class="ranking-display-scroll of-top of-bottom">
-			{#if leaderboardEntries?.length > 0}
-				{#each leaderboardEntries as entry}
-					<div class="rank-item" transition:blur class:rank-you={entry.id == localStorage.getItem("id")}>
-						<p>#{entry.position}</p>
-						<p
-							class="center-entry"
-							onclick={() => {
-								showProfile(entry.id);
-							}}
-						>
-							{entry.userName}
-							{#if entry.supporter_level > 0}
-								<SupporterTag />
-							{/if}
-						</p>
-						<p>{entry.score.toLocaleString()} Pts.</p>
-					</div>
-				{/each}
-			{:else}
-				<div class="empty-leaderboard-box">
-					{#if leaderboardEntries}
-						<p class="error-text">No entries yet.</p>
-					{:else}
-						<p class="error-text">Loading...</p>
-					{/if}
-				</div>
-			{/if}
-		</div>
-	</div>
-	{#if showRatingBox}
-		<div id="rating-box">
-			<p id="rating-text">{ratingText || "Default rating text."}</p>
-			{#if ratingsButtonBox}
-				<div class="rating-button-box" id="rating-button-box">
-					<button
-						class="standard-button white rate-button"
-						id="rate-good"
-						onclick={() => {
-							playSound("basic_button");
-							submitRating(5);
-						}}
-					>
-						<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
-					</button>
-					<button
-						class="standard-button white rate-button"
-						id="rate-bad"
-						onclick={() => {
-							playSound("basic_button");
-							submitRating(-3);
-						}}
-					>
-						<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
-					</button>
-					<button
-						class="standard-button white rate-button"
-						id="rate-broken"
-						onclick={() => {
-							playSound("basic_button");
-							submitRating(-10);
-						}}
-					>
-						<TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
-					</button>
-				</div>
-			{/if}
-		</div>
-	{/if}
-</Popup>
 
 <!-- Competition Item Component -->
 {#snippet competitionItem(
@@ -890,13 +652,6 @@
 		gap: var(--box-margin);
 	}
 
-	.empty-leaderboard-box {
-		height: 300px;
-		width: 100%;
-		display: flex;
-		align-items: center;
-	}
-
 	#competition-area,
 	#expired-competition-area {
 		min-height: 200px;
@@ -1024,13 +779,6 @@
 		vertical-align: -2px;
 	}
 
-	.text-header-left {
-		text-align: left;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		text-wrap: nowrap;
-	}
-
 	.competition-area {
 		display: flex;
 		flex-direction: row;
@@ -1044,51 +792,6 @@
 		text-align: center;
 		opacity: 0.5;
 		margin-top: var(--layout-margin);
-	}
-
-	.ranking-display {
-		box-sizing: border-box;
-		box-shadow: var(--box-shadow);
-		border-radius: var(--box-margin);
-		width: 100%; /* Fix for Safari */
-		background-color: var(--box-color);
-		padding: var(--box-margin);
-		position: relative;
-	}
-
-	.ranking-display-scroll {
-		overflow-x: hidden;
-		overflow-y: auto;
-		gap: var(--box-margin);
-		display: flex;
-		scrollbar-width: none;
-		width: 100%;
-		max-height: 400px;
-		justify-content: safe center;
-		flex-direction: column;
-	}
-
-	.rank-item {
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		border-radius: var(--content-margin);
-		width: 100%;
-		box-sizing: border-box;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: var(--content-margin);
-		padding-inline: var(--box-margin);
-		gap: var(--box-margin);
-	}
-
-	.rank-item p {
-		text-wrap: nowrap;
-	}
-
-	.rank-you {
-		background-color: rgba(255, 255, 255, 0.2);
-		box-shadow: var(--bulb-shadow);
 	}
 
 	.load-more-item {
@@ -1142,19 +845,6 @@
 		background-color: var(--brand-color);
 	}
 
-	.center-entry {
-		width: 50%;
-		text-align: center;
-		transition: opacity 250ms ease;
-		cursor: pointer;
-		user-select: none;
-		mask-image: linear-gradient(to right, transparent, black 0%, black 90%, transparent);
-	}
-
-	.center-entry:hover {
-		opacity: 0.5;
-	}
-
 	.desc-section {
 		cursor: pointer;
 	}
@@ -1165,36 +855,6 @@
 		margin-right: auto;
 	}
 
-	#rating-box {
-		border-radius: var(--box-margin);
-		box-shadow: var(--box-shadow);
-		background-color: var(--box-color);
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		margin-top: var(--layout-margin);
-		padding: var(--box-margin);
-		gap: var(--box-margin);
-		width: calc(100% - calc(var(--box-margin-buttons * 2)));
-	}
-
-	#rating-box p {
-		padding-inline: var(--panel-margin);
-		opacity: 0.5;
-	}
-
-	.rate-button {
-		padding-inline: var(--content-margin);
-	}
-
-	.rating-button-box {
-		display: flex;
-		gap: var(--box-margin);
-		justify-content: center;
-		align-items: center;
-	}
-
 	@media all and (max-width: 1000px) {
 		#competition-search {
 			max-width: none;
@@ -1203,28 +863,5 @@
 		search {
 			max-width: none;
 		}
-	}
-
-	.friends-not-played {
-		opacity: 0.5;
-		padding-inline: var(--content-margin);
-		flex-grow: 100;
-	}
-
-	.friends-not-played-container {
-		display: flex;
-		justify-items: center;
-		align-items: center;
-		gap: var(--box-margin);
-		border-radius: var(--box-margin);
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		padding: var(--box-margin);
-		flex-wrap: wrap;
-	}
-
-	.friends-not-played-container button {
-		margin-left: auto;
-		flex-grow: 1;
 	}
 </style>
