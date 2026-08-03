@@ -429,7 +429,7 @@
 						}
 					}}
 					>{entered
-						? "Already entered"
+						? "Entered"
 						: authorId != null && authorId == localStorage.getItem("id")
 							? "Hosted by you"
 							: "Enter"}</button

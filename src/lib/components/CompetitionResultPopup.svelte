@@ -172,7 +172,7 @@
 						.writeText(window.location.origin + "/competitions?enter=" + $competitionResultId)
 						.then(() => showNotification("Copied!"))
 						.catch((error) => showNotification("Error: " + error));
-				}}>Copy link<Link size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 7px;" /></button
+				}}>Copy link<Link size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: var(--content-margin);" /></button
 			>
 		</div>
 	{/if}
