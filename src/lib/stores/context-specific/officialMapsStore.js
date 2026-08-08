@@ -5,9 +5,9 @@ export const defaultMap = readable("World");
 export const tutorialMap = readable("Tutorial");
 
 export const baseMaps = readable([
-    "World",
-    "Capital Cities",
-    "Famous Places"
+    { map: "World", imgUrl: "/img/map-covers/world_cover.jpg" },
+    { map: "Capital Cities", imgUrl: "/img/map-covers/capital_cities_cover.jpg" },
+    { map: "Famous Places", imgUrl: "/img/map-covers/famous_places_cover.jpg" }
 ]);
 
 export const specialMaps = readable([
