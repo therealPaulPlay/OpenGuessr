@@ -33,7 +33,7 @@
 
 	function checkTextLength(text) {
 		const textLength = text.length;
-		scrollNameText = textLength > 16;
+		scrollNameText = textLength > 30;
 	}
 
 	username.subscribe((value) => {
@@ -64,9 +64,9 @@
 		}}
 	>
 		<div class="navigation-menu">
-			<div class="navigation-box bar-menu" in:scale={{ delay: 0 }}>
+			<div class="navigation-box bar-menu" in:scale>
 				<button
-					class="standard-button white navigation-button navigation-button-large large-button"
+					class="standard-button white navigation-button large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/multiplayer");
@@ -90,18 +90,6 @@
 					class="standard-button white navigation-button large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
-						playSound("basic_button");
-						goto("/leaderboard");
-					}}
-				>
-					Leaderboard <img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
-				</button>
-			</div>
-			<div class="navigation-box bar-menu" in:scale={{ delay: 50 }}>
-				<button
-					class="standard-button white navigation-button large-button"
-					disabled={!$singleplayer}
-					onclick={() => {
 						goto("/maps");
 						playSound("basic_button");
 					}}
@@ -109,20 +97,9 @@
 					Maps
 					<img class="navigation-icon" src="/img/maps_icon.png" alt="Maps" />
 				</button>
-				<button
-					class="standard-button white navigation-button navigation-button-small large-button"
-					disabled={!$singleplayer}
-					{@attach tooltip({ text: "Education" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open("https://education.openguessr.com", "_blank");
-					}}
-				>
-					<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
-				</button>
 			</div>
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div class="navigation-box bar-menu" in:scale={{ delay: 100 }}>
+			<div class="navigation-box bar-menu" in:scale={{ delay: 50 }}>
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				{#if $isAuthenticated}
 					<div
@@ -148,6 +125,19 @@
 						}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
 					>
 				{/if}
+			</div>
+			<div class="navigation-box navigation-icon-row bar-menu" in:scale={{ delay: 100 }}>
+				<button
+					class="standard-button white navigation-button navigation-button-small large-button"
+					disabled={!$singleplayer}
+					{@attach tooltip({ text: "Leaderboard" })}
+					onclick={() => {
+						playSound("basic_button");
+						goto("/leaderboard");
+					}}
+				>
+					<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
+				</button>
 				<button
 					class="standard-button white navigation-button navigation-button-small large-button"
 					disabled={!$singleplayer}
@@ -158,6 +148,17 @@
 					}}
 				>
 					<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
+				</button>
+				<button
+					class="standard-button white navigation-button navigation-button-small large-button"
+					disabled={!$singleplayer}
+					{@attach tooltip({ text: "Education" })}
+					onclick={() => {
+						playSound("basic_button");
+						window.open("https://education.openguessr.com", "_blank");
+					}}
+				>
+					<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
 				</button>
 				<button
 					class="standard-button white navigation-button navigation-button-small large-button"
@@ -172,6 +173,7 @@
 				</button>
 			</div>
 		</div>
+
 		{#if navigationListEnlarged}
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
@@ -283,7 +285,7 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
-		max-width: 400px;
+		max-width: 350px;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
 	}
@@ -294,6 +296,8 @@
 		flex-wrap: wrap;
 		flex-grow: 1;
 		overflow: hidden;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.navigation-icon {
@@ -314,16 +318,23 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: var(--layout-margin);
+		flex-basis: 100%;
+	}
+
+	.navigation-icon-row {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	@media (max-width: 320px) {
+		.navigation-icon-row {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
 	.navigation-button-small {
 		justify-content: center;
-		flex-grow: 0;
-	}
-
-	.navigation-button-large {
-		width: 100%;
-		flex-basis: 100%;
+		min-width: 0;
 	}
 
 	#account-name-area {
@@ -347,7 +358,7 @@
 	}
 
 	.account-name-fade {
-		mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+		mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
 	}
 
 	.navigation-list {
@@ -421,7 +432,7 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 165px));
+			transform: translateX(calc(-100% + 250px));
 			/* adjust second param to be max-width of element minus about 5px */
 		}
 	}
