@@ -313,8 +313,8 @@
 	<div class="header-container">
 		<h2 class="header">Base</h2>
 	</div>
-	<div class="map-container">
-		{#each $baseMaps as map}
+	<div class="map-container map-container-grow-first">
+		{#each [...$baseMaps].reverse() as { map, imgUrl }}
 			<div
 				class="map-item map-item-hover map-item-slim"
 				style:padding-right={map === $defaultMap ? "var(--box-margin)" : ""}
@@ -325,6 +325,7 @@
 					selectMap(map);
 				}}
 			>
+				<img class="map-cover-image" src={imgUrl} alt="map cover" />
 				<div class="map-info {map === $defaultMap ? 'map-info-flex' : ''}">
 					<p class="map-name">{map}</p>
 					{#if map === $defaultMap}
@@ -620,11 +621,12 @@
 
 	.map-info {
 		flex-grow: 1;
+		padding-left: var(--content-margin);
 	}
 
 	.map-info-flex {
 		display: flex;
-		justify-content: space-between;
+		gap: var(--box-margin);
 	}
 
 	.no-bottom-padding {
@@ -633,6 +635,8 @@
 
 	.map-item {
 		display: flex;
+		flex-wrap: wrap;
+		gap: var(--box-margin);
 		justify-content: space-between;
 		box-shadow: var(--panel-shadow);
 		text-decoration: none;
@@ -640,7 +644,6 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
-		padding-inline: var(--layout-margin);
 		box-sizing: border-box;
 		user-select: none;
 		min-width: 300px;
@@ -671,6 +674,13 @@
 	.map-item-slim {
 		min-width: 150px;
 		flex-basis: 15%;
+	}
+
+	.map-cover-image {
+		width: 100%;
+		aspect-ratio: 16/9;
+		object-fit: cover;
+		border-radius: var(--content-margin);
 	}
 
 	.map-item-bookmark {
@@ -713,6 +723,12 @@
 		overflow: visible; /* On hover, prevent scale up from clipping elements at the borders */
 	}
 
+	.map-container-grow-first {
+		flex-direction: row-reverse;
+		flex-wrap: wrap-reverse;
+		align-items: flex-end;
+	}
+
 	.map-container-expand {
 		transition: mask 650ms ease-in-out;
 		overflow: hidden !important;
@@ -753,6 +769,7 @@
 	.add-button {
 		border-radius: var(--content-margin);
 		padding-inline: var(--panel-margin);
+		margin-right: var(--content-margin);
 		display: flex;
 		align-items: center;
 	}
