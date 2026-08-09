@@ -30,7 +30,7 @@
 	<div class="popup-title">
 		<h1>{$confirmTitle}</h1>
 	</div>
-	<p class="popup-description">{$confirmDescription}</p>
+	<p class:popup-description-narrow={$confirmUsernameInput}>{$confirmDescription}</p>
 	{#if $confirmPasswordInput}
 		<div class="info-container">
 			<Info
@@ -97,5 +97,15 @@
 	.info-container p {
 		opacity: 0.5;
 		flex-grow: 100;
+	}
+
+	.popup-description-narrow {
+		max-width: calc(100% - 150px);
+	}
+
+	@media (max-width: 600px) {
+		.popup-description-narrow {
+			max-width: none;
+		}
 	}
 </style>

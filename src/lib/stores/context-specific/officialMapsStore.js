@@ -11,9 +11,9 @@ export const baseMaps = readable([
 ]);
 
 export const specialMaps = readable([
-    "Country Guessr",
-    "Image Guessr",
-    "Meta Guessr"
+    { map: "Country Guessr", imgUrl: "/img/map-covers/country_guessr_cover.jpg" },
+    { map: "Image Guessr", imgUrl: "/img/map-covers/image_guessr_cover.jpg" },
+    { map: "Meta Guessr", imgUrl: "/img/map-covers/meta_guessr_cover.jpg" }
 ]);
 
 export const continentMaps = readable([

@@ -401,7 +401,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Update username",
-								"Please input your new username.",
+								"Please input your new username. You can only change your username once per week.",
 								() => {
 									updateProfileUsername($confirmUsernameValue);
 								},
