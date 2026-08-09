@@ -303,6 +303,9 @@
 		style:box-shadow={yesterdaysDaily ? "var(--box-shadow)" : ""}
 	>
 		<div>
+			{#if !expired && daily}
+				<img alt="Mascot with clock" src="/img/mascot_with_clock.png" class="clock-mascot" />
+			{/if}
 			<h2 class="competition-item-header">{name}</h2>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -604,6 +607,16 @@
 		background-color: var(--box-color);
 	}
 
+	.clock-mascot {
+		position: absolute;
+		top: -82px;
+		width: 140px;
+		right: 40px;
+		rotate: -2deg;
+		pointer-events: none;
+		user-select: none;
+	}
+
 	.competition-container {
 		transition:
 			background-color 250ms ease,
@@ -650,10 +663,10 @@
 		flex-grow: 1;
 		min-width: 220px;
 		padding: var(--layout-margin);
-		overflow: hidden;
 		flex-basis: 25%;
 		display: flex;
 		flex-direction: column;
+		position: relative;
 	}
 
 	.label {
@@ -833,6 +846,10 @@
 
 		search {
 			max-width: none;
+		}
+
+		.clock-mascot {
+			right: 0;
 		}
 	}
 </style>
