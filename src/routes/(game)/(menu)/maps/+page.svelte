@@ -890,7 +890,6 @@
 		min-height: 70.5px;
 		justify-content: center;
 		border: none;
-		border-radius: var(--layout-margin);
 		transition:
 			filter 250ms ease,
 			box-shadow 250ms ease,
