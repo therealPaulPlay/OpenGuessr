@@ -7,7 +7,6 @@ import { setRestriction } from "$lib/utils/setRestriction";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
-import { goto } from "$app/navigation";
 import { leaveFunction } from "$lib/stores/modeStore.js";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -61,10 +60,7 @@ export async function leaveCompetition(showResult) {
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
-        if (showResult) {
-            openCompetitionLeaderboard(get(competitionData).id, true);
-            goto("/competitions");
-        }
+        if (showResult) openCompetitionLeaderboard(get(competitionData).id, true);
     }
 }
 
