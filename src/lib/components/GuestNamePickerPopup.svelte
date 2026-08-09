@@ -58,7 +58,7 @@
 	<div class="popup-title">
 		<h1>Pick a name</h1>
 	</div>
-	<p class="popup-description">Please choose a temporary name for multiplayer.</p>
+	<p>Please choose a temporary name for multiplayer.</p>
 	<div class="full-width">
 		<input type="text" class="name-popup-input" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
 	</div>
