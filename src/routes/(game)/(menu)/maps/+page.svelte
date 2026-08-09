@@ -351,8 +351,24 @@
 	<div class="header-container">
 		<h2 class="header">Special</h2>
 	</div>
-	<div class="map-container">
-		{#each $specialMaps as map}
+	<div class="map-container map-container-grow-first">
+		<div
+			class="map-item map-item-hover map-item-slim"
+			style:padding-right="var(--box-margin)"
+			role="button"
+			tabindex="0"
+			onclick={() => {
+				playSound("button_juicy");
+				window.open("https://education.openguessr.com/quiz", "_blank").focus();
+			}}
+		>
+			<img class="map-cover-image" src="/img/map-covers/quiz_cover.jpg" alt="map cover" />
+			<div class="map-info map-info-flex">
+				<p class="map-name">Quizzes</p>
+				<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
+			</div>
+		</div>
+		{#each [...$specialMaps].reverse() as { map, imgUrl }}
 			<div
 				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
@@ -362,24 +378,12 @@
 					selectMap(map);
 				}}
 			>
+				<img class="map-cover-image" src={imgUrl} alt="map cover" />
 				<div class="map-info">
 					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
-		<div
-			class="map-item map-item-hover map-item-link"
-			style:padding-right="var(--box-margin)"
-			role="button"
-			tabindex="0"
-			onclick={() => {
-				playSound("button_juicy");
-				window.open("https://education.openguessr.com/quiz", "_blank").focus();
-			}}
-		>
-			<p class="map-name">Geo Quizzes</p>
-			<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
-		</div>
 	</div>
 	<!-- Expandable country section -->
 	<div class="header-container">
@@ -627,6 +631,11 @@
 	.map-info-flex {
 		display: flex;
 		gap: var(--box-margin);
+		overflow: hidden;
+		margin-top: calc(-1 * var(--box-margin));
+		margin-bottom: calc(-1 * var(--box-margin));
+		padding: var(--box-margin);
+		padding-inline: inherit;
 	}
 
 	.no-bottom-padding {
@@ -660,10 +669,6 @@
 
 	.map-item-animate {
 		animation: fadeIn 250ms ease-in-out;
-	}
-
-	.map-item-link {
-		flex-basis: 0;
 	}
 
 	.map-item-hover:hover {
