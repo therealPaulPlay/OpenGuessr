@@ -317,7 +317,6 @@
 		{#each [...$baseMaps].reverse() as { map, imgUrl }}
 			<div
 				class="map-item map-item-hover map-item-slim"
-				style:padding-right={map === $defaultMap ? "var(--box-margin)" : ""}
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -354,7 +353,6 @@
 	<div class="map-container map-container-grow-first">
 		<div
 			class="map-item map-item-hover map-item-slim"
-			style:padding-right="var(--box-margin)"
 			role="button"
 			tabindex="0"
 			onclick={() => {
