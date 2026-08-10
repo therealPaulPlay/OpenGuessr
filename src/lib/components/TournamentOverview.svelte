@@ -166,6 +166,8 @@
 		align-items: center;
 		gap: var(--box-margin);
 		overflow: hidden;
+		margin: calc(-1 * var(--box-margin));
+		padding: var(--box-margin);
 	}
 
 	:global(.status-chip) {
