@@ -684,6 +684,8 @@
 		aspect-ratio: 16/9;
 		object-fit: cover;
 		border-radius: var(--content-margin);
+		pointer-events: none;
+		user-select: none;
 	}
 
 	.map-item-bookmark {
