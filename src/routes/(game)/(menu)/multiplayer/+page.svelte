@@ -338,7 +338,6 @@
 		display: flex;
 		justify-content: flex-start;
 		gap: var(--layout-margin);
-		flex-wrap: wrap;
 	}
 
 	.friend-button-container {
@@ -410,11 +409,12 @@
 		flex-basis: 0;
 		flex-direction: column;
 		background: linear-gradient(var(--box-color), transparent 50%);
-		padding: var(--box-margin);
+		padding: var(--layout-margin);
 		box-shadow: var(--box-shadow-top);
 		border-radius: var(--layout-margin);
 		max-width: calc(100% - 20px);
 		position: relative;
+		margin-bottom: calc(-1 * var(--content-margin));
 	}
 
 	.group-party-content {
@@ -427,26 +427,47 @@
 
 	.multiplayer-illustration {
 		height: 250px;
-		margin-top: -25px;
+		margin-top: -30px;
 		user-select: none;
 		pointer-events: none;
 	}
 
 	.multiplayer-select {
-		flex-grow: 1;
-		flex-basis: 0;
 		display: flex;
+		width: 100%;
 		align-items: center;
 		justify-content: space-between;
 		padding-inline: var(--layout-margin);
 		gap: var(--layout-margin);
 	}
 
+	@media (max-width: 950px) {
+		.multiplayer-illustration {
+			height: 150px;
+			margin: calc(-1 * var(--layout-margin));
+			margin-top: calc(-1 * var(--layout-margin) * 2);
+		}
+
+		.group-party-buttons {
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+		}
+
+		.group-party-content {
+			flex-direction: column;
+			margin-top: unset;
+			min-width: 50%;
+		}
+
+		.play-box {
+			flex-direction: column;
+		}
+	}
+
 	.inner-duel-button-container {
-		position: absolute;
-		right: calc(var(--box-margin) / 2);
-		top: calc(var(--box-margin) / 2);
-		gap: calc(var(--box-margin) / 2);
+		gap: var(--content-margin);
+		margin-right: calc(-1 * var(--box-margin));
 		bottom: auto;
 		display: flex;
 	}
@@ -459,8 +480,6 @@
 	}
 
 	#multiplayer-select-duels {
-		background-color: var(--brand-color);
-		color: white;
 		position: relative;
 		overflow: hidden;
 		min-width: 150px;
