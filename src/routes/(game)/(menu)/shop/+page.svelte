@@ -17,7 +17,7 @@
 	} from "$lib/stores/context-specific/shopStore";
 	import { CircleArrowUp, CirclePlus, Clock } from "@lucide/svelte";
 	import { onMount } from "svelte";
-	import { blur, scale, slide } from "svelte/transition";
+	import { scale, slide } from "svelte/transition";
 	import {
 		fetchSpecialOffer,
 		handleShopFreeTokens,
@@ -194,7 +194,6 @@
 			{#if $specialOfferPins}
 				<div
 					class="special-offer"
-					transition:blur
 					class:common-gradient={$specialOfferRarity == "common"}
 					class:rare-gradient={$specialOfferRarity == "rare"}
 					class:epic-gradient={$specialOfferRarity == "epic"}
@@ -217,18 +216,20 @@
 							<PinHolder pinId={pinIndex} shop={true} disabled={$purchasedPins?.includes(pinIndex)} />
 						{/each}
 					</div>
-					<button
-						class="standard-button white special-offer-button large-button"
-						disabled={$specialOfferPrice == 0}
-						onclick={() => {
-							playSound("basic_button");
-							handleShopPurchase("bundle", $specialOfferPrice, undefined, $specialOfferPins);
-						}}
-					>
-						<img class="token-icon-white" alt="token" src="/img/token_icon_white.png" />
-						<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins)}</span>
-						{$specialOfferPrice != 0 ? $specialOfferPrice : "Owned"}
-					</button>
+					<div class="bar-menu special-offer-button-container">
+						<button
+							class="standard-button white special-offer-button large-button"
+							disabled={$specialOfferPrice == 0}
+							onclick={() => {
+								playSound("basic_button");
+								handleShopPurchase("bundle", $specialOfferPrice, undefined, $specialOfferPins);
+							}}
+						>
+							<img class="token-icon-white" alt="token" src="/img/token_icon_white.png" />
+							<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins)}</span>
+							{$specialOfferPrice != 0 ? $specialOfferPrice : "Owned"}
+						</button>
+					</div>
 				</div>
 			{:else}
 				<p class="loading-text">{$specialOfferLoadingText}</p>
@@ -593,6 +594,11 @@
 		gap: var(--box-margin);
 		box-sizing: border-box;
 		margin-bottom: var(--layout-spacer);
+	}
+
+	.special-offer-button-container {
+		background-color: var(--box-color);
+		border-radius: var(--layout-margin);
 	}
 
 	.special-offer-button {

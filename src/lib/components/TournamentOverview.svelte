@@ -132,7 +132,6 @@
 	.tournament-name-title {
 		margin-right: auto;
 		margin-left: var(--content-margin);
-		margin-left: var(--box-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
