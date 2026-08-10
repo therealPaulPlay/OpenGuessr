@@ -91,10 +91,17 @@
 			</p>
 		</div>
 	{/if}
+	<Drawer title="Divisions">
+		<DuelDivisionDisplay />
+	</Drawer>
 	<div class="play-box">
 		<div class="group-party-buttons">
-			<p class="select-buttons-header">Custom</p>
-			<div class="group-party-content">
+			<img
+				alt="Multiplayer illustration"
+				src="/img/multiplayer_illustration_custom.webp"
+				class="multiplayer-illustration"
+			/>
+			<div class="group-party-content bar-menu">
 				<button
 					id="multiplayer-select-join"
 					class="standard-button multiplayer-select white large-button"
@@ -118,10 +125,12 @@
 			</div>
 		</div>
 		<div class="group-party-buttons">
-			<div class="select-buttons-header">
-				<p>Matchmaking</p>
-			</div>
-			<div class="group-party-content">
+			<img
+				alt="Multiplayer illustration"
+				src="/img/multiplayer_illustration_matchmaking.webp"
+				class="multiplayer-illustration"
+			/>
+			<div class="group-party-content bar-menu">
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
 					id="multiplayer-select-duels"
@@ -177,9 +186,6 @@
 			</div>
 		</div>
 	</div>
-	<Drawer title="Divisions" class="divisions-container" hasBottomLayoutMargin={false}>
-		<DuelDivisionDisplay />
-	</Drawer>
 	<div class="header-container header-margin-top">
 		<h2 class="header">Tournaments</h2>
 	</div>
@@ -340,17 +346,6 @@
 		background-color: var(--box-color);
 	}
 
-	.select-buttons-header {
-		width: calc(100% - 10px);
-		opacity: 0.5;
-		padding-inline: var(--content-margin);
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--box-margin);
-		overflow: hidden;
-	}
-
 	.header-margin-top {
 		margin-top: var(--layout-spacer);
 	}
@@ -408,24 +403,33 @@
 
 	.group-party-buttons {
 		display: flex;
-		flex-wrap: wrap;
 		gap: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 		flex-grow: 1.5;
 		flex-basis: 0;
-		background-color: var(--box-color);
+		flex-direction: column;
+		background: linear-gradient(var(--box-color), transparent 50%);
 		padding: var(--box-margin);
-		box-shadow: var(--panel-shadow);
+		box-shadow: var(--box-shadow-top);
 		border-radius: var(--layout-margin);
 		max-width: calc(100% - 20px);
+		position: relative;
 	}
 
 	.group-party-content {
-		width: 100%;
-		display: flex;
-		margin-top: -2px;
-		gap: var(--box-margin);
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		margin-top: -20px;
+		min-width: 75%;
+		box-sizing: border-box;
+	}
+
+	.multiplayer-illustration {
+		height: 250px;
+		margin-top: -25px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.multiplayer-select {
@@ -547,9 +551,5 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
-	}
-
-	:global(.divisions-container) {
-		margin-top: var(--layout-margin);
 	}
 </style>
