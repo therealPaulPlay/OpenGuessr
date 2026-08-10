@@ -35,6 +35,7 @@
 	class:bigger-size={shop}
 	class:selected-pin={$selectedPinIndex == pinId && !shop}
 	class:disabled
+	style:border-radius={shop ? "var(--box-margin)" : ""}
 	onpointerenter={(e) => {
 		if (e.pointerType !== "touch") isHovered = true;
 	}}

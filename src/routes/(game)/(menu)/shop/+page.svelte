@@ -512,13 +512,13 @@
 		align-items: center;
 		box-sizing: border-box;
 		padding: var(--box-margin);
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		gap: var(--box-margin);
 		overflow: hidden;
 	}
 
 	.shop-offer {
-		border-radius: var(--content-margin);
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
@@ -627,7 +627,7 @@
 		width: 100%;
 		height: 100%;
 		box-shadow: var(--box-shadow);
-		border-radius: var(--content-margin);
+		border-radius: var(--box-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -682,8 +682,8 @@
 	.special-offer-rarity-display {
 		position: absolute;
 		box-shadow: var(--bulb-shadow);
-		border-top-right-radius: var(--content-margin);
-		border-bottom-left-radius: var(--content-margin);
+		border-top-right-radius: var(--box-margin);
+		border-bottom-left-radius: var(--box-margin);
 		top: 0;
 		right: 0;
 		padding-inline: var(--panel-margin);
@@ -760,7 +760,7 @@
 
 	.tier-box {
 		background-color: var(--box-color);
-		border-radius: var(--content-margin);
+		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		display: flex;
 		flex-direction: column;
@@ -781,8 +781,8 @@
 		padding-inline: var(--box-margin);
 		text-align: center;
 		line-height: 34px;
-		border-bottom-left-radius: var(--content-margin);
-		border-top-right-radius: var(--content-margin);
+		border-bottom-left-radius: var(--box-margin);
+		border-top-right-radius: var(--box-margin);
 		box-shadow: var(--bulb-shadow);
 		background-color: var(--box-color);
 	}
