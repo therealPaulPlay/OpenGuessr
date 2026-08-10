@@ -30,42 +30,47 @@
 	)}
 
 	<div class="tournament-box">
-		<div class="tournament-name-box">
+		<div style:flex-grow="1">
 			<h3 class="tournament-name-title">
-				{tournament.name}{#if tournament.status == "ongoing"}
+				{tournament.name}
+				{#if tournament.status == "ongoing"}
 					<Chip text="Ongoing" red={true} italic={true} mutedOpacity={false} class="status-chip" />
 				{:else if tournament.status == "starting"}
 					<Chip text="Enter now" red={true} italic={true} mutedOpacity={false} class="status-chip" />
 				{/if}
 			</h3>
 		</div>
-		<div class="tournament-field">
-			<Clock style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.75} />
-			<p>{readableDate}</p>
+		<div class="tournament-box-content">
+			<div class="tournament-details of-left of-right">
+				<div class="tournament-field">
+					<Clock style="margin-top: 1px; opacity: 0.75; flex-shrink: 0;" strokeWidth={1.75} />
+					<p>{readableDate}</p>
+				</div>
+				<div class="tournament-field">
+					<CalendarCheck2 style="opacity: 0.75; flex-shrink: 0;" strokeWidth={1.75} />
+					<p>{tournament.saves?.toLocaleString()}</p>
+				</div>
+				<div class="tournament-field">
+					<Medal style="margin-top: 1px; opacity: 0.75; flex-shrink: 0;" strokeWidth={1.5} />
+					<p>{tournament.prize}</p>
+				</div>
+			</div>
+			<button
+				class="tournament-field-button standard-button {tournament.status == 'starting' ? '' : 'white'}"
+				{@attach tooltip({ text: "Details" })}
+				onclick={() => {
+					playSound("basic_button");
+					$selectedTournamentId = tournament.id;
+					$tournamentInfoPopup = true;
+				}}
+			>
+				{#if tournament.status != "finished" && tournament.status != "ongoing"}
+					<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
+				{:else}
+					<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
+				{/if}
+			</button>
 		</div>
-		<div class="tournament-field">
-			<CalendarCheck2 style="opacity: 0.75;" strokeWidth={1.75} />
-			<p>{tournament.saves?.toLocaleString()}</p>
-		</div>
-		<div class="tournament-field">
-			<Medal style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.5} />
-			<p>{tournament.prize}</p>
-		</div>
-		<button
-			class="tournament-field-button standard-button {tournament.status == 'starting' ? '' : 'white'}"
-			{@attach tooltip({ text: "Details" })}
-			onclick={() => {
-				playSound("basic_button");
-				$selectedTournamentId = tournament.id;
-				$tournamentInfoPopup = true;
-			}}
-		>
-			{#if tournament.status != "finished" && tournament.status != "ongoing"}
-				<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
-			{:else}
-				<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
-			{/if}
-		</button>
 	</div>
 {/snippet}
 
@@ -124,14 +129,9 @@
 		min-height: 80px;
 	}
 
-	.tournament-name-box {
-		mask-image: linear-gradient(to right, black 90%, transparent 100%);
-		flex-grow: 2;
-	}
-
 	.tournament-name-title {
 		margin-right: auto;
-		margin-left: var(--content-margin);
+		padding-inline: var(--content-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
@@ -149,6 +149,23 @@
 		flex-wrap: wrap;
 		box-sizing: border-box;
 		width: 100%;
+	}
+
+	.tournament-details {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		overflow-x: auto;
+		gap: var(--box-margin);
+		scrollbar-width: none;
+	}
+
+	.tournament-box-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: var(--box-margin);
+		overflow: hidden;
 	}
 
 	:global(.status-chip) {
