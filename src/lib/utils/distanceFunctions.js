@@ -4,6 +4,37 @@ import { get } from "svelte/store";
 import { selectedCountryGuesserCountryCode } from "$lib/stores/context-specific/countryGuessrStore";
 import { getCountryName } from "$lib/utils/getCountryName";
 
+const motivationalMessages = {
+    5: ["Rainbolt?", "How?", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive.", "Astounding."],
+    100: ["Incredible guess.", "It doesn't get much better than that.", "Great accuracy.", "The gut feeling was right!", "It was that other street.", "A short drive away!", "Yeah, we'll take that."],
+    1000: ["Nice, that's near the location!", "You're good at this.", "Quite close!", "Almost there!", "Yup, that was impressive.", "That's how it's done."],
+    5000: ["There's some room for improvement.", "Not bad, but not great either.", "Right area, wrong spot.", "From far away it looks close.", "It's a guess, not a 'know'.", "It's something."],
+    default: ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse.", "Just a quick teleportation away."],
+};
+
+export function motivationalResultMessage(distance) {
+    let smallestKey = "default";
+    let smallestDistance = Infinity;
+
+    Object.entries(motivationalMessages).forEach(([key, value]) => {
+        if (key !== "default") {
+            // If smaller or equal to the distance, and smaller than the current smallest, update current smallest
+            const keyDistance = Number(key);
+            if (distance <= keyDistance && keyDistance < smallestDistance) {
+                smallestDistance = keyDistance;
+                smallestKey = key;
+            }
+        }
+    });
+
+    const applicableMessages = motivationalMessages[smallestKey];
+    let message = applicableMessages[Math.floor(Math.random() * applicableMessages.length)];
+
+    // In Country guessr, tell the country
+    if (get(countryGuessr)) message = "The country is " + (getCountryName(get(selectedCountryGuesserCountryCode)) || "Unknown") + ".";
+    return message;
+}
+
 // Haversine formula, takes spherical nature of planet into account
 export function calculateDistances(mapsLat = 0, mapsLon = 0) {
     const R = 6371; // Radius of the Earth in km
@@ -23,23 +54,6 @@ export function calculateDistances(mapsLat = 0, mapsLon = 0) {
     const distance = R * c; // Distance in kilometers
 
     return distance;
-}
-
-export function motivationalResultMessage(distance) {
-    const veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
-    const closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!", "Yup, that was impressive.", "That's how it's done!"];
-    const farDistances = ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse."];
-
-    // Motivational messages
-    let message;
-
-    if (distance < 5) message = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
-    else if (distance < 1000) message = closeDistances[Math.floor(Math.random() * closeDistances.length)];
-    else message = farDistances[Math.floor(Math.random() * farDistances.length)];
-
-    // In Country guessr, tell the country
-    if (get(countryGuessr)) message = "The country is " + (getCountryName(get(selectedCountryGuesserCountryCode)) || "Unknown") + ".";
-    return message;
 }
 
 // This function neatly formats a distance in meters into a readable string (e.g. 500 km or 15 miles)
