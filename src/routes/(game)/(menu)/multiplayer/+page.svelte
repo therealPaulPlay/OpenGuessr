@@ -77,7 +77,7 @@
 
 <div class="main-container">
 	<div class="header-container">
-		<h1 class="header">Multiplayer</h1>
+		<h1 class="header">Modes</h1>
 	</div>
 	{#if $warnReportEntryData}
 		<div class="info-container warn-info" transition:slide>

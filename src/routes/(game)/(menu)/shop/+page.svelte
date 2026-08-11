@@ -186,7 +186,7 @@
 
 <div class="main-container">
 	<div class="header-container">
-		<h1 class="header">Shop</h1>
+		<h1 class="header">Offers</h1>
 	</div>
 	<!-- Split container with token offers and bundle -->
 	<div class="split-container">
