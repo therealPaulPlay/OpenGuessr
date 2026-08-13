@@ -13,11 +13,10 @@
 
 <Popup verySlim={true} bind:open={$discordPopup} onUserClose={closePopup}>
 	<div class="popup-title">
-		<h1>Join the community</h1>
+		<h1>Join our Discord</h1>
 	</div>
 	<p>
-		Join now and get <span class="experience-highlight">7,500 XP</span>
-		in return!
+		Join the OpenGuessr community on Discord and receive <span class="experience-highlight">7,500 XP</span>.
 	</p>
 	<iframe
 		id="discord-widget"
