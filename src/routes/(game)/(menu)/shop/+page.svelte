@@ -270,7 +270,7 @@
 									else purchaseTokenTier(offer.tier);
 								};
 
-								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
+								if ($crazyGames && offer.price != 0) return errorPopup("Not supported", "Purchases on this platform are not supported.");
 								if (!$isAuthenticated) return signupPrompt(action);
 								action();
 							}}
