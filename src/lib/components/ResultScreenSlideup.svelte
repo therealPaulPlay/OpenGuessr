@@ -10,9 +10,11 @@
 		monthlySupportAmount,
 		slideupImageUrl,
 		slideupNote,
+		slideupContent,
+		closeCallback,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Flame, HandHeart, TriangleAlert } from "@lucide/svelte";
+	import { HandHeart, TriangleAlert } from "@lucide/svelte";
 	import { slide } from "svelte/transition";
 </script>
 
@@ -39,7 +41,11 @@
 				</div>
 			{/if}
 			<div class="text-box solid-box" style:margin-top="var(--panel-margin)">
-				<p bind:textContent={$slideupText} contenteditable="false" class="of-top of-bottom"></p>
+				{#if $slideupText}
+					<p bind:textContent={$slideupText} contenteditable="false" class="of-top of-bottom"></p>
+				{:else if $slideupContent}
+					{@html $slideupContent}
+				{/if}
 			</div>
 			{#if $slideupNote}
 				<div class="text-box solid-box" style:margin-top="var(--panel-margin)">
@@ -53,6 +59,18 @@
 					</p>
 				</div>
 			{/if}
+			{#if $slideupButtonText == "Join"}
+				<iframe
+					class="discord-widget"
+					title="Discord widget"
+					width="300"
+					height="300"
+					allowtransparency="true"
+					frameborder="0"
+					src="https://discord.com/widget?id=1221841177863651499&theme=dark"
+					sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+				></iframe>
+			{/if}
 		</div>
 		<div class="button-box">
 			<button
@@ -61,21 +79,24 @@
 				onclick={() => {
 					playSound("basic_button");
 					$showSlideup = false;
-				}}>Close</button
+					$closeCallback?.();
+				}}>{$closeCallback ? "No, thanks" : "Close"}</button
 			>
 			{#if $slideupCallback}
 				<button
-					class="streak-button standard-button"
+					class="standard-button"
+					class:green-button={$slideupButtonText == "Support"}
+					class:purple-button={$slideupButtonText == "Join"}
 					onclick={() => {
 						playSound("basic_button");
 						$slideupCallback?.();
 					}}
 				>
 					{$slideupButtonText}
-					{#if $slideupButtonText == "Restore"}
-						<Flame size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
-					{:else if $slideupButtonText == "Support"}
+					{#if $slideupButtonText == "Support"}
 						<HandHeart style="margin-bottom: -3px;" size={20} strokeWidth={2.25} />
+					{:else if $slideupButtonText == "Join"}
+						<img src="/img/discord.png" class="discord-icon-join" alt="Discord Icon" />
 					{/if}
 				</button>
 			{/if}
@@ -167,8 +188,12 @@
 		height: 42px;
 	}
 
-	.streak-button {
+	.green-button {
 		background-color: #00ac00;
+	}
+
+	.purple-button {
+		background-color: #8e44f0;
 	}
 
 	.geometas-attribution {
@@ -178,6 +203,22 @@
 	#slideup-title {
 		transition: color 350ms ease;
 		font-size: 25px;
+	}
+
+	.discord-icon-join {
+		width: 20px;
+		height: auto;
+		vertical-align: -2px;
+		margin-left: 3px;
+	}
+
+	.discord-widget {
+		width: 100%;
+		min-height: 250px;
+		border-radius: var(--box-margin);
+		margin-top: var(--panel-margin);
+		/* Discord iframe content has weird slight offset to the bottom */
+		margin-bottom: -3px;
 	}
 
 	@media (max-width: 500px) {

@@ -29,7 +29,8 @@ export default [
             "no-empty": "off",
             "svelte/require-each-key": "off",
             "svelte/no-navigation-without-resolve": "off",
-            "svelte/prefer-svelte-reactivity": "off"
+            "svelte/prefer-svelte-reactivity": "off",
+            "svelte/no-at-html-tags": "off",
         }
     }
 ];

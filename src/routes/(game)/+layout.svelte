@@ -22,7 +22,6 @@
 	import BottomBar from "$lib/components/BottomBar.svelte";
 	import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
 	import SignupIframe from "$lib/components/SignupIframe.svelte";
-	import DiscordPopup from "$lib/components/DiscordPopup.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
 	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
@@ -134,7 +133,6 @@
 <DuelResultPopup />
 <SignupIframe />
 <SettingsPopup />
-<DiscordPopup />
 <LinkJoinPopup />
 <RoundLogPopup />
 <ChatManagePopup />

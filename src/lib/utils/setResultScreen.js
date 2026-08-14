@@ -13,9 +13,10 @@ import { supporterSlideupProbability } from "./showSupporterSlideup";
 import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId, currentLocationPitch } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, guessLat, guessLon } from "$lib/stores/context-specific/mapStore";
-import { socialPopupProbability } from "./socialPopupProbability";
 import { saveRoundToLog } from "./saveRoundToLog";
 import { tutorial } from "$lib/stores/context-specific/tutorialStore";
+import { discordSlideupProbability } from "./showDiscordSlideup";
+import { isAuthenticated } from "$lib/stores/accountStore";
 
 export async function enableResultScreen() {
     if (get(resultScreenEnabled)) return;
@@ -37,11 +38,9 @@ export async function enableResultScreen() {
     loadResultMap(get(guessLat), get(guessLon), get(currentLocationLatitude), get(currentLocationLongitude));
     playSound("confirm");
 
-    // CTAs (singleplayer-only)
-    if (get(singleplayer)) {
-        setTimeout(socialPopupProbability, 1000);
-        if (!get(tutorial)) supporterSlideupProbability(); // Not shown in tutorial
-    }
+    // CTAs
+    if (!get(tutorial) && get(isAuthenticated)) discordSlideupProbability(); // Not shown in tutorial, and only to authed users
+    if (!get(tutorial) && get(singleplayer)) supporterSlideupProbability(); // Not shown in tutorial, and only in singleplayer (checkout flow would take too long for mid-multiplayer or comp)
 
     // Load XP
     await loadResultScreenXP(distance);

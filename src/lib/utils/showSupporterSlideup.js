@@ -8,9 +8,10 @@ import { signupPrompt } from "./signupPrompt";
 import { showConfirmPopup } from "./confirmPopup";
 
 export function supporterSlideupProbability() {
-    if (Math.random() < 0.05 && get(supporterLevel) == 0) {
+    if (Math.random() < 0.05 && get(supporterLevel) == 0 && localStorage.getItem("supporterSlideup") === null) {
         getMonthlySupportedAmount();
         showResultScreenSlideup("Enjoy playing?", "Consider supporting to unlock awesome perks including ad-free!", "Support", () => {
+            // supporterSlideup in the success path is not set to true since the user is not guaranteed to support
             if (get(isAuthenticated)) goto("/shop#supporter");
             else {
                 showConfirmPopup(
@@ -24,6 +25,8 @@ export function supporterSlideupProbability() {
                     "Sign up",
                 );
             }
+        }, null, null, null, () => {
+            localStorage.setItem("supporterSlideup", true);
         });
     }
 }

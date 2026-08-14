@@ -8,7 +8,6 @@ export const littleTimeVignetteVisible = writable(false);
 // Popup Visibility
 export const settingsPopup = writable(false);
 export const signupPopup = writable(false);
-export const discordPopup = writable(false);
 export const profilePopup = writable(false);
 export const pinPopup = writable(false);
 export const flagPickerPopup = writable(false);
