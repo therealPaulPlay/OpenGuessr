@@ -16,7 +16,7 @@ export function motivationalResultMessage(distance) {
     let smallestKey = "default";
     let smallestDistance = Infinity;
 
-    Object.entries(motivationalMessages).forEach(([key, value]) => {
+    Object.entries(motivationalMessages).forEach(([key, _value]) => {
         if (key !== "default") {
             // If smaller or equal to the distance, and smaller than the current smallest, update current smallest
             const keyDistance = Number(key);
