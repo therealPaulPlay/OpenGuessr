@@ -81,12 +81,6 @@ Lucide is used for icons. At the default icon size (matches the font size), usin
 
 Certain Lucide icons are thinner than the rest, for example, the `X`. For those, `.25` is added to the stroke width to make them fit in.
 
-## Text formatting guidelines
-
-- Body text and headings should be written as plain sentences, without random capitalization (for example, “This is a nice location” rather than “This is a nice Location”).
-- Official map names, competition names, tournament names, and the names of other user-creatable game elements should capitalize each word (for example, “Urban Competition”). However, when users create their own content, they are free to choose their own capitalization and formatting.
-- Using a colon ":" in or for UI labels is not recommended.
-
 ### Overfade
 
 Overfade is a library installed that allows for beautiful scroll containers. It applies a mask-image on the container that overflows depending on the scroll position of the content. For example, when a container that contains overflowing text content is scrolled all the way to the top, the top of the text is not faded out, only the bottom. 
@@ -105,6 +99,12 @@ Opacity values used are typically `0.25`, `0.5`, `0.75` and `1`. Using others su
 ### Blur values
 
 Unless an extreme outlier is needed, stick to the provided CSS variables `--weak-blur`, `--normal-blur`, `--elevated-blur` and `--strong-blur`.
+
+## Text formatting guidelines
+
+- Body text and headings should be written as plain sentences, without random capitalization (for example, “This is a nice location” rather than “This is a nice Location”).
+- Official map names, competition names, tournament names, and the names of other user-creatable game elements should capitalize each word (for example, “Urban Competition”). However, when users create their own content, they are free to choose their own capitalization and formatting.
+- Using a colon ":" in or for UI labels is not recommended.
 
 ## Developing
 
