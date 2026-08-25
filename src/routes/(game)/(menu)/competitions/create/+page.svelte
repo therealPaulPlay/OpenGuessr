@@ -10,6 +10,8 @@
 	import { goto } from "$app/navigation";
 	import { defaultRestriction, restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import { isAuthenticated } from "$lib/stores/accountStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let successPopup = $state(false);
 
@@ -290,8 +292,7 @@
 							bind:value={locationData}
 							class="of-top of-bottom"
 							rows="5"
-							placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."
-						></textarea>
+							placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."></textarea>
 					</div>
 				</div>
 			</div>
@@ -302,9 +303,9 @@
 				class="standard-button large-button"
 				onclick={() => {
 					playSound("basic_button");
-					showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
-						submitCompetitionWithDetails();
-					});
+					showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () =>
+						$isAuthenticated ? submitCompetitionWithDetails() : signupPrompt(submitCompetitionWithDetails),
+					);
 				}}>Submit</button
 			>
 		</div>
