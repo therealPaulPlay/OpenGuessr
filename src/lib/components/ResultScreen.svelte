@@ -278,12 +278,16 @@
 		transform: rotate(270deg);
 		vertical-align: -2px;
 		margin-right: -10px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	#streetview-icon {
 		vertical-align: -2px;
 		width: 20px;
 		height: auto;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	#next-round {

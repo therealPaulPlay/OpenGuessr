@@ -101,6 +101,8 @@
 		height: 20px;
 		margin-right: 3px;
 		margin-bottom: -0.5px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	:global(.info-tag) {

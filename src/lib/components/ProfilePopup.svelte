@@ -568,6 +568,8 @@
 		width: 22px;
 		height: 22px;
 		vertical-align: -3px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	#supporter-tag {
@@ -606,6 +608,8 @@
 		width: 30px;
 		height: 30px;
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.about-section {

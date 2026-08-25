@@ -138,6 +138,8 @@
 		margin-bottom: var(--layout-spacer);
 		border-radius: var(--layout-margin);
 		filter: drop-shadow(var(--box-shadow));
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.text-container {

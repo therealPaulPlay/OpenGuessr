@@ -100,6 +100,8 @@
 		height: 25px;
 		transform: rotate(90deg);
 		vertical-align: -5px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.menu-nav-bar {

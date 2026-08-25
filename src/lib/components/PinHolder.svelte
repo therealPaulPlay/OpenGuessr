@@ -149,6 +149,8 @@
 		margin-right: 3px;
 		margin-top: 1px;
 		margin-left: -2px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.common-color {
@@ -229,6 +231,7 @@
 		width: 40px;
 		z-index: 1;
 		user-select: none;
+		pointer-events: none;
 		transition:
 			width 250ms ease,
 			height 250ms ease,

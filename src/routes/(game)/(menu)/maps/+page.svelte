@@ -765,6 +765,8 @@
 		width: 22px;
 		height: 22px;
 		vertical-align: -3px;
+		pointer-events: none;
+		user-select: none;
 	}
 
 	.arrow-expand-rotate {

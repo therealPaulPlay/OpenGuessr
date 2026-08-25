@@ -442,6 +442,8 @@ search {
 .tooltip-image {
     width: 100%;
     object-fit: contain;
+    user-select: none;
+    pointer-events: none;
 }
 
 .tooltip-close {

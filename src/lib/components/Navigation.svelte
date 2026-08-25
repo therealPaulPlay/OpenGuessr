@@ -278,6 +278,8 @@
 	.social-icon {
 		width: 20px;
 		height: auto;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.navigation-menu {
@@ -305,6 +307,8 @@
 		height: auto;
 		margin-inline: 2px;
 		margin-bottom: -1px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.navigation-button {

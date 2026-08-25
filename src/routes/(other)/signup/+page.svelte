@@ -446,7 +446,7 @@
 					>
 						<img
 							src="/img/google_logo.png"
-							style="width: 22px; height: 22px; background-color: white; border-radius: 100%; border: 2px solid white;"
+							style="width: 22px; height: 22px; background-color: white; border-radius: 100%; border: 2px solid white; user-select: none; pointer-events: none;"
 							alt="Google logo"
 						/>
 						Continue with Google
@@ -520,6 +520,8 @@
 		margin-bottom: calc(var(--layout-margin) + var(--content-margin));
 		margin-top: var(--content-margin);
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.popup-container {

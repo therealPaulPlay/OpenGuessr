@@ -165,6 +165,8 @@
 		height: 200px;
 		max-width: 100%;
 		object-fit: cover;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.supporter-stat-bar {

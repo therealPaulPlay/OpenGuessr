@@ -226,6 +226,8 @@
 	#reset-button-img {
 		width: 21px;
 		height: 17px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.reset-button-text {
