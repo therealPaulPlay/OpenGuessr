@@ -318,6 +318,7 @@
 		height: auto;
 		display: block;
 		user-select: none;
+		pointer-events: none;
 		mask-image: linear-gradient(
 				to right,
 				transparent 0%,

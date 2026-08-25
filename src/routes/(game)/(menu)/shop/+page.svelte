@@ -421,6 +421,8 @@
 		margin-right: var(--content-margin);
 		animation: socialPinAnimation 1.5s ease-in-out infinite alternate;
 		transform-origin: bottom;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	@keyframes socialPinAnimation {
@@ -456,6 +458,8 @@
 	.token-icon-white {
 		width: 25px;
 		height: 25px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.right-side {
@@ -500,6 +504,8 @@
 		width: 25px;
 		height: 25px;
 		margin-top: 2px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.token-shop {
@@ -565,6 +571,8 @@
 		transition: scale 250ms ease;
 		margin-top: auto;
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.shop-offer-graphic {
@@ -820,6 +828,7 @@
 		box-sizing: border-box;
 		padding: var(--content-margin);
 		user-select: none;
+		pointer-events: none;
 	}
 
 	.supporter-info-box {

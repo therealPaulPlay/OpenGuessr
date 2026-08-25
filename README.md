@@ -100,6 +100,10 @@ Opacity values used are typically `0.25`, `0.5`, `0.75` and `1`. Using others su
 
 Unless an extreme outlier is needed, stick to the provided CSS variables `--weak-blur`, `--normal-blur`, `--elevated-blur` and `--strong-blur`.
 
+### Images
+
+Apply `pointer-events: none` as well as `user-select: none` to ensure that they aren't dragable and integrate nicely into the interface. It's not universally applied since some images need to be interactive (e.g. pin image on the map).
+
 ## Text formatting guidelines
 
 - Body text and headings should be written as plain sentences, without random capitalization (for example, “This is a nice location” rather than “This is a nice Location”).
