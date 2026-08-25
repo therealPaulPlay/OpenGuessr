@@ -9,6 +9,8 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Upload } from "@lucide/svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import { isAuthenticated } from "$lib/stores/accountStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");
@@ -37,53 +39,48 @@
 	}
 
 	async function uploadMap() {
+		const submitMap = async () => {
+			const name = mapName;
+			const description = mapDescription;
+			const id = localStorage.getItem("id");
+			const category = categoryValue;
+
+			try {
+				const mapData = await combineMapData();
+				const payload = { id, name, description, mapData, category };
+
+				const response = await fetch($apiUrl + "/maps", {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ` + localStorage.getItem("bearer"),
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(payload),
+				});
+
+				const result = await response.json();
+
+				if (response.ok) {
+					return "Map submitted successfully!"; // Must include "success"
+				} else {
+					let resultErrors = "";
+					result.errors?.forEach((e) => (resultErrors += e.msg + " "));
+					if (result.error) resultErrors += result.error;
+					console.error("Error(s) occured trying to submit a map: " + resultErrors);
+					return resultErrors || "Failed to submit map.";
+				}
+			} catch (error) {
+				console.error("Error submitting map:", error);
+				return "Error submitting map: " + error;
+			}
+		};
+
 		const operationMessage = await submitMap();
 		if (operationMessage.includes("success")) {
 			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase());
 			showNotification("Map created!");
 		} else {
 			errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
-		}
-	}
-
-	async function submitMap() {
-		const name = mapName;
-		const description = mapDescription;
-		const id = localStorage.getItem("id");
-		const category = categoryValue;
-
-		if (!name || !description || !id || category == "none") return "All fields and a selected category are required.";
-		if (!uploadMapDataValue?.trim() && !filePicker?.files?.[0]) {
-			return "Please provide locations either as text or a file.";
-		}
-
-		try {
-			const mapData = await combineMapData();
-			const payload = { id, name, description, mapData, category };
-
-			const response = await fetch($apiUrl + "/maps", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ` + localStorage.getItem("bearer"),
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
-
-			const result = await response.json();
-
-			if (response.ok) {
-				return `Map submitted successfully!`; // Must include "success"!
-			} else {
-				let resultErrors = "";
-				result.errors?.forEach((e) => (resultErrors += e.msg + " "));
-				if (result.error) resultErrors += result.error;
-				console.error("Error(s) occured trying to submit a map: " + resultErrors);
-				return resultErrors || "Failed to submit map.";
-			}
-		} catch (error) {
-			console.error("Error submitting map:", error);
-			return "Error submitting map: " + error;
 		}
 	}
 </script>
@@ -221,8 +218,7 @@
 							bind:value={uploadMapDataValue}
 							class="of-top of-bottom"
 							rows="5"
-							placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."
-						></textarea>
+							placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."></textarea>
 					</div>
 				</div>
 			</div>
@@ -236,7 +232,7 @@
 					showConfirmPopup(
 						"Submit?",
 						"Some map details cannot be edited later! Violating the rules can result in a ban.",
-						uploadMap,
+						() => ($isAuthenticated ? uploadMap() : signupPrompt(uploadMap)),
 					);
 				}}>Submit</button
 			>
