@@ -66,7 +66,7 @@
 		{#if $conversations.length >= 40}
 			<div class="warning-item">
 				<TriangleAlert strokeWidth={2.25} size={22} color="white" style="flex-shrink: 0; opacity: 0.5;" />
-				<p class="warning-text">You're near the open conversations limit ({$conversations.length}/50).</p>
+				<p class="warning-text">You're close to the conversation limit ({$conversations.length}/50).</p>
 			</div>
 		{/if}
 
