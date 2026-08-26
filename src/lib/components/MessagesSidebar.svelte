@@ -1,7 +1,7 @@
 <script>
 	import { get } from "svelte/store";
 	import { flip } from "svelte/animate";
-	import { Check, X } from "@lucide/svelte";
+	import { Check, TriangleAlert, X } from "@lucide/svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
 	import {
 		hcClient,
@@ -63,6 +63,13 @@
 
 <div class="sidebar">
 	<div class="sidebar-inner of-top of-bottom">
+		{#if $conversations.length >= 40}
+			<div class="warning-item">
+				<TriangleAlert strokeWidth={2.25} size={22} color="white" style="flex-shrink: 0; opacity: 0.5;" />
+				<p class="warning-text">You're near the open conversations limit ({$conversations.length}/50).</p>
+			</div>
+		{/if}
+
 		{#if myInvites.length}
 			<TitleSeparator text="Invites" noMargin={true} class="separator-title" />
 			{#each myInvites as invite (invite.conversation.conversationId)}
@@ -302,9 +309,24 @@
 		padding-inline: var(--box-margin);
 	}
 
+	.warning-item {
+		padding: var(--box-margin);
+		border-radius: var(--content-margin);
+		background-color: var(--box-color-dark);
+		box-shadow: var(--box-shadow);
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+	}
+
 	.invite-text {
 		text-overflow: ellipsis;
 		overflow: hidden;
+	}
+
+	.warning-text {
+		text-wrap: wrap;
+		opacity: 0.5;
 	}
 
 	.invite-username {
