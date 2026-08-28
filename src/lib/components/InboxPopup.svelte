@@ -1,7 +1,7 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { inboxPopup } from "$lib/stores/uiStore";
-	import { newFriendRequest, friendRequestInboxContent } from "$lib/stores/context-specific/inboxStore";
+	import { newFriendRequest, inboxContent } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { loadInbox } from "$lib/logic/friendAPI";
 	import { playSound } from "$lib/utils/soundManager";
 	import { acceptFriendRequest, declineFriendRequest } from "$lib/logic/friendAPI";
@@ -30,14 +30,14 @@
 	});
 </script>
 
-<Popup z={960} slim={true} bind:open={$inboxPopup}>
+<Popup z={960} verySlim={true} bind:open={$inboxPopup}>
 	<div class="popup-title">
 		<h1>Inbox</h1>
 	</div>
 	<div class="container-box">
 		<div class="container-box-scroll of-top of-bottom">
-			{#if $friendRequestInboxContent}
-				{#each $friendRequestInboxContent as entry}
+			{#if $inboxContent && $inboxContent.length}
+				{#each $inboxContent as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
 						class="inbox-item"
@@ -57,7 +57,7 @@
 									acceptFriendRequest(entry.id);
 								}}
 							>
-								<Check size={18} strokeWidth={3} style="margin-bottom: -1px;" />
+								<Check size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
 							</button>
 							<button
 								class="standard-button white"
@@ -67,7 +67,7 @@
 									declineFriendRequest(entry.id);
 								}}
 							>
-								<X size={18} strokeWidth={3} />
+								<X size={20} strokeWidth={2.25} style="margin-bottom: -1px;" />
 							</button>
 						</div>
 					</div>
@@ -123,7 +123,7 @@
 	}
 
 	.container-box-scroll {
-		max-height: min(500px, calc(100dvh - 300px));
+		max-height: min(500px, calc(100dvh - 250px));
 		min-height: 20dvh;
 		scrollbar-width: none;
 		display: flex;

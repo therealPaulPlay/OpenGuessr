@@ -16,7 +16,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
 	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
-	import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
+	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";

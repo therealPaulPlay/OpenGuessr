@@ -31,6 +31,7 @@
 	import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
 	import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
 	import InboxPopup from "$lib/components/InboxPopup.svelte";
+	import OutboxPopup from "$lib/components/OutboxPopup.svelte";
 	import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 	import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
@@ -128,6 +129,7 @@
 <TournamentInfoPopup />
 <TournamentMatchResultsPopup />
 <InboxPopup />
+<OutboxPopup />
 <TutorialOverlay />
 <CompetitionResultPopup />
 <DuelResultPopup />

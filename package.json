@@ -26,7 +26,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/dom": "^1.7.1",
-		"@lucide/svelte": "^1.11.0",
+		"@lucide/svelte": "^1.35.0",
 		"d3-geo": "^3.1.1",
 		"fast-profanity-filter": "^0.0.6",
 		"headless-chat": "^3.0.0",

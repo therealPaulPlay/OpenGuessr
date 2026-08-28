@@ -2,13 +2,13 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import { friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
+	import { friendBrowserPopup, inboxPopup, outboxPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { Mail, Search, UserRoundPlus } from "@lucide/svelte";
-	import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
+	import { Mail, MailClock, Search, UserRoundPlus } from "@lucide/svelte";
+	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
 	import Chip from "./ui/Chip.svelte";
 
 	let userSearchResults = $state();
@@ -117,7 +117,24 @@
 			{/if}
 		</div>
 	</div>
-	<div class="incoming-box">
+	<div class="submenu-box" style:margin-bottom="var(--layout-margin)">
+		<p style:margin-right="var(--box-margin)" style:margin-left="var(--content-margin)" style:flex-grow="100">
+			Sent requests
+		</p>
+		<button
+			class="standard-button white"
+			style:position="relative"
+			style:flex-grow="1"
+			onclick={() => {
+				playSound("basic_button");
+				outboxPopup.set(true);
+			}}
+		>
+			Manage
+			<MailClock strokeWidth={2.25} size={20} style="margin-bottom: -3px; margin-left: 2px;" />
+		</button>
+	</div>
+	<div class="submenu-box">
 		<p style:margin-right="var(--box-margin)" style:margin-left="var(--content-margin)" style:flex-grow="100">
 			Incoming requests
 			{#if $newFriendRequest}
@@ -155,7 +172,7 @@
 		margin-left: var(--content-margin);
 	}
 
-	.incoming-box {
+	.submenu-box {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -179,7 +196,7 @@
 	}
 
 	.container-box-scroll {
-		max-height: min(500px, calc(100dvh - 350px));
+		max-height: min(440px, calc(100dvh - 450px));
 		min-height: 20dvh;
 		scrollbar-width: none;
 		display: flex;

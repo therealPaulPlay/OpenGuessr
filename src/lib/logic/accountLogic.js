@@ -1,6 +1,6 @@
 import { resultScreenEnabled, lastDistance, lastExpCalculationSignedOut } from "$lib/stores/context-specific/resultScreenStore";
 import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins, accountDataLoaded, duelWinStreak } from "$lib/stores/accountStore";
-import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
+import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { get } from "svelte/store";
