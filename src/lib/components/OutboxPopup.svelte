@@ -7,14 +7,21 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { X } from "@lucide/svelte";
 
+	let outboxRefreshInterval;
 	let errorText = $state("Loading...");
 
 	outboxPopup.subscribe(async (value) => {
 		if (value) {
+			// Refetch every X seconds
+			clearInterval(outboxRefreshInterval);
+			outboxRefreshInterval = setInterval(() => {
+				loadOutbox();
+			}, 8_000);
+
 			errorText = "Loading...";
 			await loadOutbox();
 			errorText = "No sent friend requests.";
-		}
+		} else clearInterval(outboxRefreshInterval);
 	});
 </script>
 

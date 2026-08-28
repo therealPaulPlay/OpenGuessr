@@ -19,7 +19,7 @@
 			clearInterval(inboxRefreshInterval);
 			inboxRefreshInterval = setInterval(() => {
 				loadInbox();
-			}, 8000);
+			}, 8_000);
 
 			errorText = "Loading...";
 			await loadInbox();
