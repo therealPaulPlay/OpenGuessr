@@ -1,16 +1,14 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 import { loadedFriendsData, roomCode } from "$lib/stores/context-specific/multiplayerStore";
-import { friendRequestInboxContent } from "$lib/stores/context-specific/inboxStore";
+import { inboxContent, outboxContent } from "$lib/stores/context-specific/inboxOutboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { inboxPopup } from "$lib/stores/uiStore";
 
-// Inbox -----------------------------------------------------------------------------------------------------------------------------------
+// Inbox
 export async function loadInbox() {
-    if (!get(isAuthenticated)) return;
-
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -28,11 +26,11 @@ export async function loadInbox() {
 
         if (response.ok) {
             const data = await response.json();
-            friendRequestInboxContent.set(data?.requests);
-            if (get(friendRequestInboxContent).length == 0) friendRequestInboxContent.set(undefined);
+            inboxContent.set(data?.requests);
 
         } else {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error loading inbox: " + response.status);
             errorPopup("Error fetching inbox", "An error occured fetching the friend inbox.", data.error);
         }
@@ -40,6 +38,60 @@ export async function loadInbox() {
     } catch (error) {
         console.error('Fetch/Network error occurred while loading inbox: ', error);
         errorPopup("Error fetching inbox (Network)", "An error occured fetching the friend inbox.", error.message);
+    }
+}
+
+// Outbox
+export async function loadOutbox() {
+    try {
+        const response = await fetch(get(apiUrl) + "/friends/sent-requests", {
+            method: 'PUT',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: localStorage.getItem("id") })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            outboxContent.set(data?.sentRequests);
+
+        } else {
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
+            console.error("Error loading outbox: " + response.status);
+            errorPopup("Error fetching outbox", "An error occured fetching the friend outbox.", data.error);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading outbox: ', error);
+        errorPopup("Error fetching outbox (Network)", "An error occured fetching the friend outbox.", error.message);
+    }
+}
+
+export async function revokeRequest(recipientId) {
+    try {
+        const response = await fetch(get(apiUrl) + "/friends/revoke-request", {
+            method: 'DELETE',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: localStorage.getItem("id"), recipientId })
+        });
+
+        if (response.ok) outboxContent.set(get(outboxContent).filter(p => p.id !== recipientId));
+        else {
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
+            console.error("Error revoking friend request: " + response.status);
+            errorPopup("Error revoking request", "An error occured revoking a friend request.", data.error);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while revoking friend request: ', error);
+        errorPopup("Error revoking request (Network)", "An error occured revoking a friend request.", error.message);
     }
 }
 
@@ -62,10 +114,11 @@ export async function acceptFriendRequest(senderId) {
         });
 
         if (response.ok) {
-            if (get(inboxPopup)) loadInbox();
+            if (get(inboxPopup)) loadInbox(); // Needed to also set new_request to false
             loadFriends();
         } else {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error accepting / deleting the friend request: " + response.status);
             errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", data.error);
         }
@@ -79,7 +132,6 @@ export async function acceptFriendRequest(senderId) {
 // Decline friend request
 export async function declineFriendRequest(senderId) {
     try {
-
         const requestBody = {
             id: localStorage.getItem("id"),
             senderId: senderId,
@@ -96,9 +148,10 @@ export async function declineFriendRequest(senderId) {
         });
 
         if (response.ok) {
-            if (get(inboxPopup)) loadInbox();
+            if (get(inboxPopup)) loadInbox(); // Needed to also set new_request to false
         } else {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error accepting / deleting the friend request: " + response.status);
             errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", data.error);
         }
@@ -160,7 +213,8 @@ export async function removeFriend(friendId) {
         if (response.ok) {
             loadFriends();
         } else {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error removing friend: " + response.status);
             errorPopup("Error removing friend", "The server returned an error for your action.", data.error);
         }
@@ -192,7 +246,8 @@ export async function sendMatchInvite(recipientId) {
         if (response.ok) {
             showNotification(`Invite sent.`);
         } else {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error sending invite: " + data.error);
             showNotification("User is not reachable.");
         }
@@ -220,7 +275,8 @@ export async function acceptMatchInvite(recipientId) {
         });
 
         if (!response.ok) {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error accepting invite: " + response.status);
             errorPopup("Error accepting invite", "The server returned an error for your action.", data.error);
         }
@@ -248,7 +304,8 @@ export async function declineMatchInvite(recipientId) {
         });
 
         if (!response.ok) {
-            const data = await response.json();
+            let data = { error: response.status };
+            try { data = await response.json(); } catch { }
             console.error("Error declining invite: " + response.status);
             errorPopup("Error declining invite", "The server returned an error for your action.", data.error);
         }
