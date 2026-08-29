@@ -3,7 +3,7 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-export async function sendFriendRequest(targetUserId, button) {
+export async function sendFriendRequest(targetUserId) {
     try {
         if (!targetUserId) return;
 
@@ -22,18 +22,10 @@ export async function sendFriendRequest(targetUserId, button) {
             body: JSON.stringify(requestBody)
         });
 
-        if (response.ok) {
-            showNotification("Friend request sent.");
-
-            try {
-                button.style.opacity = "0.5";
-                button.style.pointerEvents = "none";
-            } catch (error) {
-                console.error("Error changing button style after friend request:", error);
-            }
-
-        } else {
+        if (response.ok) showNotification("Friend request sent.");
+        else {
             const data = await response.json();
+            if (response.status === 409) return showNotification("Already sent a friend request.");
             console.error("Error sending the friend request: " + response.status);
             errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error);
         }

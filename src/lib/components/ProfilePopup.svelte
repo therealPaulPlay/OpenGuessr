@@ -294,10 +294,10 @@
 					class="standard-button white"
 					disabled={$profileData?.areFriends}
 					{@attach tooltip({ text: "Send friend request" })}
-					onclick={(e) => {
+					onclick={() => {
 						playSound("basic_button");
-						if ($isAuthenticated) sendFriendRequest($profileId, e.target);
-						else signupPrompt(() => sendFriendRequest($profileId, e.target));
+						if ($isAuthenticated) sendFriendRequest($profileId);
+						else signupPrompt(() => sendFriendRequest($profileId));
 					}}
 				>
 					{#if !$profileData?.areFriends}
