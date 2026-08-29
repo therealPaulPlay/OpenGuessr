@@ -48,7 +48,7 @@
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
-                                revokeRequest(entry.id);
+								revokeRequest(entry.id);
 							}}
 						>
 							<X size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
@@ -84,10 +84,10 @@
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-    .truncate-name {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+	.truncate-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
 	.container-box {
 		position: relative;
@@ -101,13 +101,14 @@
 	}
 
 	.container-box-scroll {
-		max-height: min(500px, calc(100dvh - 250px));
-        min-height: 20dvh;
+		max-height: min(320px, calc(100dvh - 250px));
+		min-height: 125px;
 		scrollbar-width: none;
 		display: flex;
 		overflow-x: hidden;
 		overflow-y: auto;
 		width: 100%;
+		height: 320px;
 		flex-direction: column;
 		gap: var(--box-margin);
 	}
