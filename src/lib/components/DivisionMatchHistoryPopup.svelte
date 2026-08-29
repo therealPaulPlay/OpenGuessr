@@ -286,6 +286,7 @@
 		overflow-y: auto;
 		scrollbar-width: none;
 		height: min(525px, calc(100dvh - 350px));
+		min-height: 150px;
 		width: 100%;
 	}
 

@@ -196,12 +196,13 @@
 	}
 
 	.container-box-scroll {
-		max-height: min(440px, calc(100dvh - 450px));
-		min-height: 20dvh;
+		max-height: min(370px, calc(100dvh - 450px));
+		min-height: 125px;
 		scrollbar-width: none;
 		display: flex;
 		overflow-x: hidden;
 		overflow-y: auto;
+		height: 370px;
 		width: 100%;
 		flex-direction: column;
 		gap: var(--box-margin);
