@@ -105,7 +105,7 @@
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
-								sendFriendRequest(entry.id, e.target);
+								sendFriendRequest(entry.id);
 							}}
 						>
 							Add <UserRoundPlus style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
