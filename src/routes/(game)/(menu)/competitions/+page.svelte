@@ -114,7 +114,7 @@
 		if (competitionIdFromLink) {
 			showConfirmPopup(
 				"Enter competition?",
-				"This will start the competition from your link immediately. You can only enter a competition once.",
+				"This will start the competition from your link. You can only enter a competition once.",
 				() => {
 					if (!$isAuthenticated) return signupPrompt(() => enterCompetition(competitionIdFromLink));
 					enterCompetition(competitionIdFromLink);
@@ -395,7 +395,7 @@
 						const action = () => {
 							showConfirmPopup(
 								"Enter " + name + "?",
-								"This will start the game immediately. You can only enter a competition once.",
+								"You can only enter a competition once.",
 								() => {
 									enterCompetition(id);
 								},
