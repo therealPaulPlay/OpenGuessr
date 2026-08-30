@@ -44,7 +44,7 @@
 			</div>
 			<div class="multiplayer-host-settings">
 				<p>Round length</p>
-				<Ticker maximum={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
+				<Ticker maximum={310} step={10} minimum={10} maximumValue={Infinity} maximumText="∞" note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
 			<div id="room-creation-modes" class="multiplayer-host-settings">
 				<p>Restriction</p>

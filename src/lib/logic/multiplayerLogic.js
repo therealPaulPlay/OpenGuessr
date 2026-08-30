@@ -211,7 +211,7 @@ export async function createMultiplayerInstance() {
 
             if (storage.countdownActive) multiplayerOverlayCountdown(); // Display countdown
 
-            if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
+            if (storage.timerStart && storage.timerStart.length != null && storage.timerStart.length !== Infinity) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
             if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
 
             if (storage.timeReducedOverlay != null && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
