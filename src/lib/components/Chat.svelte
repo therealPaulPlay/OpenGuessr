@@ -5,7 +5,7 @@
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
 	import { MessageSquareWarning, SendHorizonal } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { chatManagePopup } from "$lib/stores/uiStore";
+	import { moderationPopup } from "$lib/stores/uiStore";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 	import { get } from "svelte/store";
 
@@ -79,7 +79,7 @@
 		{@attach tooltip({ text: "Moderation" })}
 		onclick={() => {
 			playSound("basic_button");
-			$chatManagePopup = true;
+			$moderationPopup = true;
 		}}
 	>
 		<MessageSquareWarning strokeWidth={2} size={22} style="margin-right: -2px; margin-top: 3px;" />

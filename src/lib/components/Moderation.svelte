@@ -1,5 +1,5 @@
 <script>
-	import { chatManagePopup } from "$lib/stores/uiStore";
+	import { moderationPopup } from "$lib/stores/uiStore";
 	import { Lock, MessageSquareOff, MessageSquare, UserRoundX, LockOpen } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import {
@@ -19,11 +19,11 @@
 	let currentlySettingRoomLock = $state(false);
 
 	multiplayer.subscribe((value) => {
-		if (!value) $chatManagePopup = false;
+		if (!value) $moderationPopup = false;
 	});
 </script>
 
-<Popup bind:open={$chatManagePopup} verySlim={true} z={900}>
+<Popup bind:open={$moderationPopup} verySlim={true} z={900}>
 	<div class="popup-title">
 		<h1>Moderation</h1>
 	</div>
