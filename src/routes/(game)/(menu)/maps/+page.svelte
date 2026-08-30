@@ -276,7 +276,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item map-item-hover map-item-animate"
+		class="map-item standard-button map-item-animate"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -316,7 +316,7 @@
 	<div class="map-container map-container-grow-first">
 		{#each [...$baseMaps].reverse() as { map, imgUrl }}
 			<div
-				class="map-item map-item-hover map-item-slim"
+				class="map-item standard-button map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -352,7 +352,7 @@
 	</div>
 	<div class="map-container map-container-grow-first">
 		<div
-			class="map-item map-item-hover map-item-slim"
+			class="map-item standard-button map-item-slim"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -368,7 +368,7 @@
 		</div>
 		{#each [...$specialMaps].reverse() as { map, imgUrl }}
 			<div
-				class="map-item map-item-hover map-item-slim"
+				class="map-item standard-button map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -390,7 +390,7 @@
 	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
 		{#each $countryMaps as map}
 			<div
-				class="map-item map-item-hover map-item-slim"
+				class="map-item standard-button map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -427,7 +427,7 @@
 	<div class="map-container">
 		{#each $continentMaps as map}
 			<div
-				class="map-item map-item-hover map-item-slim"
+				class="map-item standard-button map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -449,7 +449,7 @@
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
 				<div
-					class="map-item map-item-hover map-item-slim map-item-bookmark map-item-animate"
+					class="map-item standard-button map-item-slim map-item-bookmark map-item-animate"
 					class:selected-map-item={checkIfSelected(map, true)}
 					role="button"
 					tabindex="0"
@@ -580,7 +580,7 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				class="map-item load-more standard-button white"
+				class="map-item load-more standard-button"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50);
@@ -652,26 +652,17 @@
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		box-sizing: border-box;
-		user-select: none;
+		text-align: start;
 		min-width: 300px;
 		flex-grow: 1;
 		flex-basis: 30%;
 		overflow: hidden;
-		cursor: pointer;
-		transition:
-			opacity 250ms ease,
-			filter 250ms ease,
-			scale 250ms ease,
-			background-color 250ms ease;
+		height: unset;
+		border: none;
 	}
 
 	.map-item-animate {
 		animation: fadeIn 250ms ease-in-out;
-	}
-
-	.map-item-hover:hover {
-		filter: brightness(70%);
-		scale: 0.99;
 	}
 
 	.map-item-slim {
@@ -725,7 +716,7 @@
 		flex-wrap: wrap;
 		width: 100%;
 		margin-bottom: calc(var(--layout-margin) + var(--box-margin));
-		overflow: visible; /* On hover, prevent scale up from clipping elements at the borders */
+		overflow: visible;
 	}
 
 	.map-container-grow-first {
@@ -893,7 +884,6 @@
 		height: auto;
 		min-height: 70.5px;
 		justify-content: center;
-		border: none;
 		transition:
 			filter 250ms ease,
 			box-shadow 250ms ease,
