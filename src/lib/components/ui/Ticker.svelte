@@ -3,39 +3,58 @@
 	let {
 		note,
 		step = 1,
-		maximum = 5,
 		minimum = 1,
+		maximum = 5,
 		initialValue = 1,
-		value = $bindable(initialValue),
+		// eslint-disable-next-line no-useless-assignment
+		value = $bindable(),
 		minimumText,
+		maximumText,
+		minimumValue,
+		maximumValue,
 	} = $props();
 	import { playSound } from "$lib/utils/soundManager";
 	import { Minus, Plus } from "@lucide/svelte";
+
+	// svelte-ignore state_referenced_locally
+	let internalValue = $state(initialValue);
+
+	$effect(() => {
+		if (internalValue === minimum && minimumValue != null) return (value = minimumValue);
+		if (internalValue === maximum && maximumValue != null) return (value = maximumValue);
+		value = internalValue;
+	});
+
+	let displayText = $derived.by(() => {
+		if (internalValue === minimum && minimumText != null) return minimumText;
+		if (internalValue === maximum && maximumText != null) return maximumText;
+		return internalValue;
+	});
 </script>
 
 <div class="ticker">
 	<button
 		id="round-minus"
 		class="standard-button white"
-		disabled={Number(value) === Number(minimum)}
+		disabled={internalValue === minimum}
 		onclick={() => {
 			playSound("change_value");
-			value = Number(value) - Number(step);
-			if (Number(value) < Number(minimum)) value = Number(minimum);
+			internalValue = internalValue - step;
+			if (internalValue < minimum) internalValue = minimum;
 		}}><Minus size={18} strokeWidth={2.5} /></button
 	>
-	<p class="ticker-text">{value !== minimum ? value : minimumText ? minimumText : value}</p>
+	<p class="ticker-text">{displayText ?? "..."}</p>
 	{#if note}
 		<p class="ticker-note">{note}</p>
 	{/if}
 	<button
 		id="round-plus"
 		class="standard-button white"
-		disabled={Number(value) === Number(maximum)}
+		disabled={internalValue === maximum}
 		onclick={() => {
 			playSound("change_value");
-			value = Number(value) + Number(step);
-			if (Number(value) > Number(maximum)) value = Number(maximum);
+			internalValue = internalValue + step;
+			if (internalValue > maximum) internalValue = maximum;
 		}}><Plus size={18} strokeWidth={2.5} /></button
 	>
 </div>
