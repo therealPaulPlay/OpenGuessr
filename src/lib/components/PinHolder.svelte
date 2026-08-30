@@ -134,8 +134,8 @@
 
 	.rarity-display {
 		position: absolute;
-		border-top-right-radius: var(--content-margin);
-		border-bottom-left-radius: var(--content-margin);
+		border-top-right-radius: var(--box-margin);
+		border-bottom-left-radius: var(--box-margin);
 		top: 0;
 		right: 0;
 		padding-inline: var(--panel-margin);
