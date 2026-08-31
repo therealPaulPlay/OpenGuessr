@@ -356,7 +356,6 @@
 	}
 
 	:global(.leaderboard-tabs button) {
-		opacity: 0.5;
 		width: 65px;
 	}
 

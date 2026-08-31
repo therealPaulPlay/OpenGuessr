@@ -5,6 +5,7 @@
 		selected = $bindable(tabs[selectedIndex || 0]), // Bindable selected tab as a prop
 		onchange,
 		disabled = false,
+		children,
 		class: className = "", // Alias for HTML class attribute
 	} = $props();
 
@@ -19,7 +20,7 @@
 <div class="tabs-group standard-button {className}" class:disabled>
 	{#each tabs as Tab}
 		<button
-			class="tab-button standard-button white {selected === Tab ? 'active' : ''}"
+			class="tab-button standard-button {selected === Tab ? 'active' : ''}"
 			onclick={() => selectTab(Tab)}
 			{disabled}
 		>
@@ -28,6 +29,7 @@
 			{:else}
 				{Tab}
 			{/if}
+			{@render children?.(Tab)}
 		</button>
 	{/each}
 </div>
@@ -62,14 +64,17 @@
 	}
 
 	.tab-button {
-		opacity: 0.5;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: rgba(255, 255, 255, 0.075);
+		color: rgba(255, 255, 255, 0.5);
 		border: none;
 		border-radius: 0;
 		padding-top: 0;
 		padding-bottom: 0;
 		height: 100%;
 		outline: none;
-		text-overflow: ellipsis;
 		overflow: hidden;
 		flex-grow: 1;
 		box-shadow: none !important;
@@ -85,7 +90,7 @@
 	}
 
 	.tab-button.active {
-		opacity: 1;
+		color: white;
 		background-color: rgba(255, 255, 255, 0.2);
 	}
 </style>
