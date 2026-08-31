@@ -308,7 +308,7 @@
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		gap: var(--panel-margin);
+		gap: var(--box-margin);
 	}
 
 	.friend-button-left {

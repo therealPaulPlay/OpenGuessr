@@ -11,7 +11,12 @@
 	import { blur } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
-	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
+	import {
+		chatArray,
+		chatMutedPlayers,
+		mobileChatLastOpenedMsgCount,
+		socket,
+	} from "$lib/stores/context-specific/multiplayerStore";
 	import { registerGameplayAd } from "$lib/utils/ads";
 	import { get } from "svelte/store";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
@@ -32,7 +37,6 @@
 	});
 
 	// Gameplay ad registration ----------------------------------------------------------------
-
 	$effect(async () => {
 		// Whenever the gameplay ad gets (re-)mounted, (re-)register
 		if (!$adsDisabled) {
@@ -40,6 +44,16 @@
 			registerGameplayAd();
 		}
 	});
+
+	// Current message amount in the chat (visible ones only) ---------------------------------------------------------
+	let chatMsgAmount = $derived(
+		$chatArray?.filter(
+			(chat) =>
+				chat.clientId != "server" &&
+				!$chatMutedPlayers?.includes(chat.clientId) &&
+				(chat.teamIndex == null || chat.teamIndex == getTeamFromClientId(get(socket)?.id)),
+		)?.length || 0,
+	);
 </script>
 
 <div id="bottom-bar" class="bottom-bar">
@@ -73,10 +87,10 @@
 						$chatMobilePopup = true;
 					}}
 				>
-					{#if $chatArray?.filter((i) => i.username != "Server" && (i.teamIndex == null || i.teamIndex == getTeamFromClientId(get(socket)?.id)))?.length === $mobileChatLastOpenedMsgCount}
-						<MessageSquareMore size={22} strokeWidth={2.25} style="margin-top: 3px;" />
-					{:else}
+					{#if chatMsgAmount > $mobileChatLastOpenedMsgCount}
 						<MessageSquareDot size={22} strokeWidth={2.25} style="margin-top: 3px;" />
+					{:else}
+						<MessageSquareMore size={22} strokeWidth={2.25} style="margin-top: 3px;" />
 					{/if}
 				</button>
 			{/if}

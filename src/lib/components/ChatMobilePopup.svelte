@@ -1,6 +1,11 @@
 <script>
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
-	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
+	import {
+		chatArray,
+		chatMutedPlayers,
+		mobileChatLastOpenedMsgCount,
+		socket,
+	} from "$lib/stores/context-specific/multiplayerStore";
 	import { chatMobilePopup } from "$lib/stores/uiStore";
 	import { get } from "svelte/store";
 	import Chat from "./Chat.svelte";
@@ -13,7 +18,10 @@
 		if ($chatMobilePopup) {
 			$mobileChatLastOpenedMsgCount =
 				$chatArray?.filter(
-					(i) => i.username != "Server" && (i.teamIndex == null || i.teamIndex == getTeamFromClientId(get(socket)?.id)),
+					(chat) =>
+						chat.clientId != "server" &&
+						!$chatMutedPlayers?.includes(chat.clientId) &&
+						(chat.teamIndex == null || chat.teamIndex == getTeamFromClientId(get(socket)?.id)),
 				)?.length || 0;
 		}
 	});

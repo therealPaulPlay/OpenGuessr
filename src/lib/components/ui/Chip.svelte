@@ -69,6 +69,7 @@
 
 	.chip-red {
 		background-color: rgb(224, 2, 2);
+		color: white;
 	}
 
 	.chip-italic {

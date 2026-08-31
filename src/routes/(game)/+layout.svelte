@@ -47,7 +47,7 @@
 	import RoundLogPopup from "$lib/components/RoundLogPopup.svelte";
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
-	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
+	import ModerationPopup from "$lib/components/Moderation.svelte";
 	import Navigation from "$lib/components/Navigation.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
@@ -137,7 +137,7 @@
 <SettingsPopup />
 <LinkJoinPopup />
 <RoundLogPopup />
-<ChatManagePopup />
+<ModerationPopup />
 <ChatMobilePopup />
 <GuestNamePickerPopup />
 <ResultScreen />

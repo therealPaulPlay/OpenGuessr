@@ -39,6 +39,7 @@
 							<div
 								class="team-box"
 								style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
+								class:your-team={team.players.find((p) => p.clientId === get(socket)?.id)}
 								transition:slide
 							>
 								<div class="team-header">
@@ -58,13 +59,12 @@
 										>{(team.score ?? 0).toLocaleString()} Pts.
 									</p>
 								</div>
-								{#each team.players as { clientId, username, elo, score, userId, badge, spectator }}
+								{#each team.players as { username, elo, score, userId, badge, spectator }}
 									<div
 										transition:slide
-										class="multiplayer-overlay-entry inner"
+										class="multiplayer-overlay-entry"
 										style:box-shadow="var(--box-shadow)"
 										class:half-transparent={spectator}
-										class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
 									>
 										<div class="multiplayer-entry-player-info">
 											<div
@@ -102,7 +102,7 @@
 							class="multiplayer-overlay-entry"
 							style:box-shadow="var(--panel-shadow)"
 							class:half-transparent={spectator}
-							class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
+							class:your-entry={clientId && clientId == get(socket)?.id}
 						>
 							<div class="multiplayer-entry-player-info">
 								<div
@@ -324,12 +324,12 @@
 		width: 100%;
 	}
 
-	.your-multiplayer-overlay {
+	.your-entry {
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.your-multiplayer-overlay.inner {
-		background-color: rgba(255, 255, 255, 0.15);
+	.your-team {
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.multiplayer-entry-player-info {
