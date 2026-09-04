@@ -7,8 +7,9 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
-	import { Info } from "@lucide/svelte";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { EllipsisVertical, Info } from "@lucide/svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
+	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 
 	let loadingText = $state("Loading...");
 
@@ -60,9 +61,9 @@
 		}
 	}
 
-	async function getEloUserLeaderboard() {
+	async function getEloUserLeaderboard(onlyActive = false) {
 		try {
-			const response = await fetch(`${$apiUrl}/leaderboard/elo-user-section`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/elo-${onlyActive ? "active-" : ""}user-section`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -85,9 +86,9 @@
 		}
 	}
 
-	async function getEloLeaderboard() {
+	async function getEloLeaderboard(onlyActive = false) {
 		try {
-			const response = await fetch(`${$apiUrl}/leaderboard/elo`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/elo${onlyActive ? "-active" : ""}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -116,7 +117,10 @@
 		loadingText = "Loading...";
 		switch (leaderboardType) {
 			case "elo":
-				mainSectionEntries = await getEloLeaderboard();
+				mainSectionEntries = await getEloLeaderboard(false);
+				break;
+			case "elo-active":
+				mainSectionEntries = await getEloLeaderboard(true);
 				break;
 			case "experience":
 				mainSectionEntries = await getExperienceLeaderboard();
@@ -127,19 +131,23 @@
 	let userLeaderboardType = $state("none");
 
 	// A section to show where the user is at, as well as a few others above them ------------------------------------------------------
+	let userSectionRequested = false;
+
 	async function loadUserLeaderboard(leaderboardType) {
-		userLeaderboardType = "none"; // Reset user leaderboard as it is now (soon) loaded
+		if (leaderboardType === "none") return;
+		userSectionRequested = true;
 
 		if ($isAuthenticated) {
 			switch (leaderboardType) {
 				case "elo":
-					userSectionEntries = await getEloUserLeaderboard();
+					userSectionEntries = await getEloUserLeaderboard(false);
+					break;
+				case "elo-active":
+					userSectionEntries = await getEloUserLeaderboard(true);
 					break;
 				case "experience":
 					userSectionEntries = await getExperienceUserLeaderboard();
 					break;
-				default:
-					return;
 			}
 		}
 	}
@@ -149,7 +157,7 @@
 
 	function checkIfUserSectionIsInView() {
 		// If the user has scrolled down more than 1000px, load the user leaderboard section (which is at the end)
-		if (window.scrollY > 1000 && userLeaderboardType) {
+		if (window.scrollY > 1000 && !userSectionRequested) {
 			loadUserLeaderboard(userLeaderboardType);
 		}
 	}
@@ -162,19 +170,20 @@
 	function loadCorrectLeaderboard() {
 		mainSectionEntries = undefined;
 		userSectionEntries = undefined;
+		userSectionRequested = false;
 
 		switch (filter) {
 			case "Elo":
-				loadLeaderboard("elo");
+				eloShowActiveOnly ? loadLeaderboard("elo-active") : loadLeaderboard("elo");
+				userLeaderboardType = eloShowActiveOnly ? "elo-active" : "elo";
 				valueKey = "elo";
 				unitName = " Elo";
-				userLeaderboardType = "elo";
 				break;
 			case "XP":
 				loadLeaderboard("experience");
+				userLeaderboardType = "experience";
 				valueKey = "experience";
 				unitName = " XP";
-				userLeaderboardType = "experience";
 				break;
 		}
 	}
@@ -185,6 +194,11 @@
 		userId = localStorage.getItem("id");
 		loadCorrectLeaderboard();
 	});
+
+	// Leaderboard popup ------------------------------------------------
+	let leaderboardMenu = $state(false);
+	let eloActiveSelection = $state("All");
+	let eloShowActiveOnly = $derived(eloActiveSelection == "Only active");
 </script>
 
 <svelte:head>
@@ -200,6 +214,30 @@
 	}}
 />
 
+<Popup verySlim={true} bind:open={leaderboardMenu}>
+	<div class="popup-title">
+		<h1>More</h1>
+	</div>
+	<TitleSeparator text="Resets" />
+	<p class="popup-description">
+		At the start of each month, elo above 2k and experience above 100M are halved. The deducted elo amount is converted
+		into tokens.
+	</p>
+	<TitleSeparator text="Elo" />
+	<div class="activity-box">
+		<p style="padding-inline: var(--content-margin)">Player visibility</p>
+		<Tabs
+			class="elo-active-tabs"
+			tabs={["All", "Only active"]}
+			bind:selected={eloActiveSelection}
+			onchange={(_selection) => {
+				loadCorrectLeaderboard();
+				playSound("basic_button");
+			}}
+		/>
+	</div>
+</Popup>
+
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboard-container">
 	<div class="podium-container">
@@ -209,13 +247,10 @@
 					class="standard-button white large-button"
 					onclick={() => {
 						playSound("basic_button");
-						showConfirmPopup(
-							"Resets",
-							`At the start of each month, elo above 2k and experience above 100M are halved. The deducted elo amount is converted into tokens.`,
-						);
+						leaderboardMenu = true;
 					}}
 				>
-					<Info style="vertical-align: -3px" />
+					<EllipsisVertical style="vertical-align: -3px" />
 				</button>
 			</div>
 			<div class="option-bar-item bar-menu">
@@ -258,7 +293,8 @@
 					{mainSectionEntries?.[0]?.user_name || "Guest"}
 				</h3>
 				<div class="podium-pedestal gold">
-					<span class="podium-value">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
+					<span class="podium-value">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</span
+					>
 					<h3 class="rank">#1</h3>
 				</div>
 			</div>
@@ -273,7 +309,8 @@
 					{mainSectionEntries?.[2]?.user_name || "Guest"}
 				</h3>
 				<div class="podium-pedestal bronze">
-					<span class="podium-value">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
+					<span class="podium-value">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</span
+					>
 					<h3 class="rank">#3</h3>
 				</div>
 			</div>
@@ -281,6 +318,17 @@
 	</div>
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
+			{#if userLeaderboardType == "elo-active"}
+				<div class="ranked-item info-box">
+					<Info
+						strokeWidth={2.25}
+						size={22}
+						color="white"
+						style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px;"
+					/>
+					<p>Inactive players are hidden.</p>
+				</div>
+			{/if}
 			{#each mainSectionEntries.slice(3) as entry}
 				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength ranked-item-left">#{entry.position}</p>
@@ -310,6 +358,17 @@
 			<div class="circle-dot"></div>
 		</div>
 		<div id="your-league-container" class="item-container" transition:blur>
+			{#if !userSectionEntries.find((u) => u.id == localStorage.getItem("id"))?.isActive && userLeaderboardType === "elo-active"}
+				<div class="ranked-item info-box">
+					<Info
+						strokeWidth={2.25}
+						size={22}
+						color="white"
+						style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px;"
+					/>
+					<p>You're inactive. Play a duel to see your actual rank.</p>
+				</div>
+			{/if}
 			{#each userSectionEntries as entry}
 				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength ranked-item-left">#~{entry.position?.toLocaleString()}</p>
@@ -340,6 +399,41 @@
 		width: 100%;
 		text-align: center;
 		margin-top: var(--box-margin);
+	}
+
+	.activity-box {
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		border-radius: var(--box-margin);
+		display: flex;
+		padding: var(--box-margin);
+		gap: var(--box-margin);
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.activity-box p {
+		flex-grow: 100;
+	}
+
+	:global(.elo-active-tabs) {
+		flex-grow: 1;
+	}
+
+	.info-box {
+		padding: var(--box-margin);
+		display: flex;
+		align-items: center;
+		justify-content: center !important;
+		height: unset !important;
+		gap: var(--content-margin);
+		text-wrap: wrap !important;
+		padding-inline: var(--box-margin) !important;
+	}
+
+	.info-box p {
+		opacity: 0.5;
 	}
 
 	.option-bar-item {
@@ -615,6 +709,11 @@
 
 		.maxlength {
 			flex-basis: unset;
+		}
+
+		.info-box {
+			flex-wrap: wrap !important;
+			justify-content: start !important;
 		}
 	}
 </style>
