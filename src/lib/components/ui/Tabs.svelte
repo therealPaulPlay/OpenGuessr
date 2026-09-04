@@ -48,6 +48,7 @@
 		pointer-events: none;
 		padding: 0;
 		overflow: hidden;
+		flex-shrink: 0;
 	}
 
 	.disabled {
