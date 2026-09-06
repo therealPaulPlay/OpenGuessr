@@ -28,7 +28,7 @@ function buildUrl(lat, long, heading, pitch, panoramaId, embed = true) {
 
 // Get the URL for a single SV tile image
 export function getPanoramaTileUrl(id, x, y, zoom) {
-    return `https://streetviewpixels-pa.googleapis.com/v1/tile?cb_client=maps_sv.tactile&panoid=${encodeURIComponent(id)}&x=${x}&y=${y}&zoom=${zoom}&nbt=1&fover=2`;
+    return `https://streetviewpixels-pa.googleapis.com/v1/tile?cb_client=maps_sv.tactile&panoid=${encodeURIComponent(id)}&x=${x}&y=${y}&zoom=${zoom}`;
 }
 
 // Parse the panorama data
@@ -59,7 +59,7 @@ export function getPanoramaDataByCoords(lat, long, zoom) {
         // Listen to callback from script (returns null if no panorama was found)
         window[callback] = (data) => cleanup(parsePanoramaData(data?.[1], zoom));
 
-        script.src = `https://maps.googleapis.com/maps/api/js/GeoPhotoService.SingleImageSearch?pb=!1m5!1sapiv3!5sUS!11m2!1m1!1b0!2m4!1m2!3d${lat}!4d${long}!2d50!3m10!2m2!1sen!2sGB!9m1!1e2!11m4!1m3!1e2!2b1!3e2!4m6!1e1!1e4!5m1!1e2!6m1!1e2&callback=${callback}`;
+        script.src = `https://maps.googleapis.com/maps/api/js/GeoPhotoService.SingleImageSearch?pb=!1m1!1sapiv3!2m4!1m2!3d${lat}!4d${long}!2d50!3m10!2m2!1sen!2sGB!9m1!1e2!11m4!1m3!1e2!2b1!3e2!4m6!1e1!1e4!5m1!1e2!6m1!1e2&callback=${callback}`;
         document.head.appendChild(script);
     });
 }
@@ -68,7 +68,7 @@ export function getPanoramaDataByCoords(lat, long, zoom) {
 export async function getPanoramaDataById(panoramaId, zoom) {
     try {
         const response = await fetch(
-            `https://www.google.com/maps/photometa/v1?authuser=0&hl=en&gl=us&pb=!1m4!1smaps_sv.tactile!11m2!2m1!1b1!2m2!1sen!2sus!3m3!1m2!1e2!2s${encodeURIComponent(panoramaId)}!4m6!1e1!1e4!5m1!1e2!6m1!1e2`,
+            `https://www.google.com/maps/photometa/v1?pb=!1m1!1smaps_sv.tactile!3m3!1m2!1e2!2s${encodeURIComponent(panoramaId)}!4m6!1e1!1e4!5m1!1e2!6m1!1e2`,
         );
 
         return parsePanoramaData(JSON.parse((await response.text()).slice(5))?.[1]?.[0], zoom);
