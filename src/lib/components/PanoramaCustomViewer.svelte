@@ -5,9 +5,9 @@
 		currentLocationPitch,
 		currentLocationLatitude,
 		currentLocationLongitude,
+		currentLocationPanoramaId,
 	} from "$lib/stores/locationStore";
-	import { getPanoramaData, getPanoramaTileUrl } from "$lib/utils/streetViewUrl";
-	import "pannellum/build/pannellum.css";
+	import { getPanoramaDataByCoords, getPanoramaDataById, getPanoramaTileUrl } from "$lib/utils/streetViewUrl";
 
 	let { onload, onfail } = $props();
 
@@ -33,18 +33,28 @@
 			img.src = getPanoramaTileUrl(id, x, y, ZOOM);
 		});
 
-	async function showPanorama(lat, long) {
-		const pano = await getPanoramaData(lat, long, ZOOM);
+	async function showPanorama(lat, lon, panoramaId) {
+		const didCordsChange = () => $currentLocationLatitude !== lat || $currentLocationLongitude !== lon;
+
+		// Like the Street View API we fall back to the coordinate method when the panorama ID fails
+		const pano =
+			(panoramaId && (await getPanoramaDataById(panoramaId, ZOOM))) || (await getPanoramaDataByCoords(lat, lon, ZOOM));
+		if (didCordsChange()) return;
 		if (!pano) return onfail?.(); // No coverage, let iFrame handle this
 
 		const heading = $currentLocationHeading ?? pano.heading;
+		const pitch = $currentLocationPitch ?? 0;
 
 		// The image centre sits at the panorama's own bearing, so offset from there to find the column we want to face
 		const centre = wrap(pano.width / 2 + ((heading - pano.heading) / 360) * pano.width, pano.width);
 		const cropWidth = Math.round((pano.width * HAOV) / 360);
 		const cropHeight = Math.round((pano.height * VAOV) / 180);
 		const left = Math.round(centre - cropWidth / 2);
-		const top = Math.round((pano.height - cropHeight) / 2);
+
+		// Centre rows on the pitch, clamped as there is nothing above the poles
+		const centreRow = pano.height / 2 - (pitch / 180) * pano.height;
+		const top = Math.min(Math.max(0, Math.round(centreRow - cropHeight / 2)), pano.height - cropHeight);
+		const vOffset = ((pano.height / 2 - (top + cropHeight / 2)) / pano.height) * 180; // Clamping moves it, so read it back
 
 		// At this zoom the width is an exact multiple of the tile size, so columns wrap cleanly with no overscan
 		const columns = pano.width / TILE;
@@ -64,8 +74,7 @@
 
 		// Wait for all to load, filter for presence
 		const tiles = (await Promise.all(pending)).filter(Boolean);
-
-		if ($currentLocationLatitude !== lat) return; // Round moved on, exit
+		if (didCordsChange()) return;
 		if (!tiles.length) return onfail?.();
 
 		const canvas = Object.assign(document.createElement("canvas"), { width: cropWidth, height: cropHeight });
@@ -76,18 +85,20 @@
 		const aspect = (container.clientWidth || window.innerWidth) / (container.clientHeight || window.innerHeight);
 		const hfov = (2 * Math.atan(Math.tan((FOV * Math.PI) / 360) * aspect) * 180) / Math.PI;
 
-		// Browser-only lazy import for Pannellum
-		await import("pannellum/build/pannellum.js");
 		try {
+			// Browser-only lazy import for Pannellum
+			await Promise.all([import("pannellum/build/pannellum.js"), import("pannellum/build/pannellum.css")]);
+			if (didCordsChange()) return;
+
 			viewer?.destroy();
 			viewer = window.pannellum.viewer(container, {
 				type: "equirectangular",
 				panorama: canvas.toDataURL("image/jpeg", 0.92),
 				haov: HAOV,
 				vaov: VAOV,
-				vOffset: 0,
+				vOffset,
 				yaw: 0,
-				pitch: $currentLocationPitch ?? 0,
+				pitch,
 				hfov,
 				minHfov: hfov,
 				maxHfov: hfov,
@@ -97,6 +108,7 @@
 				mouseZoom: false,
 				disableKeyboardCtrl: true,
 			});
+
 			compassHeading += wrap(heading - compassHeading + 180, 360) - 180; // Keeps the needle turning the short way round
 			onload?.();
 		} catch (error) {
@@ -105,7 +117,7 @@
 	}
 
 	$effect(() => {
-		showPanorama($currentLocationLatitude, $currentLocationLongitude);
+		showPanorama($currentLocationLatitude, $currentLocationLongitude, $currentLocationPanoramaId);
 	});
 
 	onDestroy(() => viewer?.destroy());
@@ -146,8 +158,8 @@
 
 	#nmpz-compass {
 		position: fixed;
-		right: var(--box-margin);
-		bottom: var(--layout-margin);
+		right: 10px;
+		bottom: 13px;
 		width: 48px;
 		height: 48px;
 		z-index: 9;

@@ -18,8 +18,8 @@ export const roundLog = writable([]);
 
 // Iframe
 export const iframeElement = writable();
-export const initialIframeLoad = writable(true);
+export const initialPanoramaLoad = writable(true);
 export const panoramaSrc = derived([currentLocationLatitude, currentLocationLongitude, currentLocationHeading, currentLocationPitch, currentLocationPanoramaId], ([lat, lon, heading, pitch, panoramaId], set) => {
-    initialIframeLoad.set(true);
+    initialPanoramaLoad.set(true);
     set(getMapsEmbedUrl(lat, lon, { heading, pitch, panoramaId }));
 });
