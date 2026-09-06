@@ -23,6 +23,7 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { tick } from "svelte";
+	import { nmpz } from "$lib/stores/context-specific/restrictionStore";
 
 	// Show return when in tutorial ------------------------------------------------------------------
 	let returnTutorialNote = $state({ visible: false });
@@ -61,6 +62,7 @@
 		<div class="bar-menu">
 			<button
 				class="standard-button white"
+				disabled={$nmpz}
 				{@attach tooltip({
 					text: "Click to return to the spawn.",
 					state: returnTutorialNote,
@@ -72,7 +74,7 @@
 					if (returnTutorialNote.visible) returnTutorialNote.visible = false;
 					playSound("reload");
 					$loadingScreenVisible = true;
-					$iframeElement.src = $panoramaSrc;
+					if ($iframeElement) $iframeElement.src = $panoramaSrc;
 				}}
 			>
 				<img id="reset-button-img" src="/img/return_icon.png" alt="Return to start position" />
