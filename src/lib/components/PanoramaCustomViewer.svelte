@@ -6,8 +6,11 @@
 		currentLocationLatitude,
 		currentLocationLongitude,
 		currentLocationPanoramaId,
+		customViewerLoad,
+		panoramaSrc,
 	} from "$lib/stores/locationStore";
 	import { getPanoramaDataByCoords, getPanoramaDataById, getPanoramaTileUrl } from "$lib/utils/streetViewUrl";
+	import { get } from "svelte/store";
 
 	let { onload, onfail } = $props();
 
@@ -34,12 +37,13 @@
 		});
 
 	async function showPanorama(lat, lon, panoramaId) {
-		const didCordsChange = () => $currentLocationLatitude !== lat || $currentLocationLongitude !== lon;
+		const src = $panoramaSrc;
+		const didPanoramaChange = () => $panoramaSrc !== src;
 
 		// Like the Street View API we fall back to the coordinate method when the panorama ID fails
 		const pano =
 			(panoramaId && (await getPanoramaDataById(panoramaId, ZOOM))) || (await getPanoramaDataByCoords(lat, lon, ZOOM));
-		if (didCordsChange()) return;
+		if (didPanoramaChange()) return;
 		if (!pano) return onfail?.(); // No coverage, let iFrame handle this
 
 		const heading = $currentLocationHeading ?? pano.heading;
@@ -74,12 +78,16 @@
 
 		// Wait for all to load, filter for presence
 		const tiles = (await Promise.all(pending)).filter(Boolean);
-		if (didCordsChange()) return;
+		if (didPanoramaChange()) return;
 		if (!tiles.length) return onfail?.();
 
 		const canvas = Object.assign(document.createElement("canvas"), { width: cropWidth, height: cropHeight });
 		const context = canvas.getContext("2d");
 		for (const tile of tiles) context.drawImage(tile.img, tile.drawX, tile.drawY);
+
+		// Free the canvas element once exported (it would get garbage collected anyway, but size resets its bitmap site immediately)
+		const panorama = canvas.toDataURL("image/jpeg", 0.92);
+		canvas.width = canvas.height = 0;
 
 		// The embed's field of view is vertical, Pannellum's is horizontal, so it needs to be adjusted
 		const aspect = (container.clientWidth || window.innerWidth) / (container.clientHeight || window.innerHeight);
@@ -88,12 +96,12 @@
 		try {
 			// Browser-only lazy import for Pannellum
 			await Promise.all([import("pannellum/build/pannellum.js"), import("pannellum/build/pannellum.css")]);
-			if (didCordsChange()) return;
+			if (didPanoramaChange()) return;
 
 			viewer?.destroy();
 			viewer = window.pannellum.viewer(container, {
 				type: "equirectangular",
-				panorama: canvas.toDataURL("image/jpeg", 0.92),
+				panorama,
 				haov: HAOV,
 				vaov: VAOV,
 				vOffset,
@@ -116,16 +124,25 @@
 		}
 	}
 
+	// Assign load / refresh function
+	customViewerLoad.set(() =>
+		showPanorama($currentLocationLatitude, $currentLocationLongitude, $currentLocationPanoramaId),
+	);
+
 	$effect(() => {
-		showPanorama($currentLocationLatitude, $currentLocationLongitude, $currentLocationPanoramaId);
+		$panoramaSrc; // Re-run when the required panorama changes
+		get(customViewerLoad)?.();
 	});
 
-	onDestroy(() => viewer?.destroy());
+	onDestroy(() => {
+		viewer?.destroy();
+		customViewerLoad.set(null);
+	});
 </script>
 
-<div id="nmpz-panorama" bind:this={container}></div>
+<div id="custom-panorama" bind:this={container}></div>
 
-<div id="nmpz-compass">
+<div class="panorama-compass">
 	<svg class="compass-background" viewBox="0 0 100 100">
 		<circle cx="50" cy="50" r="50" fill="#222222" />
 		<circle cx="50" cy="50" r="22" fill="#595959" />
@@ -149,25 +166,24 @@
 </div>
 
 <style>
-	#nmpz-panorama {
+	#custom-panorama {
 		background-color: var(--panorama-background);
 		position: fixed;
 		inset: 0;
 		z-index: 0;
 	}
 
-	#nmpz-compass {
+	.panorama-compass {
 		position: fixed;
 		right: 10px;
-		bottom: 13px;
+		bottom: 137px;
 		width: 48px;
 		height: 48px;
-		z-index: 9;
-		pointer-events: none;
+		z-index: 1;
 		user-select: none;
 	}
 
-	#nmpz-compass svg {
+	.panorama-compass svg {
 		position: absolute;
 		top: 0;
 		height: 48px;
