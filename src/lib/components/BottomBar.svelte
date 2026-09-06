@@ -98,9 +98,7 @@
 	</div>
 	{#if !$countryGuessr}
 		<div class="bar-menu bottom-right-menu" transition:blur={{ duration: 150 }}>
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div
+			<button
 				class="standard-button confirm-button white"
 				id="confirm-button"
 				class:confirm-active={$confirmButtonActive}
@@ -119,7 +117,7 @@
 				{:else if !$mapInteractive}
 					Locked in
 				{/if}
-			</div>
+			</button>
 		</div>
 	{/if}
 </div>
