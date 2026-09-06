@@ -1,28 +1,9 @@
 <!-- The IFrame that the StreetView / Panorama is in -->
 <script>
-	import { iframeElement, initialIframeLoad, panoramaSrc } from "$lib/stores/locationStore";
-	import { loadingScreenVisible } from "$lib/stores/uiStore";
-	import { checkStartSingleplayerTimer } from "$lib/utils/singleplayerTimer";
-	import { checkStartCompetitionTimer } from "$lib/logic/competitionLogic";
+	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { panoramaFilter, nmpz } from "$lib/stores/context-specific/restrictionStore";
 
-	const handleLoad = () => {
-		if ($initialIframeLoad) {
-			try {
-				// Start non-multiplayer timers after iframe load (to ensure short timer values work fairly)
-				checkStartSingleplayerTimer();
-				checkStartCompetitionTimer();
-			} catch (error) {
-				console.error("Error in panorama load callback:", error);
-			}
-		}
-
-		initialIframeLoad.set(false);
-
-		setTimeout(function () {
-			$loadingScreenVisible = false;
-		}, 300);
-	};
+	let { onload } = $props();
 </script>
 
 <!-- svelte-ignore a11y_missing_attribute -->
@@ -32,7 +13,7 @@
 	style:filter={$panoramaFilter || "none"}
 	style:pointer-events={$nmpz ? "none" : ""}
 	frameborder="0"
-	onload={handleLoad}
+	{onload}
 	bind:this={$iframeElement}
 	src={$panoramaSrc}
 ></iframe>
@@ -40,7 +21,7 @@
 <style>
 	#panorama-iframe {
 		transition: all 250ms;
-		background: #13151c;
+		background-color: var(--panorama-background);
 		user-select: none;
 		position: fixed;
 		top: -75px; /* Cut off the name display area in the SV */

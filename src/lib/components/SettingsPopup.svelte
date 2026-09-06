@@ -133,14 +133,15 @@
 
 	// Toggle NMPZ ------------------------------------------------------------------
 	let singleplayerNMPZ = $state(false);
+	let selectedNMPZ = $derived(singleplayerNMPZ ? "On" : "Off");
 
 	onMount(() => {
 		singleplayerNMPZ = Boolean(localStorage.getItem("singleplayerNMPZ"));
 	});
 
-	function toggleSingleplayerNMPZ() {
+	function setSingleplayerNMPZ(selected) {
 		playSound("basic_button");
-		singleplayerNMPZ = !singleplayerNMPZ;
+		singleplayerNMPZ = selected === "On";
 		localStorage.setItem("singleplayerNMPZ", singleplayerNMPZ ? "true" : "");
 		singleplayerNMPZ ? setRestriction("nmpz") : setRestriction();
 	}
@@ -181,9 +182,8 @@
 		</div>
 		<div class="settings-box settings-box-flex no-flex-wrap" class:box-disabled={!$singleplayer}>
 			<p class="settings-box-flex-title">No Move, Pan or Zoom</p>
-			<button class="standard-button white" onclick={toggleSingleplayerNMPZ}
-				>{singleplayerNMPZ ? "Enabled" : "Disabled"}</button
-			>
+			<Tabs tabs={["On", "Off"]} selected={selectedNMPZ} onchange={(selected) => setSingleplayerNMPZ(selected)}
+			></Tabs>
 		</div>
 		<TitleSeparator text="Audio" noMargin={true} />
 		<div class="settings-box">

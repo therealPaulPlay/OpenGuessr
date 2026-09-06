@@ -20,7 +20,7 @@
 	import Map from "$lib/components/Map.svelte";
 	import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
 	import BottomBar from "$lib/components/BottomBar.svelte";
-	import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
+	import Panorama from "$lib/components/Panorama.svelte";
 	import SignupIframe from "$lib/components/SignupIframe.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
 	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
@@ -149,7 +149,7 @@
 <ReportIframePopup />
 <BugspotIframePopup />
 <ImageGuesser />
-<PanoramaIframe />
+<Panorama />
 <CountryGuesserBar />
 <MapHolder>
 	<MobileMapToggles />
