@@ -223,7 +223,8 @@
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		padding: var(--box-margin);
-		width: 100%;
+		width: fit-content;
+		max-width: 100%;
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		margin-bottom: var(--box-margin);

@@ -16,8 +16,9 @@ export const savedMapBounds = writable({ zoom: 2, lat: 0, lng: 0, diameter: 360 
 // Round Log
 export const roundLog = writable([]);
 
-// Iframe
+// Panorama
 export const iframeElement = writable();
+export const customViewerLoad = writable(null);
 export const initialPanoramaLoad = writable(true);
 export const panoramaSrc = derived([currentLocationLatitude, currentLocationLongitude, currentLocationHeading, currentLocationPitch, currentLocationPanoramaId], ([lat, lon, heading, pitch, panoramaId], set) => {
     initialPanoramaLoad.set(true);

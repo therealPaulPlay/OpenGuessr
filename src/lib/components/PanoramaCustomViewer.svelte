@@ -6,8 +6,11 @@
 		currentLocationLatitude,
 		currentLocationLongitude,
 		currentLocationPanoramaId,
+		customViewerLoad,
+		panoramaSrc,
 	} from "$lib/stores/locationStore";
 	import { getPanoramaDataByCoords, getPanoramaDataById, getPanoramaTileUrl } from "$lib/utils/streetViewUrl";
+	import { get } from "svelte/store";
 
 	let { onload, onfail } = $props();
 
@@ -34,12 +37,13 @@
 		});
 
 	async function showPanorama(lat, lon, panoramaId) {
-		const didCordsChange = () => $currentLocationLatitude !== lat || $currentLocationLongitude !== lon;
+		const src = $panoramaSrc;
+		const didPanoramaChange = () => $panoramaSrc !== src;
 
 		// Like the Street View API we fall back to the coordinate method when the panorama ID fails
 		const pano =
 			(panoramaId && (await getPanoramaDataById(panoramaId, ZOOM))) || (await getPanoramaDataByCoords(lat, lon, ZOOM));
-		if (didCordsChange()) return;
+		if (didPanoramaChange()) return;
 		if (!pano) return onfail?.(); // No coverage, let iFrame handle this
 
 		const heading = $currentLocationHeading ?? pano.heading;
@@ -74,7 +78,7 @@
 
 		// Wait for all to load, filter for presence
 		const tiles = (await Promise.all(pending)).filter(Boolean);
-		if (didCordsChange()) return;
+		if (didPanoramaChange()) return;
 		if (!tiles.length) return onfail?.();
 
 		const canvas = Object.assign(document.createElement("canvas"), { width: cropWidth, height: cropHeight });
@@ -92,7 +96,7 @@
 		try {
 			// Browser-only lazy import for Pannellum
 			await Promise.all([import("pannellum/build/pannellum.js"), import("pannellum/build/pannellum.css")]);
-			if (didCordsChange()) return;
+			if (didPanoramaChange()) return;
 
 			viewer?.destroy();
 			viewer = window.pannellum.viewer(container, {
@@ -120,11 +124,20 @@
 		}
 	}
 
+	// Assign load / refresh function
+	customViewerLoad.set(() =>
+		showPanorama($currentLocationLatitude, $currentLocationLongitude, $currentLocationPanoramaId),
+	);
+
 	$effect(() => {
-		showPanorama($currentLocationLatitude, $currentLocationLongitude, $currentLocationPanoramaId);
+		$panoramaSrc; // Re-run when the required panorama changes
+		get(customViewerLoad)?.();
 	});
 
-	onDestroy(() => viewer?.destroy());
+	onDestroy(() => {
+		viewer?.destroy();
+		customViewerLoad.set(null);
+	});
 </script>
 
 <div id="custom-panorama" bind:this={container}></div>

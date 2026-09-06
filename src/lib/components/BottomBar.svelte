@@ -10,7 +10,7 @@
 	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
-	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
+	import { customViewerLoad, iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import {
 		chatArray,
 		chatMutedPlayers,
@@ -23,7 +23,6 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { tick } from "svelte";
-	import { nmpz } from "$lib/stores/context-specific/restrictionStore";
 
 	// Show return when in tutorial ------------------------------------------------------------------
 	let returnTutorialNote = $state({ visible: false });
@@ -62,7 +61,6 @@
 		<div class="bar-menu">
 			<button
 				class="standard-button white"
-				disabled={$nmpz}
 				{@attach tooltip({
 					text: "Click to return to the spawn.",
 					state: returnTutorialNote,
@@ -75,6 +73,7 @@
 					playSound("reload");
 					$loadingScreenVisible = true;
 					if ($iframeElement) $iframeElement.src = $panoramaSrc;
+					else $customViewerLoad?.();
 				}}
 			>
 				<img id="reset-button-img" src="/img/return_icon.png" alt="Return to start position" />

@@ -721,13 +721,16 @@
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
+		width: fit-content;
+		max-width: 100%;
+		padding: var(--box-margin);
+		box-sizing: border-box;
 	}
 
 	.management-box-content {
 		display: flex;
 		justify-content: flex-start;
 		overflow-y: auto;
-		padding: var(--box-margin);
 		gap: var(--box-margin);
 		align-items: center;
 		scrollbar-width: none;
