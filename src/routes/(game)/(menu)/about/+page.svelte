@@ -1,10 +1,33 @@
 <script>
+	import MapCard from "$lib/components/MapCard.svelte";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { onMount } from "svelte";
+
 	const highlightedVideos = [
 		"https://www.youtube.com/embed/lO96oaMSac8",
 		"https://www.youtube.com/embed/0Q7bDmpX30U",
 		"https://www.youtube.com/embed/nVBUlFgrvKM",
 		"https://www.youtube.com/embed/HyC55tuu1zw",
 	];
+
+	let highlightedMaps = $state([]);
+	let loadingText = $state("Loading...");
+
+	async function fetchSpotlightMaps() {
+		try {
+			const response = await fetch($apiUrl + "/maps/favourites");
+
+			if (response.ok) {
+				const data = await response.json();
+				highlightedMaps = data?.communityMaps;
+			} else throw new Error(response.status);
+		} catch (error) {
+			loadingText = "Error loading maps.";
+			console.error("Failed to load spotlight maps for about page:", error);
+		}
+	}
+
+	onMount(fetchSpotlightMaps);
 </script>
 
 <svelte:head>
@@ -54,6 +77,32 @@
 		fast UI feel. The interface features a variety of handcrafted illustrations, sound effects and animations which
 		ensure the experience is interesting and consistent.
 	</p>
+	<br />
+	<br />
+	<h2>OpenGuessr's multiplayer</h2>
+	<p>
+		OpenGuessr's multiplayer is in it's third generation, powered by an open-source in-house library called PlaySocket.
+		This system applies optimistic updates automatically in order to make the experience the smoothest and snappiest in
+		the industry. Reconnects are performed automatically within a grace period, and through storage synchronization
+		players can join at any point.
+	</p>
+	<br />
+	<br />
+	<h2>Community maps</h2>
+	<p>
+		Thanks to the vibrant community, there are countless high-quality maps. Ones that players love accumulate likes and
+		move up the ranks. Here are three map examples from the spotlight:
+	</p>
+	<br />
+	<div class="map-container">
+		{#if highlightedMaps?.length}
+			{#each highlightedMaps.slice(0, 3) as map}
+				<MapCard {map} />
+			{/each}
+		{:else}
+			<p class="loading-text">{loadingText}</p>
+		{/if}
+	</div>
 	<br />
 	<br />
 	<h2>The "Open" in OpenGuessr</h2>
@@ -160,6 +209,17 @@
 		background-color: var(--box-color);
 		box-shadow: var(--panel-shadow);
 		overflow: hidden;
+	}
+
+	.map-container {
+		display: flex;
+		gap: var(--layout-margin);
+		flex-wrap: wrap;
+	}
+
+	.loading-text {
+		opacity: 0.5;
+		margin-inline: auto;
 	}
 
 	@container (max-width: 680px) {
