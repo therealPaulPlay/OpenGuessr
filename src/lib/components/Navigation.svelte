@@ -396,7 +396,7 @@
 		height: 100%;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 1000px) {
 		.navigation-list {
 			bottom: calc(-1 * var(--layout-margin) * 9);
 		}
