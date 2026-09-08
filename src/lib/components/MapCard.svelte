@@ -77,7 +77,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		width: fit-content;
-		max-width: 200px;
 		text-wrap: nowrap;
 	}
 

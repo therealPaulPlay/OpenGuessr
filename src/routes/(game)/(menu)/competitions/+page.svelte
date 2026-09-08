@@ -269,7 +269,7 @@
 
 {#snippet showMoreButton(callback)}
 	<button
-		class="load-more-item standard-button white fade-in-item"
+		class="load-more-item standard-button white competition-fade-in-item"
 		onclick={() => {
 			callback?.();
 		}}
@@ -298,9 +298,10 @@
 )}
 	{const yesterdaysDaily = $derived(expired && daily)}
 	<div
-		class="competition-item fade-in-item"
+		class="competition-item competition-fade-in-item"
 		style:border-radius={yesterdaysDaily ? "8px" : ""}
 		style:box-shadow={yesterdaysDaily ? "var(--box-shadow)" : ""}
+		class:daily-competition-item={daily}
 	>
 		<div>
 			{#if !expired && daily}
@@ -393,13 +394,9 @@
 						playSound("basic_button");
 
 						const action = () => {
-							showConfirmPopup(
-								"Enter " + name + "?",
-								"You can only enter a competition once.",
-								() => {
-									enterCompetition(id);
-								},
-							);
+							showConfirmPopup("Enter " + name + "?", "You can only enter a competition once.", () => {
+								enterCompetition(id);
+							});
 						};
 
 						if ($isAuthenticated) action();
@@ -442,7 +439,11 @@
 						true,
 					)}
 				{:else}
-					<Drawer title="Yesterday's results" class="fade-in-item" hasBottomLayoutMargin={false}>
+					<Drawer
+						title="Yesterday's results"
+						class="competition-fade-in-item daily-competition-item"
+						hasBottomLayoutMargin={false}
+					>
 						{@render competitionItem(
 							entry.id,
 							entry.name,
@@ -546,13 +547,13 @@
 		{:else}
 			<p class="error-text">{activeCompetitionError}</p>
 		{/if}
+		{#if loadMoreActive}
+			{@render showMoreButton(() => {
+				playSound("basic_button");
+				getCompetitionsFromServer(false, false, false, hideEntered);
+			})}
+		{/if}
 	</div>
-	{#if loadMoreActive}
-		{@render showMoreButton(() => {
-			playSound("basic_button");
-			getCompetitionsFromServer(false, false, false, hideEntered);
-		})}
-	{/if}
 </div>
 <div class="competition-container expired-box">
 	<div class="header-container">
@@ -582,13 +583,13 @@
 		{:else}
 			<p class="error-text">{expiredCompetitionsError}</p>
 		{/if}
+		{#if loadMoreExpired}
+			{@render showMoreButton(() => {
+				playSound("basic_button");
+				getCompetitionsFromServer(true);
+			})}
+		{/if}
 	</div>
-	{#if loadMoreExpired}
-		{@render showMoreButton(() => {
-			playSound("basic_button");
-			getCompetitionsFromServer(true);
-		})}
-	{/if}
 </div>
 
 <style>
@@ -640,6 +641,7 @@
 	#expired-competition-area {
 		min-height: 200px;
 		margin-bottom: var(--layout-margin);
+		grid-auto-rows: 1fr;
 	}
 
 	.competition-description {
@@ -660,13 +662,16 @@
 			background-color 250ms ease,
 			filter 250ms ease,
 			opacity 250ms ease;
-		flex-grow: 1;
-		min-width: 220px;
+		width: 100%;
 		padding: var(--layout-margin);
-		flex-basis: 25%;
 		display: flex;
 		flex-direction: column;
 		position: relative;
+		box-sizing: border-box;
+	}
+
+	:global(.daily-competition-item) {
+		grid-column: 1 / -1;
 	}
 
 	.label {
@@ -764,11 +769,9 @@
 	}
 
 	.competition-area {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
 		gap: var(--layout-margin);
-		justify-content: flex-start;
 	}
 
 	.error-text {
@@ -776,15 +779,16 @@
 		text-align: center;
 		opacity: 0.5;
 		margin-top: var(--layout-margin);
+		grid-column: 1 / -1;
 	}
 
 	.load-more-item {
-		flex-direction: row;
-		min-height: 80px;
+		min-height: 60px;
 		justify-content: center;
 		align-items: center;
 		border: none;
 		width: 100%;
+		height: 100%;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--panel-shadow);
@@ -821,7 +825,7 @@
 		}
 	}
 
-	.fade-in-item {
+	:global(.competition-fade-in-item) {
 		animation: fadeIn 250ms ease-in-out;
 	}
 
