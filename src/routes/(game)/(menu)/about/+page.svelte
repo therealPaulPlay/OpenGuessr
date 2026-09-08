@@ -215,14 +215,15 @@
 	}
 
 	.map-container {
-		display: flex;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		gap: var(--layout-margin);
-		flex-wrap: wrap;
 	}
 
 	.loading-text {
 		opacity: 0.5;
 		margin-inline: auto;
+		grid-column: 2;
 	}
 
 	@container (max-width: 680px) {
