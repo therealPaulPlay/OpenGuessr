@@ -445,7 +445,7 @@
 	<div class="header-container">
 		<h2 class="header">Saved</h2>
 	</div>
-	<div class="map-container">
+	<div class="map-container map-container-grid map-container-grid-slim">
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
 				<div
@@ -487,7 +487,7 @@
 	<div class="header-container large-header-margin">
 		<h2 class="header">Spotlight</h2>
 	</div>
-	<div class="map-container" style:margin-bottom="var(--layout-spacer)">
+	<div class="map-container map-container-grid" style:margin-bottom="var(--layout-spacer)">
 		{#if loadedSpotlightMaps.length}
 			{#each loadedSpotlightMaps as map}
 				{@render communityMapItem(map)}
@@ -573,7 +573,11 @@
 			</button>
 		</search>
 	</div>
-	<div id="community-maps" class="map-container">
+	<div
+		id="community-maps"
+		class="map-container map-container-grid"
+		class:reserve-loading-height={errorMessageShown}
+	>
 		<!-- Community maps will be injected here -->
 		{#each loadedCommunityMaps as map}
 			{@render communityMapItem(map)}
@@ -591,7 +595,7 @@
 			</button>
 		{/if}
 		{#if errorMessageShown}
-			<p class="nothing-found minimum-community-loading-height">{errorMessageText}</p>
+			<p class="nothing-found">{errorMessageText}</p>
 		{/if}
 		{#if showNothingFound}
 			<p class="nothing-found">No map matches the filter.</p>
@@ -624,6 +628,7 @@
 	.map-info {
 		flex-grow: 1;
 		padding-left: var(--content-margin);
+		min-width: 0;
 	}
 
 	.map-info-flex {
@@ -657,12 +662,14 @@
 		flex-grow: 1;
 		flex-basis: 30%;
 		overflow: hidden;
+		width: 100%;
 		height: unset;
 		border: none;
 	}
 
 	.map-item-animate {
 		animation: fadeIn 250ms ease-in-out;
+		flex-wrap: nowrap;
 	}
 
 	.map-item-slim {
@@ -690,13 +697,8 @@
 	.map-name {
 		font-size: 22px;
 		white-space: nowrap;
-		max-width: 210px;
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-
-	.map-item-slim .map-name {
-		max-width: 140px;
 	}
 
 	.map-author {
@@ -710,10 +712,10 @@
 
 	.map-container {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: flex-start;
 		position: relative;
 		gap: var(--layout-margin);
-		flex-wrap: wrap;
 		width: 100%;
 		margin-bottom: calc(var(--layout-margin) + var(--box-margin));
 		overflow: visible;
@@ -723,6 +725,20 @@
 		flex-direction: row-reverse;
 		flex-wrap: wrap-reverse;
 		align-items: flex-end;
+	}
+
+	.map-container-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+		grid-auto-rows: 1fr;
+	}
+
+	.map-container-grid-slim {
+		grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+	}
+
+	.map-container-grid .nothing-found {
+		grid-column: 1 / -1;
 	}
 
 	.map-container-expand {
@@ -790,8 +806,8 @@
 		text-align: center;
 	}
 
-	.minimum-community-loading-height {
-		margin-bottom: 1000px;
+	.reserve-loading-height {
+		padding-bottom: 1000px;
 	}
 
 	.no-saved-maps {
@@ -882,7 +898,7 @@
 
 	.load-more {
 		height: auto;
-		min-height: 70.5px;
+		min-height: 71px;
 		justify-content: center;
 		transition:
 			filter 250ms ease,
