@@ -11,7 +11,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
 	class="map-item"
-	transition:blur|global
+	in:blur|global
 	onclick={() => {
 		playSound("basic_button");
 		goto("/maps/community/" + map.name);
@@ -40,7 +40,7 @@
 			showConfirmPopup("About", map.description);
 		}}
 	>
-		<p>{map.description?.length > 90 ? map.description.substring(0, 87) + "..." : map.description}</p>
+		<p style:opacity="0.75">{map.description?.length > 90 ? map.description.substring(0, 87) + "..." : map.description}</p>
 	</div>
 </div>
 

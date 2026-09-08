@@ -4,6 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
+  <!-- Main pages -->
   <url>
     <loc>https://openguessr.com</loc>
   </url>
@@ -32,5 +33,27 @@
     <loc>https://openguessr.com/shop</loc>
   </url>
 
+  <!-- Get started pages -->
+  <url>
+    <loc>https://openguessr.com/get-started/de</loc>
+  </url>
+  <url>
+    <loc>https://openguessr.com/get-started/en</loc>
+  </url>
+  <url>
+    <loc>https://openguessr.com/get-started/es</loc>
+  </url>
+  <url>
+    <loc>https://openguessr.com/get-started/fr</loc>
+  </url>
+  <url>
+    <loc>https://openguessr.com/get-started/id</loc>
+  </url>
+  <url>
+    <loc>https://openguessr.com/get-started/jp</loc>
+  </url>
+  <url>
+    <loc>https://openguessr.com/get-started/pt</loc>
+  </url>
 
 </urlset>
