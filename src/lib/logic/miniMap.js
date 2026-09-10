@@ -128,10 +128,10 @@ function animatePinLanding(pinElement) {
 
     // .animate method is like CSS keyframes but applied via JS
     pinElement.animate([
-        { transform: position + " scale(1.06, 0.88)" },
+        { transform: position + " scale(1.04, 0.94)" },
         { transform: position + " scale(0.97, 1.04)", offset: 0.4 },
         { transform: position + " scale(1, 1)" }
-    ], { duration: 250, easing: "ease-out" });
+    ], { duration: 150, easing: "ease-out" });
 }
 
 function onMapClick(latLng) {
