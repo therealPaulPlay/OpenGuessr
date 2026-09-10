@@ -121,6 +121,19 @@ async function adjustMapToCountry() {
 // Placing the marker on the minimap ------------------------------------------------------------------------
 let marker;
 
+// Squash and stretch
+function animatePinLanding(pinElement) {
+    const position = pinElement.style.transform;
+    pinElement.style.transformOrigin = "50% 97%"; // Tip of pin (97% because the tip is almost all the way at the bottom)
+
+    // .animate method is like CSS keyframes but applied via JS
+    pinElement.animate([
+        { transform: position + " scale(1.06, 0.88)" },
+        { transform: position + " scale(0.97, 1.04)", offset: 0.4 },
+        { transform: position + " scale(1, 1)" }
+    ], { duration: 250, easing: "ease-out" });
+}
+
 function onMapClick(latLng) {
     if (get(resultScreenEnabled) || !get(mapInteractive)) return; // Placing a pin is disabled on result screen or when the map is not interactive
 
@@ -150,6 +163,8 @@ function onMapClick(latLng) {
             markers = markers || [];
             return [...markers, marker]
         });
+
+        animatePinLanding(marker.getElement());
 
         if (get(multiplayer)) {
             get(socket)?.sendRequest("addGuessMarker", { lat: get(guessLat), lon: get(guessLon) }).catch((error) => {
