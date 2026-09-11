@@ -61,7 +61,7 @@
 	<br />
 	<h2>What data we collect</h2>
 	<p>
-		We use Google Maps, which collects browser details and site data. Please refer to their <a
+		We use Google Maps, which collects data. Please refer to their <a
 			href="https://policies.google.com/privacy"
 			target="_blank">privacy policy</a
 		>.
