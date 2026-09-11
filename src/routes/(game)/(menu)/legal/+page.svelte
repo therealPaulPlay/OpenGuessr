@@ -24,8 +24,8 @@
 <div class="text-container">
 	<h1>Introduction</h1>
 	<p>
-		This page informs users about data collection, applicable terms, and how to contact the developer. By using this
-		website, you accept the agreements and policies outlined here. Some details are provided on separate linked pages.
+		This page informs users about data collection, applicable terms, and contact details. By using this
+		website, you accept the agreements and policies outlined below. Some details are provided on separate referenced pages.
 		For questions about these policies, please use the contact form linked at the bottom of this page.
 	</p>
 	<br />
@@ -61,7 +61,7 @@
 	<br />
 	<h2>What data we collect</h2>
 	<p>
-		Google Maps collects browser details and site data. Please review their <a
+		We use Google Maps for displaying interactive panoramas. Please refer to their <a
 			href="https://policies.google.com/privacy"
 			target="_blank">privacy policy</a
 		>.
@@ -80,14 +80,14 @@
 	</ul>
 	<br />
 	<p>
-		If you register an account, we collect your username, IP address (to ensure multiplayer security and prevent
-		cheating), game-realted statistics and data you provide such as, but not limited to, your email and username. By
-		creating an account you accept that we may share non-sensitive information with other users. We also store
-		game-related details like your account level.
+		If you register an account, we collect your IP address, game-realted statistics, and data you provide such as, but
+		not limited to, your email address, OAuth Identifier when applicable, and username. By creating an account, you
+		accept that we may share non-sensitive information with other users. This does not include your email address, but
+		may include statistics such as, but not limited to, your account level.
 	</p>
 	<br />
 	<p>
-		We use Stripe for processing payments. Please read their <a href="https://stripe.com/privacy" target="_blank"
+		We use Stripe for processing payments. Please refer to their <a href="https://stripe.com/privacy" target="_blank"
 			>privacy policy</a
 		>.
 	</p>
@@ -103,8 +103,8 @@
 
 	<h2>How we use your data</h2>
 	<p>
-		Data collected through Google Analytics is transferred to and analyzed by Google. We also use collected data, such
-		as usernames, for multiplayer functionalities, which may be shared with other players.
+		Data collected through Google Analytics is transferred to and analyzed by Google. We also use collected data to
+		power multiplayer functionalities.
 	</p>
 	<br />
 	<br />
@@ -120,7 +120,7 @@
 	<h2>How long we keep your data</h2>
 	<p>
 		Personal data is retained only as long as necessary for stated purposes or to comply with legal requirements. If you
-		delete your account via the profile menu, your data will be deleted within 30 days or less.
+		delete your account via the profile menu, your data will be deleted within 30 days.
 	</p>
 	<br />
 	<br />
@@ -138,16 +138,13 @@
 		Changes to this privacy notice will update the 'last updated' date below. Any updates will apply immediately. If
 		significant changes affect data processing, reasonable efforts will be made to notify users.
 		<br /> <br />
-		Last updated: 21st of May, 2025
+		Last updated: 12th of September, 2026
 	</p>
 	<br />
 	<br />
 	<h2>Contact</h2>
 	<p>
-		For questions, contact us via the contact form at the bottom of <a
-			href="https://paulplay.studio/legal"
-			target="_blank">our legal page</a
-		>.
+		For questions, contact us via the <a href="https://paulplay.studio/contact" target="_blank">contact form</a>.
 	</p>
 </div>
 
