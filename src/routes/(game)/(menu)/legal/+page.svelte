@@ -93,7 +93,7 @@
 	</p>
 	<br />
 	<p>
-		We use a third-party to provide monetisation technologies for our site. You can review their <a
+		We work with a third-party company to provide monetization technologies for our site. You can review their <a
 			href="https://publift.com/privacy-policy/"
 			target="_blank">privacy and cookie policy</a
 		>.
