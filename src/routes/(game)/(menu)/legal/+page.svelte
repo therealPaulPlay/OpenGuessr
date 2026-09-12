@@ -24,19 +24,19 @@
 <div class="text-container">
 	<h1>Introduction</h1>
 	<p>
-		This page informs users about data collection, applicable terms, and contact details. By using this
-		website, you accept the agreements and policies outlined below. Some details are provided on separate referenced pages.
-		For questions about these policies, please use the contact form linked at the bottom of this page.
+		This page informs users about data collection, applicable terms, and contact details. By using this website, you
+		accept the agreements and policies outlined below. Some details are provided on separate referenced pages. For
+		questions about these policies, please use the contact form linked at the bottom of this page.
 	</p>
 	<br />
 	<p>
-		Company information: For company details, see <a href="https://paulplay.studio/company-information" target="_blank">this page</a>.
+		Company information: Refer to <a href="https://paulplay.studio/company-information" target="_blank">this page</a>.
 	</p>
 	<p>
-		Terms of Use: Refer to <a href="https://paulplay.studio/terms-of-use" target="_blank">this page</a>.
+		Terms of use: Refer to <a href="https://paulplay.studio/terms-of-use" target="_blank">this page</a>.
 	</p>
 	<p>
-		EULA: For the End User License Agreement, see <a href="https://paulplay.studio/eula" target="_blank">this page</a>.
+		EULA: Refer to <a href="https://paulplay.studio/eula" target="_blank">this page</a>.
 	</p>
 	<br />
 	<br />
@@ -52,7 +52,7 @@
 	<br />
 	<br />
 
-	<h1>Privacy Policy</h1>
+	<h1>Privacy policy</h1>
 	<p>
 		This service is provided by PaulPlay at no cost and is intended for use as is. By using this Service, you agree to
 		the collection and use of information as described.
