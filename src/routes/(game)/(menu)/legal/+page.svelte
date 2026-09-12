@@ -30,7 +30,7 @@
 	</p>
 	<br />
 	<p>
-		Imprint: For contact details, see <a href="https://paulplay.studio/imprint" target="_blank">this page</a>.
+		Company information: For company details, see <a href="https://paulplay.studio/company-information" target="_blank">this page</a>.
 	</p>
 	<p>
 		Terms of Use: Refer to <a href="https://paulplay.studio/terms-of-use" target="_blank">this page</a>.
