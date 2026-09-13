@@ -106,6 +106,7 @@
 	.pin-holder {
 		position: relative;
 		box-sizing: border-box;
+		overflow: hidden;
 		min-height: 80px;
 		min-width: 80px;
 		border-radius: var(--content-margin);
