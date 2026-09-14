@@ -12,8 +12,8 @@
 		confirmUsernameValue,
 	} from "$lib/stores/context-specific/confirmPopupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Info } from "@lucide/svelte";
 	import { get } from "svelte/store";
+	import InfoBanner from "./InfoBanner.svelte";
 
 	function confirm() {
 		playSound("basic_button");
@@ -32,17 +32,9 @@
 	</div>
 	<p class:popup-description-narrow={$confirmUsernameInput}>{$confirmDescription}</p>
 	{#if $confirmPasswordInput}
-		<div class="info-container">
-			<Info
-				strokeWidth={2.25}
-				size={22}
-				color="white"
-				style="opacity: 50%; margin-right: var(--content-margin); margin-left: 2px; margin-bottom: -1px; flex-shrink: 0;"
-			/>
-			<p>
-				For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
-			</p>
-		</div>
+		<InfoBanner style="margin-top: var(--layout-margin); margin-bottom: var(--layout-margin);">
+			For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
+		</InfoBanner>
 		<input class="confirm-popup-input" type="password" placeholder="Password" bind:value={$confirmPasswordValue} />
 	{/if}
 	{#if $confirmUsernameInput}
@@ -78,25 +70,6 @@
 
 	.larger-spacing {
 		gap: var(--layout-margin);
-	}
-
-	.info-container {
-		display: flex;
-		padding: var(--box-margin);
-		padding-right: var(--layout-margin);
-		border-radius: var(--box-margin);
-		align-items: center;
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		gap: var(--content-margin);
-		margin-top: var(--layout-margin);
-		margin-bottom: var(--layout-margin);
-		max-width: fit-content;
-	}
-
-	.info-container p {
-		opacity: 0.5;
-		flex-grow: 100;
 	}
 
 	.popup-description-narrow {

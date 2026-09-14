@@ -1,17 +1,13 @@
 <script>
+	import InfoBanner from "$lib/components/InfoBanner.svelte";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import MultiplayerMatchmakingDisplay from "$lib/components/MultiplayerMatchmakingDisplay.svelte";
-	import {
-		createTeamDuelRoom,
-		startFindTeamDuel,
-		safeCancel,
-	} from "$lib/logic/matchmakingLogic";
+	import { createTeamDuelRoom, startFindTeamDuel, safeCancel } from "$lib/logic/matchmakingLogic";
 	import {
 		matchmakingActive,
 		matchmakingHosting,
 		participantCount,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { Info } from "@lucide/svelte";
 </script>
 
 <svelte:head>
@@ -21,14 +17,7 @@
 <div class="main-container">
 	<div class="controls-area">
 		{#if !$matchmakingActive && $matchmakingHosting}
-			<div class="info-container">
-				<Info
-					strokeWidth={2.25}
-					color="white"
-					style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;"
-				/>
-				<p>When starting solo, you'll be paired with a random teammate.</p>
-			</div>
+			<InfoBanner text="When starting solo, you'll be paired with a random teammate." inPage={true} />
 			<MultiplayerHostDisplay
 				showOpenRoom={false}
 				startFunction={startFindTeamDuel}
@@ -36,10 +25,7 @@
 				allowTeamControls={false}
 			/>
 		{:else}
-			<MultiplayerMatchmakingDisplay
-				findFunction={createTeamDuelRoom}
-				cancelFunction={safeCancel}
-			/>
+			<MultiplayerMatchmakingDisplay findFunction={createTeamDuelRoom} cancelFunction={safeCancel} />
 		{/if}
 	</div>
 </div>
@@ -61,22 +47,5 @@
 		gap: var(--layout-margin);
 		margin-top: auto;
 		margin-bottom: auto;
-	}
-
-	.info-container {
-		display: flex;
-		padding: var(--box-margin);
-		border-radius: var(--layout-margin);
-		align-items: center;
-		background-color: var(--box-color);
-		box-shadow: var(--panel-shadow);
-		gap: var(--content-margin);
-		box-sizing: border-box;
-		width: 100%;
-	}
-
-	.info-container p {
-		opacity: 0.5;
-		flex-grow: 100;
 	}
 </style>

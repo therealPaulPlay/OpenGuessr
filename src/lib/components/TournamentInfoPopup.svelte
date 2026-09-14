@@ -15,6 +15,7 @@
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import InfoBanner from "./InfoBanner.svelte";
 
 	let readableDate = $derived.by(() => {
 		const date = new Date($selectedTournament?.date).toLocaleString("en-US", {
@@ -115,13 +116,9 @@
 		</div>
 	</div>
 	<TitleSeparator text="Matches" class="tournament-divider-margin" />
-	<div class="info-container warn-info">
-		<Info color="white" strokeWidth={2} class="info-icon-circular" />
-		<p>
-			Tournaments consist of multiple matches, with the top half of players advancing each round until a grand finale
-			determines the winner.
-		</p>
-	</div>
+	<InfoBanner
+		text="Tournaments consist of multiple matches, with the top half of players advancing each round until a grand finale determines the winner."
+	/>
 	<div class="match-box">
 		<div class="match-box-scroll of-top of-bottom of-length-2">
 			{#if $selectedTournament?.matches?.length}
@@ -164,10 +161,7 @@
 	{/if}
 	{#if $selectedTournament?.status == "starting" || $selectedTournament?.status == "upcoming"}
 		<TitleSeparator text="Account requirements" class="tournament-divider-margin" />
-		<div class="info-container warn-info">
-			<Info color="white" strokeWidth={2} class="info-icon-circular" />
-			<p>You need to have at least 1100 Elo and an account older than 1 week.</p>
-		</div>
+		<InfoBanner text={`You need to have at least ${(1100).toLocaleString()} Elo and an account older than 1 week.`} />
 	{/if}
 	{#if $selectedTournament?.status == "starting"}
 		<button
@@ -311,33 +305,6 @@
 		padding-bottom: var(--layout-margin);
 		position: relative;
 		overflow: hidden;
-	}
-
-	:global(.info-icon-circular) {
-		margin-right: auto;
-		width: 25px;
-		height: 25px;
-		opacity: 0.5;
-		margin-inline: 3px;
-	}
-
-	.info-container {
-		display: flex;
-		padding: var(--box-margin);
-		box-shadow: var(--box-shadow);
-		width: 100%;
-		box-sizing: border-box;
-		border-radius: var(--box-margin);
-		align-items: center;
-		background-color: var(--box-color);
-		margin-top: var(--layout-margin);
-		gap: var(--panel-margin);
-		flex-wrap: wrap;
-	}
-
-	.info-container p {
-		opacity: 0.5;
-		flex-grow: 100;
 	}
 
 	.info-field {

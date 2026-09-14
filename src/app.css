@@ -340,12 +340,8 @@ input[type="checkbox"]:focus {
     /* Important since often positioned insight of pointer-events-none containers */
 }
 
-li {
+li:not(:last-child) {
     margin-bottom: var(--box-margin);
-}
-
-li:last-child {
-    margin-bottom: var(--content-margin);
 }
 
 ul,

@@ -29,9 +29,9 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+	import { externalLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import InfoBanner from "$lib/components/InfoBanner.svelte";
 
 	// Tween the token value for a nicer look
 	const animatedTokens = tweened(0, {
@@ -189,6 +189,13 @@
 		<h1 class="header">Offers</h1>
 	</div>
 	<!-- Split container with token offers and bundle -->
+	{#if $externalLinksDisabled}
+		<InfoBanner
+			inPage={true}
+			text="Real-money purchases are currently not supported on this platform."
+			style="margin-bottom: var(--layout-margin);"
+		/>
+	{/if}
 	<div class="split-container">
 		<div class="left-side" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if $specialOfferPins}
@@ -261,7 +268,7 @@
 						</div>
 						<button
 							class="standard-button shop-offer-button white"
-							disabled={offer.price == 0 && $freeDailyTokensClaimed}
+							disabled={(offer.price == 0 && $freeDailyTokensClaimed) || (offer.price != 0 && $externalLinksDisabled)}
 							onclick={() => {
 								playSound("basic_button");
 
@@ -270,7 +277,6 @@
 									else purchaseTokenTier(offer.tier);
 								};
 
-								if ($crazyGames && offer.price != 0) return errorPopup("Not supported", "Purchases on this platform are not supported.");
 								if (!$isAuthenticated) return signupPrompt(action);
 								action();
 							}}
@@ -356,10 +362,9 @@
 					class="standard-button tier-buy-button"
 					class:white={!highlighted}
 					class:tier-buy-button-highlighted={highlighted}
-					disabled={$supporterLevel >= tier}
+					disabled={$supporterLevel >= tier || $externalLinksDisabled}
 					onclick={() => {
 						playSound("basic_button");
-						if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
 						if (!$isAuthenticated) return signupPrompt(() => purchaseSupporterTier(tier));
 						purchaseSupporterTier(tier);
 					}}

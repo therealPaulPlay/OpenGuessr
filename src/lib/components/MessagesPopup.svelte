@@ -2,7 +2,7 @@
 	import { onDestroy, tick } from "svelte";
 	import { SvelteMap } from "svelte/reactivity";
 	import { get } from "svelte/store";
-	import { X, SendHorizonal, Info, MessageSquare } from "@lucide/svelte";
+	import { X, SendHorizonal, MessageSquare } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import MessageItem from "./MessageItem.svelte";
 	import MessagesSidebar from "./MessagesSidebar.svelte";
@@ -13,6 +13,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
+	import InfoBanner from "./InfoBanner.svelte";
 
 	const PAGE_SIZE = 50;
 	const INDICATOR_REFRESH_MS = 2000;
@@ -285,20 +286,20 @@
 
 		<div class="messages-pane">
 			{#if outgoingInviteRecipients.length}
-				<div class="invites-info">
-					<Info strokeWidth={2.25} size={22} color="white" style="opacity: 0.5; flex-shrink: 0;" />
-					<p class="invites-info-text">
-						Awaiting acceptance from {#each outgoingInviteRecipients as { participantId, alias }, i (participantId)}<!-- svelte-ignore a11y_click_events_have_key_events --><span
-								class="invite-name"
-								role="button"
-								tabindex="0"
-								onclick={() => {
-									$messagesPopup = false;
-									showProfile(participantId);
-								}}>{alias}</span
-							>{i < outgoingInviteRecipients.length - 1 ? ", " : ""}{/each}.
-					</p>
-				</div>
+				<InfoBanner nowrap={true}>
+					Awaiting acceptance from {#each outgoingInviteRecipients as { participantId, alias }, i (participantId)}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<span
+							class="invite-name"
+							role="button"
+							tabindex="0"
+							onclick={() => {
+								$messagesPopup = false;
+								showProfile(participantId);
+							}}>{alias}</span
+						>{i < outgoingInviteRecipients.length - 1 ? ", " : ""}
+					{/each}.
+				</InfoBanner>
 			{/if}
 
 			<div class="messages-view">
@@ -474,25 +475,6 @@
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
 		box-sizing: border-box;
-	}
-
-	.invites-info {
-		display: flex;
-		align-items: center;
-		gap: var(--box-margin);
-		padding: var(--box-margin);
-		border-radius: var(--box-margin);
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		min-width: 0;
-	}
-
-	.invites-info-text {
-		opacity: 0.5;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		min-width: 0;
 	}
 
 	.invite-name {

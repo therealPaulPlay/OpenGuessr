@@ -7,9 +7,10 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
-	import { EllipsisVertical, Info } from "@lucide/svelte";
+	import { EllipsisVertical } from "@lucide/svelte";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
+	import InfoBanner from "$lib/components/InfoBanner.svelte";
 
 	let loadingText = $state("Loading...");
 
@@ -82,7 +83,7 @@
 				throw new Error(response.status);
 			}
 		} catch (error) {
-			console.error("Failed to fetch the elo user section of the leaderboard: ", error);
+			console.error("Failed to fetch the Elo user section of the leaderboard: ", error);
 		}
 	}
 
@@ -103,7 +104,7 @@
 				throw new Error(response.status);
 			}
 		} catch (error) {
-			console.error("Failed to fetch the elo leaderboard: ", error);
+			console.error("Failed to fetch the Elo leaderboard: ", error);
 			loadingText = "Error: " + error.message;
 		}
 	}
@@ -220,7 +221,7 @@
 	</div>
 	<TitleSeparator text="Resets" />
 	<p class="popup-description">
-		At the start of each month, elo above 2k and experience above 100M are halved. The deducted elo amount is converted
+		At the start of each month, Elo above 2k and experience above 100M are halved. The deducted Elo amount is converted
 		into tokens.
 	</p>
 	<TitleSeparator text="Elo" />
@@ -319,15 +320,7 @@
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
 			{#if userLeaderboardType == "elo-active"}
-				<div class="ranked-item info-box">
-					<Info
-						strokeWidth={2.25}
-						size={22}
-						color="white"
-						style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px;"
-					/>
-					<p>Inactive players are hidden.</p>
-				</div>
+				<InfoBanner text="Inactive players are hidden." inPage={true} center={true} />
 			{/if}
 			{#each mainSectionEntries.slice(3) as entry}
 				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
@@ -359,15 +352,7 @@
 		</div>
 		<div id="your-league-container" class="item-container" transition:blur>
 			{#if !userSectionEntries.find((u) => u.id == localStorage.getItem("id"))?.isActive && userLeaderboardType === "elo-active"}
-				<div class="ranked-item info-box">
-					<Info
-						strokeWidth={2.25}
-						size={22}
-						color="white"
-						style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px;"
-					/>
-					<p>You're inactive. Play a duel to see your actual rank.</p>
-				</div>
+				<InfoBanner text="You're inactive. Play a duel to see your actual rank." inPage={true} center={true} />
 			{/if}
 			{#each userSectionEntries as entry}
 				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
@@ -419,21 +404,6 @@
 
 	:global(.elo-active-tabs) {
 		flex-grow: 1;
-	}
-
-	.info-box {
-		padding: var(--box-margin);
-		display: flex;
-		align-items: center;
-		justify-content: center !important;
-		height: unset !important;
-		gap: var(--content-margin);
-		text-wrap: wrap !important;
-		padding-inline: var(--box-margin) !important;
-	}
-
-	.info-box p {
-		opacity: 0.5;
 	}
 
 	.option-bar-item {
@@ -709,11 +679,6 @@
 
 		.maxlength {
 			flex-basis: unset;
-		}
-
-		.info-box {
-			flex-wrap: wrap !important;
-			justify-content: start !important;
 		}
 	}
 </style>
