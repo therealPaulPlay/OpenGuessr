@@ -62,13 +62,10 @@
 
 	<DuelDivisionDisplay />
 	<div class="info-box">
-		<Info
-			strokeWidth={2.25}
-			size={22}
-			color="white"
-			style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px; margin-top: 2px;"
-		/>
-		<p>To report a player, open their profile and click on <i>Report</i>.</p>
+		<div class="info-box-inner">
+			<Info strokeWidth={2.25} size={22} color="white" style="opacity: 50%; flex-shrink: 0;" />
+			<p>To report a player, open their profile and click on <i>Report</i>.</p>
+		</div>
 		<button
 			class="standard-button white grow-search"
 			onclick={() => {
@@ -136,9 +133,16 @@
 		margin-top: var(--layout-margin);
 	}
 
+	.info-box-inner {
+		display: flex;
+		gap: var(--box-margin);
+		align-items: center;
+		flex-grow: 100;
+		padding-inline: var(--content-margin);
+	}
+
 	.info-box p {
 		opacity: 0.5;
-		flex-grow: 100;
 	}
 
 	.result-text {

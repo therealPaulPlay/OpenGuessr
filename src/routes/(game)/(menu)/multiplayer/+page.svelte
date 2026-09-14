@@ -10,7 +10,6 @@
 		Handshake,
 		Plus,
 		MessagesSquare,
-		InfoIcon,
 	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, messagesPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -35,6 +34,7 @@
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { hasNewMessageOrInvite, hcClient, initialHasNew } from "$lib/stores/context-specific/headlessChatStore";
 	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
+	import InfoBanner from "$lib/components/InfoBanner.svelte";
 
 	let friendsRefreshInterval;
 
@@ -227,14 +227,12 @@
 		</div>
 	</div>
 	{#if $loadedFriendsData?.length > 90}
-		<div class="info-container warn-info" transition:slide>
-			<InfoIcon color="white" strokeWidth={2.25} class="multiplayer-info-icon" />
-			<p>
-				You
-				{#if $loadedFriendsData?.length >= 100}have reached{:else}are close to{/if}
-				the maximum allowed number of friends.
-			</p>
-		</div>
+		<InfoBanner
+			inPage={true}
+			transition={true}
+			style="margin-bottom: var(--layout-margin);"
+			text={`You ${$loadedFriendsData?.length >= 100 ? "have reached" : "are close to"} the maximum allowed number of friends.`}
+		/>
 	{/if}
 	<div class="friend-box">
 		<div

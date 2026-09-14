@@ -203,7 +203,6 @@
 				<div class="form-section locations-section">
 					<h3 class="section-title section-title-margin">Locations (Links)</h3>
 					<div class="location-instructions">
-						<p class="instructions-title">Instructions</p>
 						<ol>
 							<li>
 								Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
@@ -337,14 +336,16 @@
 		display: none;
 	}
 
-	ul:first-child {
-		margin-top: var(--content-margin);
-	}
-
 	.locations-section {
 		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
+	}
+
+	ul,
+	ol {
+		margin-bottom: var(--content-margin);
+		margin-top: var(--content-margin);
 	}
 
 	.location-instructions {
@@ -357,11 +358,6 @@
 
 	.location-instructions p {
 		opacity: 0.75;
-	}
-
-	.instructions-title {
-		margin-bottom: var(--box-margin);
-		opacity: 1 !important;
 	}
 
 	.location-instructions li {

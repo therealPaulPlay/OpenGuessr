@@ -26,7 +26,7 @@
 	// Builds a label from a conversation's participants, excluding the current user
 	function buildTitle(participants) {
 		const userId = localStorage.getItem("id");
-		const others = participants.filter((p) => p !== userId);
+		const others = participants?.filter((p) => p !== userId) ?? [];
 		if (!others.length) return "Just you";
 
 		return others.map((p) => aliasCache.get(p) ?? "Unknown").join(", ");

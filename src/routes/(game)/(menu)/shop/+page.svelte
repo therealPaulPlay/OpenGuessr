@@ -15,7 +15,7 @@
 		specialOfferPrice,
 		specialOfferRarity,
 	} from "$lib/stores/context-specific/shopStore";
-	import { CircleArrowUp, CirclePlus, Clock, Info } from "@lucide/svelte";
+	import { CircleArrowUp, CirclePlus, Clock } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { scale, slide } from "svelte/transition";
 	import {
@@ -31,6 +31,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { externalLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import InfoBanner from "$lib/components/InfoBanner.svelte";
 
 	// Tween the token value for a nicer look
 	const animatedTokens = tweened(0, {
@@ -189,10 +190,11 @@
 	</div>
 	<!-- Split container with token offers and bundle -->
 	{#if $externalLinksDisabled}
-		<div class="purchases-disabled-info">
-			<Info strokeWidth={2.25} color="white" style="opacity: 50%; flex-shrink: 0;" />
-			<p>Real-money purchases are currently not supported on this platform.</p>
-		</div>
+		<InfoBanner
+			inPage={true}
+			text="Real-money purchases are currently not supported on this platform."
+			style="margin-bottom: var(--layout-margin);"
+		/>
 	{/if}
 	<div class="split-container">
 		<div class="left-side" in:scale={{ start: 0.9, duration: 250 }}>
@@ -414,25 +416,6 @@
 	.social-pin-span {
 		opacity: 0.5;
 		margin-left: var(--content-margin);
-	}
-
-	.purchases-disabled-info {
-		display: flex;
-		padding: var(--box-margin);
-		padding-inline: var(--layout-margin);
-		border-radius: var(--layout-margin);
-		align-items: center;
-		background-color: var(--box-color);
-		box-shadow: var(--panel-shadow);
-		gap: var(--box-margin);
-		margin-bottom: var(--layout-margin);
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	.purchases-disabled-info p {
-		opacity: 0.5;
-		flex-grow: 100;
 	}
 
 	.social-pin-icon {

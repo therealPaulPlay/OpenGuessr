@@ -221,7 +221,7 @@
 
 				<Drawer title="Rules" hasBottomLayoutMargin={false}>
 					<div class="location-instructions">
-						<ul class="rules-list">
+						<ul>
 							<li>Keep all details in English</li>
 							<li>Pick a descriptive competition name</li>
 							<li>Competitions will be deleted 7 days after they have ended</li>
@@ -277,7 +277,6 @@
 				<div class="form-section locations-section">
 					<h3 class="section-title section-title-margin">Locations</h3>
 					<div class="location-instructions">
-						<p class="instructions-title">Instructions</p>
 						<ol>
 							<li>
 								Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
@@ -396,10 +395,6 @@
 		width: 100%;
 	}
 
-	ul:first-child {
-		margin-top: var(--content-margin);
-	}
-
 	.locations-section {
 		flex-grow: 1;
 		display: flex;
@@ -414,10 +409,6 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.instructions-title {
-		margin-bottom: var(--box-margin);
-	}
-
 	.location-instructions li {
 		opacity: 0.75;
 	}
@@ -426,6 +417,12 @@
 		padding: var(--layout-margin);
 		min-height: 100%;
 		width: 100%;
+	}
+
+	ol,
+	ul {
+		margin-top: var(--content-margin);
+		margin-bottom: var(--content-margin);
 	}
 
 	.text-area-box {
