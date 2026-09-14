@@ -3,11 +3,7 @@
 	import { onMount } from "svelte";
 	import { roomCode, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
-	import {
-		crazyGames,
-		preventFullscreen,
-		disableAutoAuthentication,
-	} from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { joinFromAnywhere, createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
@@ -21,9 +17,6 @@
 			let crazyGamesEnabled = urlParams.get("crazy-games");
 
 			if (crazyGamesEnabled) {
-				// Platform settings
-				preventFullscreen.set(true);
-				disableAutoAuthentication.set(true);
 				crazyGames.set(true); // Enable platform
 
 				// Load and initialize SDK
@@ -36,7 +29,6 @@
 					script.onerror = reject;
 					document.head.appendChild(script);
 				});
-
 				await window.CrazyGames.SDK.init();
 				window.CrazyGames.SDK.game.loadingStart();
 

@@ -1,6 +1,6 @@
 <!-- Sliding up alert message for result screen (streak, support...) -->
 <script>
-	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+	import { externalLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
 		slideupText,
 		slideupCallback,
@@ -18,7 +18,7 @@
 	import { slide } from "svelte/transition";
 </script>
 
-{#if $showSlideup && !$crazyGames}
+{#if $showSlideup && !$externalLinksDisabled}
 	<div class="endscreen-slideup-container bar-menu" in:slide|global out:slide>
 		<div class="scrollable-content of-top of-bottom" style:margin-bottom="var(--panel-margin)">
 			<div class="text-box text-box-top">

@@ -2,7 +2,7 @@
 	import { Plus, X, User, Search, Info, ArrowDownWideNarrow, Bookmark, BookmarkOff } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
+	import { externalLinksDisabled, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount, getContext } from "svelte";
 	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -21,6 +21,7 @@
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { browser } from "$app/environment";
+	import { get } from "svelte/store";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -74,19 +75,22 @@
 	});
 
 	// Load Playlight
-	onMount(async () => {
-		try {
-			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
-			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
-			$playlightSDK = module.default;
-			$playlightSDK.init({
-				exitIntent: {
-					enabled: false,
-				},
-			});
-		} catch (error) {
-			console.error("Error loading the Playlight SDK:", error);
-		}
+	$effect(() => {
+		// Get is used to read playlightSDK so that we don't trigger reactivity if it changes
+		if ($externalLinksDisabled || get(playlightSDK)) return; // If links are disabled or Playlight is already loaded, skip
+		(async () => {
+			try {
+				const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
+				$playlightSDK = module.default;
+				$playlightSDK.init({
+					exitIntent: {
+						enabled: false,
+					},
+				});
+			} catch (error) {
+				console.error("Error loading the Playlight SDK:", error);
+			}
+		})();
 	});
 
 	// Save snapshot before navigating away
@@ -477,7 +481,7 @@
 		{/if}
 	</div>
 	<!-- Playlight section -->
-	{#if !$crazyGames}
+	{#if !$externalLinksDisabled}
 		<div class="header-container no-bottom-padding">
 			<h2 class="header">Featured</h2>
 		</div>
@@ -573,11 +577,7 @@
 			</button>
 		</search>
 	</div>
-	<div
-		id="community-maps"
-		class="map-container map-container-grid"
-		class:reserve-loading-height={errorMessageShown}
-	>
+	<div id="community-maps" class="map-container map-container-grid" class:reserve-loading-height={errorMessageShown}>
 		<!-- Community maps will be injected here -->
 		{#each loadedCommunityMaps as map}
 			{@render communityMapItem(map)}
