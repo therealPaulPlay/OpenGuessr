@@ -323,7 +323,7 @@
 				<InfoBanner text="Inactive players are hidden." inPage={true} center={true} />
 			{/if}
 			{#each mainSectionEntries.slice(3) as entry}
-				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
+				<div class="ranked-item white-soft" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength ranked-item-left">#{entry.position}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
@@ -346,16 +346,16 @@
 	{/if}
 	{#if userSectionEntries}
 		<div id="three-dots-container" class="three-dots-container" transition:blur>
-			<div class="circle-dot"></div>
-			<div class="circle-dot"></div>
-			<div class="circle-dot"></div>
+			<div class="circle-dot white-soft"></div>
+			<div class="circle-dot white-soft"></div>
+			<div class="circle-dot white-soft"></div>
 		</div>
 		<div id="your-league-container" class="item-container" transition:blur>
 			{#if !userSectionEntries.find((u) => u.id == localStorage.getItem("id"))?.isActive && userLeaderboardType === "elo-active"}
 				<InfoBanner text="You're inactive. Play a duel to see your actual rank." inPage={true} center={true} />
 			{/if}
 			{#each userSectionEntries as entry}
-				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
+				<div class="ranked-item white-soft" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength ranked-item-left">#~{entry.position?.toLocaleString()}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
@@ -427,7 +427,6 @@
 		width: 100%;
 		height: 50px;
 		box-shadow: var(--panel-shadow);
-		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		border-radius: var(--layout-margin);
 		display: flex;
@@ -643,7 +642,6 @@
 	.circle-dot {
 		padding: 6px;
 		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 	}
 

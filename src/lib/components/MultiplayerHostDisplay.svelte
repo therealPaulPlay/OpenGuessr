@@ -129,7 +129,7 @@
 			</p>
 		{/each}
 	{/if}
-	<p id="small-join-counter">{$participantCount ?? "?"}</p>
+	<p id="small-join-counter" class="white-soft">{$participantCount ?? "?"}</p>
 </div>
 
 <!-- Friend invite display -->
@@ -140,7 +140,7 @@
 			{#each $loadedFriendsData.filter((value) => value.online) as entry}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
-					class="standard-button room-creation-friend-item"
+					class="standard-button room-creation-friend-item white-soft"
 					transition:blur
 					role="menu"
 					tabindex="0"
@@ -269,7 +269,6 @@
 	}
 
 	.room-creation-friend-item {
-		background-color: rgba(255, 255, 255, 0.1);
 		border: none;
 		border-radius: var(--box-margin);
 		display: flex;
@@ -345,7 +344,6 @@
 		top: var(--content-margin);
 		right: var(--content-margin);
 		padding: var(--content-margin);
-		background-color: rgba(255, 255, 255, 0.1);
 		height: 27px;
 		width: 30px;
 		border-radius: var(--box-margin);

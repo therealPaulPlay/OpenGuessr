@@ -280,7 +280,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item standard-button map-item-animate"
+		class="map-item standard-button white-soft map-item-animate"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -320,7 +320,7 @@
 	<div class="map-container map-container-grow-first">
 		{#each [...$baseMaps].reverse() as { map, imgUrl }}
 			<div
-				class="map-item standard-button map-item-slim"
+				class="map-item standard-button white-soft map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -356,7 +356,7 @@
 	</div>
 	<div class="map-container map-container-grow-first">
 		<div
-			class="map-item standard-button map-item-slim"
+			class="map-item standard-button white-soft map-item-slim"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -372,7 +372,7 @@
 		</div>
 		{#each [...$specialMaps].reverse() as { map, imgUrl }}
 			<div
-				class="map-item standard-button map-item-slim"
+				class="map-item standard-button white-soft map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -394,7 +394,7 @@
 	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
 		{#each $countryMaps as map}
 			<div
-				class="map-item standard-button map-item-slim"
+				class="map-item standard-button white-soft map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -431,7 +431,7 @@
 	<div class="map-container">
 		{#each $continentMaps as map}
 			<div
-				class="map-item standard-button map-item-slim"
+				class="map-item standard-button white-soft map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -453,7 +453,7 @@
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
 				<div
-					class="map-item standard-button map-item-slim map-item-bookmark map-item-animate"
+					class="map-item standard-button white-soft map-item-slim map-item-bookmark map-item-animate"
 					class:selected-map-item={checkIfSelected(map, true)}
 					role="button"
 					tabindex="0"
@@ -518,7 +518,7 @@
 				{#each categoriesArray as category, index}
 					{#if index !== 1 || $isAuthenticated}
 						<button
-							class="category-button standard-button"
+							class="category-button standard-button white-soft"
 							class:selected={selectedCategoryIndex == index}
 							onclick={() => handleCategoryButtonClick(index)}
 						>
@@ -584,7 +584,7 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				class="map-item load-more standard-button"
+				class="map-item load-more standard-button white-soft"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50);
@@ -653,7 +653,6 @@
 		box-shadow: var(--panel-shadow);
 		text-decoration: none;
 		align-items: center;
-		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		box-sizing: border-box;
@@ -867,7 +866,6 @@
 	}
 
 	.category-button {
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 		border: none;
 		color: white;

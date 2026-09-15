@@ -32,7 +32,7 @@
 	});
 </script>
 
-<div class="ticker">
+<div class="ticker white-soft">
 	<button
 		id="round-minus"
 		class="standard-button white"
@@ -43,7 +43,7 @@
 			if (internalValue < minimum) internalValue = minimum;
 		}}><Minus size={18} strokeWidth={2.5} /></button
 	>
-	<p class="ticker-text">{displayText ?? "..."}</p>
+	<p class="ticker-text white-soft">{displayText ?? "..."}</p>
 	{#if note}
 		<p class="ticker-note">{note}</p>
 	{/if}
@@ -61,7 +61,6 @@
 
 <style>
 	.ticker-text {
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 		padding: var(--content-margin);
 		padding-left: var(--box-margin);
@@ -85,6 +84,5 @@
 		padding: var(--panel-margin);
 		width: fit-content;
 		align-items: center;
-		background-color: rgba(255, 255, 255, 0.1);
 	}
 </style>

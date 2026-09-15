@@ -197,6 +197,10 @@ input:focus {
     background-color: rgba(255, 255, 255, 0.175);
 }
 
+.white-soft {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .dark {
     background-color: rgba(105, 105, 105, 0.075);
     border: 3px solid rgba(160, 160, 170, 0.2);

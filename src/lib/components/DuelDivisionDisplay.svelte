@@ -28,7 +28,7 @@
 
 <div class="progress-container">
 	<div class="progress-bar-wrapper">
-		<div class="progress-bar">
+		<div class="progress-bar white-soft">
 			<div class="progress-bar-fill" style="width: {fillPercentage}%"></div>
 		</div>
 
@@ -71,7 +71,6 @@
 		transform: translateY(-50%);
 		width: 100%;
 		height: var(--panel-margin);
-		background: rgba(255, 255, 255, 0.1);
 		border-radius: 6px;
 		overflow: hidden;
 	}
