@@ -244,7 +244,7 @@
 					{#each $loadedFriendsData as entry (entry.id)}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
-							class="friend-item large-button"
+							class="friend-item large-button white-soft"
 							role="menu"
 							tabindex="0"
 							onclick={() => {
@@ -349,7 +349,6 @@
 
 	.friend-item {
 		display: flex;
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		transition:
 			filter 250ms ease,

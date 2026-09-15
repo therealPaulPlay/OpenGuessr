@@ -27,7 +27,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-	class="pin-holder"
+	class="pin-holder white-soft"
 	role="button"
 	tabindex={0}
 	bind:this={pinHolderElement}
@@ -110,7 +110,6 @@
 		min-height: 80px;
 		min-width: 80px;
 		border-radius: var(--content-margin);
-		background-color: rgba(255, 255, 255, 0.1);
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

@@ -79,7 +79,7 @@
 			</div>
 			<div id="room-creation-map" class="multiplayer-host-settings">
 				<p>Map</p>
-				<div class="selected-map-field">
+				<div class="selected-map-field white-soft">
 					<p id="multiplayer-map-display">
 						{(() => {
 							if (browser) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
@@ -194,7 +194,6 @@
 		width: fit-content;
 		align-items: center;
 		flex-wrap: wrap;
-		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.selected-map-field p {

@@ -263,7 +263,7 @@
 				</button>
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
-				<div id="supporter-tag" {@attach tooltip({ text: "Tier " + $profileData?.supporterLevel })}>
+				<div id="supporter-tag" class="white-soft" {@attach tooltip({ text: "Tier " + $profileData?.supporterLevel })}>
 					<img id="supporter-icon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
@@ -351,7 +351,7 @@
 		{#snippet statCards(cards, animate)}
 			{#each cards as card (card.title)}
 				<div class="stat-card" in:blur={{ duration: animate ? 250 : 0 }}>
-					<div class="card-icon">
+					<div class="card-icon white-soft">
 						<card.icon size={24} strokeWidth={2} />
 					</div>
 					<div class="card-content">
@@ -573,7 +573,6 @@
 	}
 
 	#supporter-tag {
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
 		display: flex;
@@ -690,7 +689,6 @@
 		height: 40px;
 		border-radius: 100%;
 		margin-left: var(--panel-margin);
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 		flex-shrink: 0;
 	}

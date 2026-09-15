@@ -24,7 +24,7 @@
 	<div>
 		<p class="slight-bottom-margin">{$description}</p>
 		{#if $errorCode}
-			<p class="error-code">{$errorCode}</p>
+			<p class="error-code white-soft">{$errorCode}</p>
 		{/if}
 	</div>
 	{#if !$hideDisableOption}
@@ -38,7 +38,6 @@
 <style>
 	.error-code {
 		opacity: 70%;
-		background-color: rgba(255, 255, 255, 0.1);
 		padding: var(--box-margin);
 		padding-inline: 20px;
 		border-radius: 7px;

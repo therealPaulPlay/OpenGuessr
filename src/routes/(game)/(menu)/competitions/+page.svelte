@@ -322,19 +322,19 @@
 		</div>
 		<div class="competition-properties-box">
 			<div class="property-item">
-				<div class="label">
+				<div class="label white-soft">
 					<p>Plays</p>
 				</div>
 				<p class="item-text of-left of-right">{playercount.toLocaleString()}</p>
 			</div>
 			<div class="property-item">
-				<div class="label">
+				<div class="label white-soft">
 					<p>Restriction</p>
 				</div>
 				<p class="item-text of-left of-right">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
 			<div class="property-item">
-				<div class="label">
+				<div class="label white-soft">
 					<p>Duration</p>
 				</div>
 				<p class="item-text of-left of-right">
@@ -347,13 +347,13 @@
 				</p>
 			</div>
 			<div class="property-item">
-				<div class="label">
+				<div class="label white-soft">
 					<p>Rounds</p>
 				</div>
 				<p class="item-text of-left of-right">{locationAmount}</p>
 			</div>
 			<div class="property-item">
-				<div class="label">
+				<div class="label white-soft">
 					<p>Round length</p>
 				</div>
 				<p class="item-text of-left of-right">{roundLength}s</p>
@@ -368,7 +368,7 @@
 				showConfirmPopup("About", description);
 			}}
 		>
-			<div class="label" role="button" tabindex="0">
+			<div class="label white-soft" role="button" tabindex="0">
 				<p>Description</p>
 			</div>
 			<p class="item-text desc-text">
@@ -679,7 +679,6 @@
 		box-shadow: var(--box-shadow);
 		padding-inline: var(--panel-margin);
 		width: fit-content;
-		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: var(--content-margin);
 		margin-right: var(--content-margin);
 		margin-left: 4px;

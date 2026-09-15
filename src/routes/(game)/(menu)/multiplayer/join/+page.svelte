@@ -101,7 +101,7 @@
 	<p class="open-room-title" transition:blur>Public rooms</p>
 	<div class="open-room-box of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
-			<div class="open-room-item" transition:blur>
+			<div class="open-room-item white-soft" transition:blur>
 				<div class="room-item-info-container of-left of-right">
 					<Chip mutedOpacity={false}>
 						<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />
@@ -166,7 +166,6 @@
 	}
 
 	.open-room-item {
-		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--panel-shadow);
 		border: none;
 		border-radius: var(--box-margin);

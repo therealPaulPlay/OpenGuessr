@@ -156,7 +156,7 @@
 	<div class="settings-canvas">
 		<TitleSeparator text="Singleplayer" noMargin={true} />
 		<div class="settings-box settings-box-flex" class:box-disabled={!$singleplayer}>
-			<div class="timer-text-box">
+			<div class="timer-text-box white-soft">
 				<Timer />
 				<p id="timer-slider-text" contenteditable="false">{timerSliderText}</p>
 			</div>
@@ -294,7 +294,6 @@
 		align-items: center;
 		gap: var(--content-margin);
 		height: 31px;
-		background-color: rgba(255, 255, 255, 0.1);
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		border-radius: var(--content-margin);
