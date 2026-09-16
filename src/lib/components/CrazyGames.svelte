@@ -1,4 +1,3 @@
-<!-- This component handles the SDK stuff, and checks if the crazy-games query is being used -->
 <script>
 	import { onMount } from "svelte";
 	import { roomCode, socket } from "$lib/stores/context-specific/multiplayerStore";
@@ -10,6 +9,7 @@
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { errorPopup } from "$lib/utils/errorHandling";
 
 	onMount(async () => {
 		try {
@@ -81,16 +81,16 @@
 			const response = await fetch($apiUrl + "/accounts/cg-authenticate", {
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json", // Set content type to JSON
+					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					crazyGamesToken: token, // Send the token in the body
+					crazyGamesToken: token,
 				}),
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || "Authentication failed");
+				const errorData = await response.json().catch(() => null);
+				throw new Error(errorData?.error || `Authentication failed with status ${response.status}`);
 			}
 
 			const data = await response.json();
@@ -103,6 +103,7 @@
 			checkAuthentication();
 		} catch (error) {
 			console.error("Error authenticating with CrazyGames:", error);
+			errorPopup("Error authenticating", "An error occured trying to authenticate with CrazyGames.", error.message);
 		}
 	}
 </script>
