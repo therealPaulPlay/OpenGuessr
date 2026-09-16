@@ -10,6 +10,7 @@ import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { y8Games } from "$lib/stores/context-specific/platformSettingsStore";
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
 
@@ -41,8 +42,18 @@ export async function checkAuthentication() {
 }
 
 export function signOut() {
+  // Reset local OpenGuessr auth data
   resetLocalSave();
   checkAuthentication();
+  
+  // Y8 supports logout, trigger it on their platform
+  if (get(y8Games)) {
+    try {
+      window.Y8SDK.logout();
+    } catch (error) {
+      console.error("Failed to log out Y8 user:", error);
+    }
+  }
 }
 
 function resetLocalSave() {

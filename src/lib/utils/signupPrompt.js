@@ -1,17 +1,30 @@
 // Display the signup popup on main platform, but platform-specific signup in other scenarios
 import { signupPopup } from "$lib/stores/uiStore";
-import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+import { crazyGames, y8Games } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
 import { postSignupAction } from "$lib/stores/context-specific/signupStore";
 
 export async function signupPrompt(triggerAfter = () => { }) {
     postSignupAction.set(triggerAfter);
-    if (get(crazyGames)) {
-        // Show crazy games signup - this will trigger an event, that is being listened for in CrazyGames.svelte
-        try {
-            await window.CrazyGames.SDK.user.showAuthPrompt();
-        } catch (error) {
-            console.error("Error showing CrazyGames signup:", error);
+
+    switch (true) {
+        case (get(crazyGames)): {
+            try {
+                // Shows CrazyGames login prompt
+                await window.CrazyGames.SDK.user.showAuthPrompt();
+            } catch (error) {
+                console.error("Error showing CrazyGames signup:", error);
+            }
+            break;
         }
-    } else signupPopup.set(true);
+        case (get(y8Games)): {
+            try {
+                await window.Y8SDK.login(); // Shows Y8 login prompt
+            } catch (error) {
+                console.error("Error showing Y8 login:", error);
+            }
+            break;
+        }
+        default: signupPopup.set(true); // Shows default OpenGuessr signup prompt
+    }
 }
