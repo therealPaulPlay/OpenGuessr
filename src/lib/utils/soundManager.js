@@ -10,6 +10,14 @@ let currentVariant = null;
 let sfxVolume = 1.0;
 let musicVolume = 1.0;
 
+// Global mute --------------------------------------------------------------------------------------
+export function setMuted(muted) {
+    if (!browser) return;
+    import("howler")
+        .then((module) => module.Howler.mute(muted))
+        .catch((error) => console.error("Couldn't set global mute: " + error));
+}
+
 // SFX ---------------------------------------------------------------------------------------------
 export function setSoundsVolume(volume) {
     sfxVolume = Math.max(0, Math.min(volume, 1));

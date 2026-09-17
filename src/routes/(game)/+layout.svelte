@@ -37,6 +37,7 @@
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
 	import CrazyGames from "$lib/components/CrazyGames.svelte";
 	import Y8Games from "$lib/components/Y8Games.svelte";
+	import Playgama from "$lib/components/Playgama.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
 	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
@@ -103,6 +104,7 @@
 <!-- 3rd party -->
 <CrazyGames />
 <Y8Games />
+<Playgama />
 
 <!-- Log user in -->
 <Authentication />

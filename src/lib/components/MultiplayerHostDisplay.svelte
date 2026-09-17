@@ -9,7 +9,7 @@
 		teamAmount,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
-	import { crazyGames, y8Games } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, inviteLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { loadFriends, sendMatchInvite } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification } from "$lib/utils/notifications";
@@ -172,13 +172,12 @@
 		id="roomcode-link"
 		class="large-button standard-button white"
 		{@attach tooltip({ text: "Copy link" })}
-		disabled={!$roomCode || $y8Games}
+		disabled={!$roomCode || $inviteLinksDisabled}
 		onclick={() => {
 			playSound("basic_button");
 			const roomId = get(roomCode);
 
 			// Use regular or Crazy Games link for invitation
-			// Y8 Games doesn't offer an equivalent, they recommended disabling join-by-link (as done above)
 			const link = $crazyGames
 				? window.CrazyGames.SDK.game.inviteLink({ join: roomId })
 				: page.url.origin + "/?join=" + roomId;

@@ -39,7 +39,7 @@
 		History,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
-	import { crazyGames, y8Games } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, y8Games, playgama } from "$lib/stores/context-specific/platformSettingsStore";
 	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -416,7 +416,7 @@
 				</div>
 				<button
 					class="standard-button white"
-					disabled={!$singleplayer || $crazyGames || $y8Games}
+					disabled={!$singleplayer || $crazyGames || $y8Games || $playgama}
 					onclick={() => {
 						playSound("basic_button");
 						showConfirmPopup(
@@ -434,7 +434,7 @@
 				>
 				<button
 					class="standard-button white"
-					disabled={!$singleplayer || $crazyGames}
+					disabled={!$singleplayer || $crazyGames || $playgama}
 					onclick={() => {
 						playSound("basic_button");
 						signOut();
