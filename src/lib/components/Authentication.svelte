@@ -3,7 +3,7 @@
 	import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
 	import { disconnectSSE, initializeSSEConnection } from "$lib/logic/sseLogic";
 	import { selectedPinIndex } from "$lib/stores/accountStore";
-	import { disableAutoAuthentication } from "$lib/stores/context-specific/platformSettingsStore";
+	import { autoAuthenticationDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { postSignupAction } from "$lib/stores/context-specific/signupStore";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
@@ -34,7 +34,7 @@
 		];
 
 		// Check authentication state
-		if (!get(disableAutoAuthentication)) checkAuthentication();
+		if (!get(autoAuthenticationDisabled)) checkAuthentication();
 
 		return () => unsubscribeFunctions.forEach((u) => u());
 	});

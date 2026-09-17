@@ -20,7 +20,8 @@ const config = {
 					'/sounds/*',
 					'/favicon.ico',
 					'/sitemap.xml',
-					'/robots.txt'
+					'/robots.txt',
+					'/playgama-bridge-config.json'
 				]
 			}
 		})
