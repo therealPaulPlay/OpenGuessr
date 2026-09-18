@@ -26,23 +26,18 @@ export function initMap() {
     const pixelRatio = Math.max(window.devicePixelRatio, 2);
 
     // Initialize tile layers
-    const standardMap = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
+    const tileLayerOptions = {
         maxZoom: 20,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds
-    });
+        bounds: worldBounds,
+        updateWhenZooming: false // Keep fast fly-to animations less taxing by not constantly requesting new tiles
+    };
 
-    const terrainMap = L.tileLayer("https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
-        maxZoom: 20,
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds
-    });
+    const standardMap = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, tileLayerOptions);
 
-    const satelliteMap = L.tileLayer("https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
-        maxZoom: 20,
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds
-    });
+    const terrainMap = L.tileLayer("https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, tileLayerOptions);
+
+    const satelliteMap = L.tileLayer("https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, tileLayerOptions);
 
     const leafletMap = L.map('map', {
         zoom: 2,
@@ -156,7 +151,7 @@ function onMapClick(latLng) {
             popupAnchor: [1, -34]
         });
 
-        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon, alt: "" });
+        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon, alt: "", interactive: false, keyboard: false });
         marker.addTo(get(map));
 
         addedMarkers.update((markers) => {
@@ -203,7 +198,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     popupAnchor: [1, -34]
                 });
 
-                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "" });
+                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "", interactive: false, keyboard: false });
                 marker.setOpacity(0.65);
                 marker.addTo(get(map));
 
