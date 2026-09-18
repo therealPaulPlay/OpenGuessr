@@ -29,14 +29,11 @@ export function initMap() {
     const tileLayerOptions = {
         maxZoom: 20,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds,
-        updateWhenZooming: false // Keep fast fly-to animations less taxing by not constantly requesting new tiles
+        bounds: worldBounds
     };
 
     const standardMap = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, tileLayerOptions);
-
     const terrainMap = L.tileLayer("https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, tileLayerOptions);
-
     const satelliteMap = L.tileLayer("https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, tileLayerOptions);
 
     const leafletMap = L.map('map', {
