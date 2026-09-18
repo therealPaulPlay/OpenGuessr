@@ -319,17 +319,17 @@
 	}
 
 	.multiplayer-overlay-entry {
-		background-color: var(--box-color-dark-soft);
+		background-color: var(--box-color);
 		border-radius: var(--box-margin);
 		width: 100%;
 	}
 
 	.your-entry {
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.your-team {
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(255, 255, 255, 0.25);
 	}
 
 	.multiplayer-entry-player-info {
