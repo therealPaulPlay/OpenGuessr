@@ -10,12 +10,14 @@
 	import Chip from "./ui/Chip.svelte";
 	import Drawer from "./ui/Drawer.svelte";
 
-	let noTournamentsText = $state("No tournaments scheduled.");
+	let errorText = $state("No tournaments scheduled.");
 	let showOlder = $state(false);
 
 	onMount(async () => {
+		errorText = "Loading...";
 		const error = await fetchTournaments();
-		if (error) noTournamentsText = "Error: " + error;
+		if (error) errorText = "Error: " + error;
+		else errorText = "No tournaments scheduled.";
 	});
 </script>
 
@@ -82,7 +84,7 @@
 			{/each}
 		</div>
 	{:else}
-		<p class="no-tournaments-text">{noTournamentsText}</p>
+		<p class="no-tournaments-text">{errorText}</p>
 	{/if}
 </div>
 
