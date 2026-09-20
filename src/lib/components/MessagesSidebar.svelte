@@ -2,7 +2,6 @@
 	import { get } from "svelte/store";
 	import { flip } from "svelte/animate";
 	import { Check, TriangleAlert, X } from "@lucide/svelte";
-	import { messagesPopup } from "$lib/stores/uiStore";
 	import {
 		hcClient,
 		conversations,
@@ -82,7 +81,6 @@
 							role="button"
 							tabindex="0"
 							onclick={() => {
-								$messagesPopup = false;
 								showProfile(invite.fromParticipantId);
 							}}>{aliasCache.get(invite.fromParticipantId) ?? "Unknown"}</span
 						>

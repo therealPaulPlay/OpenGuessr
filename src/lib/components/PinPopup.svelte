@@ -7,7 +7,7 @@
 	import { purchasedPins } from "$lib/stores/accountStore";
 </script>
 
-<Popup z={971} verySlim={true} bind:open={$pinPopup}>
+<Popup verySlim={true} bind:open={$pinPopup}>
 	<div class="popup-title">
 		<h1>Pins</h1>
 	</div>

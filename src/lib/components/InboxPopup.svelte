@@ -30,7 +30,7 @@
 	});
 </script>
 
-<Popup z={960} verySlim={true} bind:open={$inboxPopup}>
+<Popup verySlim={true} bind:open={$inboxPopup}>
 	<div class="popup-title">
 		<h1>Inbox</h1>
 	</div>

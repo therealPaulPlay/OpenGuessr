@@ -47,7 +47,6 @@
 
 <Popup
 	verySlim={true}
-	z={980}
 	bind:open={$guestNamePickerPopup}
 	onUserClose={() => {
 		$guestNamePromise = null;

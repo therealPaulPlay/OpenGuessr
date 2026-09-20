@@ -11,7 +11,7 @@
 	});
 </script>
 
-<Popup z={971} frameless={true} {onUserClose} bind:open verySlim={!wide}>
+<Popup frameless={true} {onUserClose} bind:open verySlim={!wide}>
 	<div class="absolute-center">
 		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="page-browser-loading" />
 	</div>

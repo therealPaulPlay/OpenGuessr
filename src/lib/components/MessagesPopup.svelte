@@ -276,7 +276,7 @@
 	});
 </script>
 
-<Popup z={971} bind:open={$messagesPopup}>
+<Popup bind:open={$messagesPopup}>
 	<div class="popup-title">
 		<h1>Messages</h1>
 	</div>
@@ -294,7 +294,6 @@
 							role="button"
 							tabindex="0"
 							onclick={() => {
-								$messagesPopup = false;
 								showProfile(participantId);
 							}}>{alias}</span
 						>{i < outgoingInviteRecipients.length - 1 ? ", " : ""}
@@ -349,7 +348,6 @@
 												role="button"
 												tabindex="0"
 												onclick={() => {
-													$messagesPopup = false;
 													showProfile(message.systemEvent.participantId);
 												}}>{aliasCache.get(message.systemEvent.participantId) || "Unknown"}</span
 											>

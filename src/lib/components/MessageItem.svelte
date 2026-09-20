@@ -93,7 +93,6 @@
 			<button
 				class="alias-button"
 				onclick={() => {
-					$messagesPopup = false;
 					showProfile(message.participantId);
 				}}>{isOwn ? "You" : alias}</button
 			>

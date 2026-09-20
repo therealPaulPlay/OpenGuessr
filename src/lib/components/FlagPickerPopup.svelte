@@ -45,7 +45,7 @@
 	}
 </script>
 
-<Popup z={971} verySlim={true} bind:open={$flagPickerPopup}>
+<Popup verySlim={true} bind:open={$flagPickerPopup}>
 	<div class="popup-title">
 		<h1>Flags</h1>
 	</div>

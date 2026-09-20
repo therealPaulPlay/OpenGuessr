@@ -51,7 +51,7 @@
 	}
 </script>
 
-<Popup z={960} slim={true} bind:open={$friendBrowserPopup}>
+<Popup slim={true} bind:open={$friendBrowserPopup}>
 	<div class="popup-title">
 		<h1 id="friend-browser-header">Add a friend</h1>
 	</div>
