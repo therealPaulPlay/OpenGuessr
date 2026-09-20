@@ -205,7 +205,7 @@
 					</button>
 				</div>
 				{#if matchmakingPlayerAmount}
-					<div class="online-indicator bar-menu" transition:slide>
+					<div class="online-indicator bar-menu" transition:slide={{ duration: 250 }}>
 						<p>
 							<UsersRound strokeWidth={2.25} size={18} style="margin-bottom: -2px; margin-right: 2px;" />
 							{matchmakingPlayerAmount.toLocaleString()} playing
