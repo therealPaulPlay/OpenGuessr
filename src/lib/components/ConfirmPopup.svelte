@@ -26,7 +26,7 @@
 	}
 </script>
 
-<Popup verySlim={true} z={982} bind:open={$confirmPopupVisible}>
+<Popup verySlim={true} bind:open={$confirmPopupVisible}>
 	<div class="popup-title">
 		<h1>{$confirmTitle}</h1>
 	</div>

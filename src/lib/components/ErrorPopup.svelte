@@ -13,7 +13,6 @@
 </script>
 
 <Popup
-	z={999}
 	verySlim={true}
 	bind:open={$popupOpen}
 	onUserClose={() => {

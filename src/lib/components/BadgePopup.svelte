@@ -6,7 +6,7 @@
 	import Badge from "./Badge.svelte";
 </script>
 
-<Popup z={971} slim={true} bind:open={$badgePopup}>
+<Popup slim={true} bind:open={$badgePopup}>
 	<div class="popup-title">
 		<h1 id="badge-popup-header">Badges</h1>
 	</div>

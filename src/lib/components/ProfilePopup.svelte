@@ -164,7 +164,6 @@
 </script>
 
 <Popup
-	z={970}
 	slim={true}
 	bind:open={$profilePopup}
 	onUserClose={() => {
@@ -379,7 +378,7 @@
 						style:flex-grow="1"
 						onclick={() => {
 							playSound("basic_button");
-							$profilePopup = false;
+							if ($divisionMatchHistoryPopup) $profilePopup = false;
 							$historyForUserId = $profileId;
 							$divisionMatchHistoryPopup = true;
 						}}>History <History size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" /></button

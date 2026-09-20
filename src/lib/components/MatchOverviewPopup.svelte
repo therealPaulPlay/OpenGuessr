@@ -45,7 +45,7 @@
 	});
 </script>
 
-<Popup z={961} slim={true} bind:open={$matchOverviewPopup}>
+<Popup slim={true} bind:open={$matchOverviewPopup}>
 	<div class="popup-title">
 		<h1>Overview</h1>
 	</div>

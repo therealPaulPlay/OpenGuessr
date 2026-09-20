@@ -25,7 +25,7 @@
 	});
 </script>
 
-<Popup z={960} verySlim={true} bind:open={$outboxPopup}>
+<Popup verySlim={true} bind:open={$outboxPopup}>
 	<div class="popup-title">
 		<h1>Sent</h1>
 	</div>

@@ -18,7 +18,7 @@
 	});
 </script>
 
-<Popup verySlim={true} bind:open={$roundLogPopup} z={971}>
+<Popup verySlim={true} bind:open={$roundLogPopup}>
 	<div class="popup-title">
 		<h1>Rounds</h1>
 	</div>

@@ -23,7 +23,7 @@
 	});
 </script>
 
-<Popup bind:open={$moderationPopup} verySlim={true} z={900}>
+<Popup bind:open={$moderationPopup} verySlim={true}>
 	<div class="popup-title">
 		<h1>Moderation</h1>
 	</div>

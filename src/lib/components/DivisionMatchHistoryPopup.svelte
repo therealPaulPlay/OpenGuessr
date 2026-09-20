@@ -94,7 +94,7 @@
 	}
 </script>
 
-<Popup z={960} slim={true} bind:open={$divisionMatchHistoryPopup}>
+<Popup slim={true} bind:open={$divisionMatchHistoryPopup}>
 	<div class="popup-title">
 		<h1>Duel history</h1>
 	</div>

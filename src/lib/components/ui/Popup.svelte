@@ -1,20 +1,36 @@
-<!-- Universal Popup component, used as the "enclosure" for (basically) all Popups -->
-
 <script module>
-	const openZ = []; // Z of every open popup
+	const openZIndexes = []; // Z of every open popup, in ascending order
 </script>
 
 <script>
 	import { X } from "@lucide/svelte";
+	import { untrack } from "svelte";
 	import { backOut } from "svelte/easing";
 	import { fade, scale } from "svelte/transition";
 
-	let { children, z = 100, frameless, slim, verySlim, open = $bindable(false), onUserClose } = $props();
+	let { children, frameless, slim, verySlim, open = $bindable(false), onUserClose } = $props();
+
+	let zIndex = $state(0);
+
+	// Helper to remove the current popup's z-index
+	const removeZIndex = () => {
+		const index = openZIndexes.indexOf(zIndex);
+		if (index !== -1) openZIndexes.splice(index, 1);
+	};
 
 	$effect(() => {
-		if (!open) return;
-		openZ.push(z);
-		return () => openZ.splice(openZ.lastIndexOf(z), 1);
+		if (open) {
+			// Don't track zIndex
+			untrack(() => {
+				// On open, set zIndex to current maximum and push to array
+				const currentMax = Math.max(Math.max(...openZIndexes), 100); // Start with 100
+				zIndex = currentMax + 1;
+				openZIndexes.push(zIndex);
+			});
+			// Remove z index on close or unmount
+			// $effect stores this cleanup function, so that when it fires with open false it calls it once, then resets it to undefined
+			return removeZIndex;
+		}
 	});
 
 	function close() {
@@ -26,7 +42,7 @@
 <svelte:window
 	onkeydown={(e) => {
 		// Only the topmost popup closes (defaultPrevented breaks ties between equal z values)
-		if (e.key == "Escape" && open && z >= Math.max(...openZ) && !e.defaultPrevented) {
+		if (e.key == "Escape" && open && zIndex >= Math.max(...openZIndexes) && !e.defaultPrevented) {
 			e.preventDefault();
 			close();
 		}
@@ -37,7 +53,7 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="popup-holder"
-		style:z-index={z}
+		style:z-index={zIndex}
 		transition:fade={{ duration: 100 }}
 		onclick={(e) => {
 			if (e.target == e.currentTarget) close();
