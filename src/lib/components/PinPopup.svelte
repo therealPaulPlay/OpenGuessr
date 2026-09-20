@@ -20,10 +20,10 @@
 		<PinHolder pinId="4" pinLockText="500K XP" unlocked={$profileData?.experience >= 500000} />
 		<PinHolder pinId="5" pinLockText="5M XP" unlocked={$profileData?.experience >= 5000000} />
 		<PinHolder pinId="6" pinLockText="10M XP" unlocked={$profileData?.experience >= 10000000} />
-		<PinHolder pinId="7" pinLockText="75 Duel Wins" unlocked={$profileData?.duelsWon >= 75} />
-		<PinHolder pinId="8" pinLockText="50 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 50} />
-		<PinHolder pinId="9" pinLockText="10 Streak" unlocked={$profileData?.highestCountryStreak >= 10} />
-		<PinHolder pinId="10" pinLockText="250 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 250} />
+		<PinHolder pinId="7" pinLockText="75 Duel wins" unlocked={$profileData?.duelsWon >= 75} />
+		<PinHolder pinId="8" pinLockText="50 Comp. entries" unlocked={$profileData?.competitionsEntered >= 50} />
+		<PinHolder pinId="9" pinLockText="10 Count. streak" unlocked={$profileData?.highestCountryStreak >= 10} />
+		<PinHolder pinId="10" pinLockText="250 Comp. entries" unlocked={$profileData?.competitionsEntered >= 250} />
 		<PinHolder pinId="11" pinLockText="Supporter" unlocked={$profileData?.supporterLevel >= 1} />
 	</div>
 	<TitleSeparator text="Purchased" />

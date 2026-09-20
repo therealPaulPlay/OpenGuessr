@@ -8,7 +8,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Plus, Search } from "@lucide/svelte";
+	import { Check, Plus, Search, X } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
@@ -184,6 +184,8 @@
 					if (expired) expiredCompetitionData = [...expiredCompetitionData, ...data.competitions];
 					if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...data.competitions];
 					if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
+					if (!expired && daily) streakDays = data.streakDays ?? [];
+					if (!expired && daily) dailyCompetitionStreak = data.streak ?? 0;
 
 					if (!daily) {
 						if (!expired) notExpiredIndex += data.competitions?.length;
@@ -261,6 +263,28 @@
 
 		getCompetitionsFromServer(false, query);
 	}
+
+	// Daily competition streak ---------------------------------------------------------------------------------------------
+	const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+	let streakDays = $state([]); // "YYYY-MM-DD" UTC days the user entered the daily comp
+	let dailyCompetitionStreak = $state(0);
+
+	let lastFiveDays = $derived.by(() => {
+		const playedDays = new Set(streakDays);
+		let result = [];
+
+		// Days roll over at UTC midnight, same as the daily competition itself
+		for (let daysAgo = 4; daysAgo >= 0; daysAgo--) {
+			const date = new Date();
+			date.setUTCDate(date.getUTCDate() - daysAgo);
+			const day = date.toISOString().slice(0, 10);
+
+			result.push({ name: days[(date.getUTCDay() + 6) % 7], played: playedDays.has(day) });
+		}
+
+		return result;
+	});
 </script>
 
 <svelte:head>
@@ -413,11 +437,11 @@
 	</div>
 {/snippet}
 
-<div class="competition-container">
+<div class="competition-container daily-competition-container">
 	<div class="header-container">
 		<h2 class="header">Official</h2>
 	</div>
-	<div class="competition-area">
+	<div class="competition-area competition-area-daily">
 		<!-- daily competitions will be inserted here -->
 		{#if dailyCompetitionData?.length > 0}
 			{#each dailyCompetitionData as entry}
@@ -438,10 +462,45 @@
 						entry.entered,
 						true,
 					)}
+					<div class="daily-competition-streak-display competition-fade-in-item">
+						<img
+							alt="daily competition streak flame"
+							src="/img/daily_competition_streak_flame.png"
+							class="streak-flame"
+						/>
+						<h2 class="streak-count">
+							{dailyCompetitionStreak > 0 ? "Streak of " + dailyCompetitionStreak.toLocaleString() : "No streak"}
+						</h2>
+						<div class="daily-competition-days-container">
+							{#if !$isAuthenticated}
+								<div class="streak-not-authed">
+									<p>Sign up to start a streak!</p>
+								</div>
+							{/if}
+							<div
+								class="days-scroll of-left of-right"
+								style:filter={!$isAuthenticated ? "blur(1.5px)" : ""}
+								style:opacity={!$isAuthenticated ? 0.5 : ""}
+							>
+								{#each lastFiveDays as day}
+									<div class="streak-day-item" style:opacity={day.played ? "" : 0.5}>
+										<p>
+											{#if day.played}
+												<Check size={20} strokeWidth={2.25} />
+											{:else}
+												<X size={20} strokeWidth={2.25} />
+											{/if}
+										</p>
+										<p class="streak-day-name">{day.name}</p>
+									</div>
+								{/each}
+							</div>
+						</div>
+					</div>
 				{:else}
 					<Drawer
 						title="Yesterday's results"
-						class="competition-fade-in-item daily-competition-item"
+						class="competition-fade-in-item daily-expired-drawer"
 						hasBottomLayoutMargin={false}
 					>
 						{@render competitionItem(
@@ -501,14 +560,10 @@
 				bind:value={searchQuery}
 				placeholder="Search"
 				onkeydown={(event) => {
-					if (event.key === "Enter") {
-						event.preventDefault();
-					}
+					if (event.key === "Enter") event.preventDefault();
 				}}
 				onkeyup={(event) => {
-					if (event.key === "Enter") {
-						startSearch();
-					}
+					if (event.key === "Enter") startSearch();
 				}}
 			/>
 			<button
@@ -623,7 +678,6 @@
 			background-color 250ms ease,
 			filter 250ms ease;
 		width: 100%;
-		overflow: hidden;
 		height: auto;
 		margin-bottom: var(--layout-spacer);
 	}
@@ -670,7 +724,7 @@
 		box-sizing: border-box;
 	}
 
-	:global(.daily-competition-item) {
+	:global(.daily-expired-drawer) {
 		grid-column: 1 / -1;
 	}
 
@@ -830,6 +884,118 @@
 
 	.daily-primary {
 		background-color: var(--brand-color);
+	}
+
+	.daily-competition-streak-display {
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--panel-shadow);
+		padding: var(--layout-margin);
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		overflow: hidden;
+		box-sizing: border-box;
+		min-height: 420px;
+	}
+
+	.streak-flame {
+		position: absolute;
+		top: calc(var(--layout-margin) + var(--content-margin));
+		left: 50%;
+		translate: -50%;
+		width: 285px;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.streak-count {
+		flex-shrink: 0;
+		margin-bottom: calc(var(--box-margin) + var(--layout-margin));
+		text-align: center;
+		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
+		text-wrap: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		margin-top: auto;
+		z-index: 2;
+	}
+
+	.daily-competition-days-container {
+		background-color: var(--box-color);
+		padding: var(--box-margin);
+		border-radius: var(--box-margin);
+		box-shadow: var(--box-shadow);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.days-scroll {
+		overflow-x: auto;
+		scrollbar-width: none;
+		display: flex;
+		justify-content: safe center;
+		gap: var(--box-margin);
+		padding: calc(var(--layout-margin) + var(--box-margin));
+		margin: calc((var(--layout-margin) + var(--box-margin)) * -1);
+	}
+
+	.streak-day-item {
+		min-width: 25px;
+		flex-grow: 1;
+		padding: var(--content-margin);
+		background-color: var(--box-color);
+		border-radius: var(--content-margin);
+		box-shadow: var(--box-shadow);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		flex-basis: 0;
+	}
+
+	.streak-day-name {
+		font-size: 18px;
+		opacity: 0.5;
+		text-wrap: nowrap;
+	}
+
+	.daily-competition-container {
+		container-type: inline-size;
+		container-name: daily-competition;
+	}
+
+	.competition-area-daily {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.competition-area-daily > .daily-competition-item,
+	.competition-area-daily > .daily-competition-streak-display {
+		min-width: 0;
+	}
+
+	@container daily-competition (min-width: 650px) {
+		.competition-area-daily {
+			grid-template-columns: minmax(0, 1fr) minmax(0, min(350px, 40%));
+		}
+	}
+
+	.streak-not-authed {
+		display: flex;
+		justify-content: center;
+		background-color: var(--box-color-dark);
+		align-items: center;
+		padding: var(--box-margin);
+		position: absolute;
+		inset: 0;
+		z-index: 5;
+	}
+
+	.streak-not-authed p {
+		opacity: 0.5;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		text-wrap: nowrap;
 	}
 
 	.desc-section {

@@ -677,8 +677,8 @@
 	.name-container {
 		display: flex;
 		max-width: 75%;
-		align-items: center;
-		flex-wrap: wrap;
+		justify-content: center;
+		flex-direction: column;
 	}
 
 	.author-text {
@@ -688,7 +688,6 @@
 		overflow: hidden;
 		opacity: 0.5;
 		width: fit-content;
-		width: 100%;
 		cursor: pointer;
 		transition: opacity 250ms ease;
 	}
