@@ -12,7 +12,6 @@
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";
 	import TopBar from "$lib/components/TopBar.svelte";
-	import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
 	import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
 	import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
 	import MapHolder from "$lib/components/MapHolder.svelte";
@@ -110,7 +109,6 @@
 <Authentication />
 
 <!-- Logo and Nav -->
-<TopLeftLogo />
 <TopBar />
 <Notification />
 

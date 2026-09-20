@@ -16,6 +16,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { leaveTutorial } from "./TutorialOverlay.svelte";
+	import TopLeftLogo from "./TopLeftLogo.svelte";
 
 	let showHistoryTooltip = $state(false);
 	let navigationHistory = $state([]);
@@ -63,6 +64,9 @@
 		showHistoryTooltip = true;
 	}
 </script>
+
+<!-- Logo -->
+<TopLeftLogo />
 
 <!-- Menu -->
 <nav class="menu-button-area bar-menu">
