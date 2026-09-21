@@ -23,7 +23,7 @@
 	});
 </script>
 
-<div class="daily-competition-days-container">
+<div class="daily-competition-days-container" class:overlapping={compact}>
 	{#if !$isAuthenticated}
 		<div class="streak-not-authed">
 			<p>Sign up to start a streak!</p>
@@ -59,7 +59,16 @@
 		overflow: hidden;
 		box-sizing: border-box;
 		width: 100%;
+        transition: opacity 250ms ease;
 	}
+
+    .overlapping {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        margin-top: calc(-1 * var(--box-margin));
+        padding-top: calc(var(--layout-margin) + var(--content-margin));
+        mask-image: linear-gradient(transparent, black 40%);
+    }
 
 	.days-scroll {
 		overflow-x: auto;

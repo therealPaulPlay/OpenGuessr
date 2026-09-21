@@ -4,7 +4,7 @@ import { generateNewLocation } from "$lib/utils/generateLocation";
 import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { baseMaps, countryMaps, continentMaps, defaultMap, tutorialMap, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
-import { changeMap } from "$lib/utils/changeMap";
+import { changeMap } from "$lib/utils/changeMapUtils";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";

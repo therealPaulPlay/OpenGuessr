@@ -40,7 +40,7 @@
 
 	import { defaultMap, tutorialMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { singleplayer } from "$lib/stores/modeStore";
-	import { changeMap } from "$lib/utils/changeMap";
+	import { changeMap } from "$lib/utils/changeMapUtils";
 	import { playSound } from "$lib/utils/soundManager";
 	import { ArrowRight, Play } from "@lucide/svelte";
 	import { get } from "svelte/store";

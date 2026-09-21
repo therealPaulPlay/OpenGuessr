@@ -78,23 +78,11 @@
 					throw new Error("Error parsing competition details", { cause: error });
 				}
 			} else {
-				let responseData = null;
-
-				responseData = await response.json();
-
-				let errorMessages = [];
-
-				if (responseData.error) errorMessages.push(responseData.error);
-				if (responseData.message) errorMessages.push(responseData.message);
-
-				if (responseData.errors && Array.isArray(responseData.errors)) {
-					responseData.errors.forEach((err) => {
-						if (err.msg) errorMessages.push(err.msg);
-						else errorMessages.push(JSON.stringify(err));
-					});
-				}
-
-				throw new Error(errorMessages.join(" ") || "Unknown error - please check the network tab.");
+				let responseData;
+				try {
+					responseData = await response.json();
+				} catch {}
+				throw new Error(responseData?.error || "Unknown error");
 			}
 		} catch (error) {
 			console.error("Error occurred trying to enter a competition:", error);
@@ -155,7 +143,7 @@
 			if (expired) loadMoreExpired = false;
 
 			const {
-				errorMessages,
+				error,
 				competitions,
 				streakDays: streakDaysResponse,
 				streak: streakResponse,
@@ -167,11 +155,10 @@
 				index: expired ? expiredIndex : notExpiredIndex,
 			});
 
-			if (errorMessages) {
-				const errorString = errorMessages.join(" ");
-				if (daily) dailyCompetitionError = errorString;
-				if (!daily && !expired) activeCompetitionError = errorString;
-				if (!daily && expired) expiredCompetitionsError = errorString;
+			if (error) {
+				if (daily) dailyCompetitionError = error;
+				if (!daily && !expired) activeCompetitionError = error;
+				if (!daily && expired) expiredCompetitionsError = error;
 			} else {
 				let noContentLoaded = true;
 

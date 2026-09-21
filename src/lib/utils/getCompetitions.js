@@ -36,33 +36,20 @@ export async function getCompetitions({ expired = false, search = "", daily = fa
                 return { competitions: data.competitions, streakDays: data.streakDays, streak: data.streak };
             } catch (error) {
                 console.error("Error parsing successful competition response:", error);
-                return { errorMessages: ["Failed to parse successful competition response."] };
+                return { error: "Failed to parse successful response." };
             }
         } else {
             let responseData = null;
 
             try {
                 responseData = await response.json();
-
-                let errorMessages = [];
-
-                if (responseData.error) errorMessages.push(responseData.error);
-                if (responseData.message) errorMessages.push(responseData.message);
-
-                if (responseData.errors && Array.isArray(responseData.errors)) {
-                    responseData.errors.forEach((err) => {
-                        if (err.msg) errorMessages.push(err.msg);
-                        else errorMessages.push(JSON.stringify(err));
-                    });
-                }
-
-                return { errorMessages };
+                return { error: responseData.error };
             } catch {
-                return { errorMessages: ["Request failed with status " + response.status + "."] };
+                return { error: "Request failed with status " + response.status + "." };
             }
         }
     } catch (error) {
-        console.error("Error occurred during competition load: ", error);
-        return { errorMessages: ["A network error has occurred."] };
+        console.error("Error occurred during competition load:", error);
+        return { error: "A network error has occurred." };
     }
 }

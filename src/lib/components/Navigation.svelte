@@ -1,7 +1,7 @@
 <script>
 	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 	import { isAuthenticated, username } from "$lib/stores/accountStore";
-	import { singleplayer } from "$lib/stores/modeStore";
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
@@ -11,15 +11,17 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { ArrowRight, Bug, PencilRuler, Plus, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { page } from "$app/state";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
+	import MapItem from "./MapItem.svelte";
 	import { getCompetitions } from "$lib/utils/getCompetitions";
+	import { baseMaps } from "$lib/stores/context-specific/officialMapsStore";
+	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
 
 	let scrollNameText = $state(false);
 
 	function checkTextLength(text) {
 		const textLength = text.length;
-		scrollNameText = textLength > 30;
+		scrollNameText = textLength > 25;
 	}
 
 	username.subscribe((value) => {
@@ -35,8 +37,8 @@
 
 	async function loadStreakDays() {
 		try {
-			const { errorMessages, streakDays: streakDaysResponse } = await getCompetitions({ daily: true });
-			if (errorMessages) throw new Error(errorMessages.join(" "));
+			const { error, streakDays: streakDaysResponse } = await getCompetitions({ daily: true });
+			if (error) throw new Error(error);
 
 			streakDays = streakDaysResponse ?? [];
 		} catch (error) {
@@ -55,7 +57,8 @@
 		role="button"
 		transition:fade={{ duration: 100 }}
 	>
-		<div class="red-fade"></div>
+		<!-- Dark-ish panel color fade from bottom up to make the controls more legible -->
+		<div class="panel-fade"></div>
 		<img
 			class="logo-image"
 			src="/img/openguessr.svg"
@@ -63,121 +66,69 @@
 		/>
 		<div class="navigation-menu">
 			<div class="navigation-box bar-menu">
-				<button
-					class="standard-button white navigation-button large-button"
-					disabled={!$singleplayer}
+				{#each $baseMaps as { map, imgUrl }}
+					<MapItem
+						name={map}
+						{imgUrl}
+						compact={true}
+						selected={isMapSelected(map) && $navigationMenu}
+						onclick={() => {
+							playSound("button_juicy");
+							selectMap(map);
+						}}
+					/>
+				{/each}
+				<MapItem
+					name="More maps"
+					compact={true}
 					onclick={() => {
+						goto("/maps");
 						playSound("basic_button");
-						$navigationMenu = false;
 					}}
 				>
-					<div class="navigation-inner-main">
-						Singleplayer
-						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-					</div>
-					<div class="navigation-inner-options">
-						<div
-							class="standard-button navigation-option"
-							onclick={(e) => {
-								e.stopPropagation();
-								goto("/maps");
-								playSound("basic_button");
-							}}
-						>
-							World
-							<ArrowRight size={20} strokeWidth={2.25} />
-						</div>
-						<div
-							class="standard-button navigation-option"
-							onclick={(e) => {
-								e.stopPropagation();
-								goto("/maps");
-								playSound("basic_button");
-							}}
-						>
-							Capital Cities
-							<ArrowRight size={20} strokeWidth={2.25} />
-						</div>
-						<div
-							class="standard-button navigation-option"
-							onclick={(e) => {
-								e.stopPropagation();
-								goto("/maps");
-								playSound("basic_button");
-							}}
-						>
-							Famous Places
-							<ArrowRight size={20} strokeWidth={2.25} />
-						</div>
-						<div
-							class="standard-button navigation-option"
-							onclick={(e) => {
-								e.stopPropagation();
-								goto("/maps");
-								playSound("basic_button");
-							}}
-						>
-							<Plus size={20} strokeWidth={2.25} />
-							More
-						</div>
-					</div>
-				</button>
+					{#snippet cover()}
+						<Plus size={25} strokeWidth={2} />
+					{/snippet}
+				</MapItem>
 			</div>
 			<div class="navigation-row">
-				<div class="navigation-box navigation-box-half bar-menu">
+				<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 					<button
-						class="standard-button white navigation-button large-button"
+						class="standard-button white navigation-button large-button navigation-button-small-wide"
 						onclick={() => {
 							goto("/multiplayer");
 							playSound("basic_button");
 						}}
 					>
-						<div class="navigation-inner-main">
-							Multiplayer
-							<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-						</div>
-						<div class="navigation-inner-options">
-							<div
-								class="standard-button navigation-option"
-								onclick={(e) => {
-									e.stopPropagation();
-									goto("/multiplayer");
-									playSound("basic_button");
-								}}
-							>
-								Duel
-								<ArrowRight size={20} strokeWidth={2.25} />
-							</div>
-							<div
-								class="standard-button navigation-option"
-								onclick={(e) => {
-									e.stopPropagation();
-									goto("/multiplayer");
-									playSound("basic_button");
-								}}
-							>
-								2v2
-								<ArrowRight size={20} strokeWidth={2.25} />
-							</div>
-						</div>
+						Multiplayer
+						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 					</button>
+					<div class="navigation-inner-options">
+						<div
+							class="standard-button white-soft option-button"
+							onclick={(e) => {
+								e.stopPropagation();
+								goto("/multiplayer");
+								playSound("basic_button");
+							}}
+						>
+							Duel
+							<ArrowRight size={20} strokeWidth={2.25} />
+						</div>
+					</div>
 				</div>
-				<div class="navigation-box navigation-box-half bar-menu">
+				<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 					<button
-						class="standard-button white navigation-button large-button"
+						class="standard-button white large-button navigation-button navigation-button-small-wide"
 						onclick={() => {
 							goto("/competitions");
 							playSound("basic_button");
 						}}
 					>
-						<div class="navigation-inner-main">
-							Competitions
-							<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
-						</div>
-						<div class="navigation-inner-options">
-							<CompetitionStreakCalendar {streakDays} compact={true} />
-						</div>
+						Competitions
+						<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 					</button>
+					<CompetitionStreakCalendar {streakDays} compact={true} />
 				</div>
 			</div>
 			<div class="navigation-row">
@@ -192,8 +143,8 @@
 								playSound("basic_button");
 							}}
 						>
-							<div id="account-name-area" class:account-name-fade={scrollNameText}>
-								<p id="account-name" contenteditable="false" class:name-scroll={scrollNameText}>
+							<div class="account-name-area" class:account-name-fade={scrollNameText}>
+								<p class:name-scroll={scrollNameText}>
 									{$username || "Guest"}
 								</p>
 							</div>
@@ -254,7 +205,8 @@
 					</button>
 				</div>
 			</div>
-			<div class="navigation-box bar-menu">
+			<!-- Link section -->
+			<div class="navigation-box bar-menu link-box">
 				<button
 					class="standard-button white link-button large-button"
 					aria-label="Report bug"
@@ -361,7 +313,7 @@
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
 		margin-top: auto;
-		margin-bottom: var(--layout-spacer);
+		position: relative;
 	}
 
 	.navigation-row {
@@ -383,20 +335,26 @@
 		align-items: stretch;
 	}
 
-	.navigation-inner-main {
-		display: flex;
-		gap: var(--content-margin);
-		padding-inline: var(--content-margin);
-		align-items: center;
+	.navigation-box-stack {
+		flex-direction: column;
+		gap: 0;
 	}
 
-	.navigation-inner-options {
-		width: 100%;
-		display: flex;
-		gap: var(--box-margin);
-		align-self: stretch;
-		flex-grow: 1;
-		box-sizing: border-box;
+	.link-box {
+		margin-top: calc(var(--layout-spacer) - var(--layout-margin));
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		margin-inline: auto;
+		flex-grow: 0;
+		width: fit-content;
+	}
+
+	.link-box:not(:hover) > * {
+		opacity: 0.5;
+	}
+
+	:global(.navigation-menu:has(.link-box:hover) .navigation-box:not(.link-box) > *) {
+		opacity: 0.5;
 	}
 
 	.navigation-icon {
@@ -409,26 +367,14 @@
 	}
 
 	.navigation-button {
-		width: auto;
-		max-width: 100%;
 		border-radius: var(--box-margin);
 		flex-grow: 1;
-		flex-basis: 60px;
 		display: flex;
 		gap: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: var(--layout-margin);
-		flex-basis: 100%;
 		box-sizing: border-box;
-	}
-
-	.navigation-button:has(.navigation-option:hover) {
-		filter: none;
-	}
-
-	.navigation-button:has(.navigation-option:active) {
-		transform: none;
 	}
 
 	.link-button {
@@ -439,30 +385,11 @@
 		aspect-ratio: 1/1;
 	}
 
-	.navigation-option {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--content-margin);
-		flex-grow: 1;
-		padding: var(--box-margin);
-		padding-inline: var(--layout-margin);
-		height: 100%;
-		background-color: var(--box-color);
-	}
-
 	.navigation-button:not(.navigation-button-small) {
 		height: 100%;
 		display: flex;
 		flex-wrap: wrap;
 		padding: var(--box-margin);
-	}
-
-	.navigation-button:has(.navigation-inner-options) {
-		flex-direction: column;
-		flex-wrap: nowrap;
-		align-items: stretch;
-		justify-content: flex-start;
 	}
 
 	.navigation-button-small {
@@ -471,6 +398,41 @@
 		flex-basis: 40px;
 		padding-inline: var(--box-margin);
 		height: auto;
+	}
+
+	.navigation-button-small-wide {
+		height: auto !important;
+		width: 100%;
+		flex-grow: 0;
+	}
+
+	.navigation-inner-options {
+		display: flex;
+		gap: var(--box-margin);
+		width: 100%;
+		align-self: stretch;
+		flex-grow: 1;
+		box-sizing: border-box;
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		padding: var(--box-margin);
+		padding-top: calc(var(--layout-margin) + var(--content-margin));
+		margin-top: calc(-1 * var(--box-margin));
+		border-radius: var(--box-margin);
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		mask-image: linear-gradient(transparent, black 40%);
+		transition: opacity 250ms ease;
+	}
+
+	.option-button {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 100%;
+		gap: var(--content-margin);
+		border: none;
+		box-shadow: var(--box-shadow);
 	}
 
 	.logo-image {
@@ -484,12 +446,12 @@
 		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
 	}
 
-	.red-fade {
+	.panel-fade {
 		position: absolute;
 		inset: 0;
-		bottom: 50%;
-		background: linear-gradient(var(--panel-color), transparent);
-		opacity: 0.5;
+		top: 40%;
+		background: linear-gradient(to top, var(--panel-color), transparent);
+		opacity: 0.75;
 	}
 
 	.account-button {
@@ -501,24 +463,21 @@
 		flex-basis: 0;
 	}
 
-	#account-name-area {
+	.account-name-area {
 		flex-grow: 1;
 		overflow: hidden;
 		white-space: nowrap;
-		text-align: start;
-	}
-
-	#account-name {
-		color: white;
-		display: inline-block;
-		width: fit-content;
-		margin-top: -3px;
-		box-sizing: border-box;
+		display: flex;
+		padding: var(--box-margin);
+		padding-inline: 0;
 	}
 
 	.account-name-button {
 		overflow: hidden;
 		min-width: 150px;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+		flex-wrap: nowrap !important;
 	}
 
 	.account-name-fade {
@@ -536,7 +495,7 @@
 
 		100% {
 			/* adjust second param to be max-width of element minus about 5px */
-			transform: translateX(calc(-100% + 250px));
+			transform: translateX(calc(-100% + 215px));
 		}
 	}
 </style>
