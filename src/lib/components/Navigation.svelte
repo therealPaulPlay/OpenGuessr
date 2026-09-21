@@ -9,13 +9,15 @@
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { ArrowRight, Bug, PencilRuler, Plus, Section, UserRoundPlus } from "@lucide/svelte";
+	import { Bug, PencilRuler, Plus, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
 	import { getCompetitions } from "$lib/utils/getCompetitions";
 	import { baseMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
+	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
+	import RoomCodeInput from "./RoomCodeInput.svelte";
 
 	let scrollNameText = $state(false);
 
@@ -28,7 +30,7 @@
 		if (value) checkTextLength(value);
 	});
 
-	// Daily competition streak days overview widget -------------------------------------------
+	// Daily competition streak widget -------------------------------------------
 	let streakDays = $state([]);
 
 	$effect(() => {
@@ -104,16 +106,14 @@
 						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 					</button>
 					<div class="navigation-inner-options">
-						<div
-							class="standard-button white-soft option-button"
-							onclick={(e) => {
-								e.stopPropagation();
-								goto("/multiplayer");
-								playSound("basic_button");
-							}}
-						>
-							Duel
-							<ArrowRight size={20} strokeWidth={2.25} />
+						<div class="multiplayer-quick-play">
+							<RoomCodeInput
+								compact={true}
+								submitFn={(code) => {
+									playSound("basic_button");
+									joinFromAnywhere(code);
+								}}
+							/>
 						</div>
 					</div>
 				</div>
@@ -404,6 +404,8 @@
 		height: auto !important;
 		width: 100%;
 		flex-grow: 0;
+		/* Needed due to the padding trick of the box below, otherwise that lower bit is not clickable */
+		z-index: 1;
 	}
 
 	.navigation-inner-options {
@@ -425,14 +427,10 @@
 		transition: opacity 250ms ease;
 	}
 
-	.option-button {
+	.multiplayer-quick-play {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		height: 100%;
 		gap: var(--content-margin);
-		border: none;
-		box-shadow: var(--box-shadow);
+		overflow: hidden;
 	}
 
 	.logo-image {
@@ -444,6 +442,8 @@
 		margin-top: 200px;
 		height: auto;
 		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.panel-fade {
@@ -494,7 +494,7 @@
 		}
 
 		100% {
-			/* adjust second param to be max-width of element minus about 5px */
+			/* Adjust second param to be max-width of element minus about 5px */
 			transform: translateX(calc(-100% + 215px));
 		}
 	}

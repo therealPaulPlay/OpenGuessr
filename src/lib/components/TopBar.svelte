@@ -75,7 +75,7 @@
 						toMenu();
 						break;
 				}
-			}}><LogOut size={22} /> <span class="leave-button-span">Leave</span></button
+			}}><LogOut size={22} /> <span class="leave-button-span">Menu</span></button
 		>
 	</nav>
 {/if}

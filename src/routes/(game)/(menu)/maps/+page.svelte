@@ -550,7 +550,7 @@
 					loadCommunityMaps(currentFetchIndex + 50);
 				}}
 			>
-				<Plus strokeWidth={2.25} size={20} style="margin-bottom: -4px;" />
+				<Plus strokeWidth={2.25} size={20} style="margin-bottom: -3px;" />
 			</MapItem>
 		{/if}
 		{#if errorMessageShown}

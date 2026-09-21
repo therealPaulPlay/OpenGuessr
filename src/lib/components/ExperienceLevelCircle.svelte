@@ -68,6 +68,7 @@
 		align-items: center;
 		background-color: rgba(0, 0, 0, 0.15);
 		border-radius: 50%;
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.progress-ring {
