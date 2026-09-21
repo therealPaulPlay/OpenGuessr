@@ -13,6 +13,7 @@
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import Chip from "./ui/Chip.svelte";
 	import MapAttribution from "./MapAttribution.svelte";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	let mapCategoryName = $derived.by(() => {
 		if (!$currentLocationLatitude || !$currentLocationLongitude) return "...";
@@ -35,7 +36,7 @@
 	});
 </script>
 
-{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
+{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
 	<!-- Needed for TOS compliance -->
 	<div
 		in:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: 150 }}

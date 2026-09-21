@@ -5,31 +5,15 @@
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { fade, fly, scale } from "svelte/transition";
+	import { fade } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Bug, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
+	import { ArrowRight, Bug, PencilRuler, Plus, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { page } from "$app/state";
 
 	let scrollNameText = $state(false);
-	let navigationListEnlarged = $state(false);
-	let navigationContentClickable = $state(false);
-	let swipeStartY = $state(null);
-
-	$effect(() => {
-		if (navigationListEnlarged) {
-			const timeoutId = setTimeout(() => {
-				navigationContentClickable = true;
-			}, 250);
-			return () => {
-				clearTimeout(timeoutId);
-				navigationContentClickable = false;
-			};
-		} else navigationContentClickable = false;
-	});
 
 	function checkTextLength(text) {
 		const textLength = text.length;
@@ -39,224 +23,298 @@
 	username.subscribe((value) => {
 		if (value) checkTextLength(value);
 	});
-
-	$effect(() => {
-		if ($navigationMenu === false) navigationListEnlarged = false;
-	});
 </script>
-
-<svelte:window
-	onkeydown={(e) => {
-		if (e.key == "Escape" && $navigationMenu) $navigationMenu = false;
-	}}
-/>
 
 {#if $navigationMenu}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="fullscreen-navigation-overlay"
 		style:display={page.url.pathname !== "/" ? "none" : ""}
 		tabindex="0"
 		role="button"
 		transition:fade={{ duration: 100 }}
-		onclick={(e) => {
-			if (e.target === e.currentTarget) $navigationMenu = false;
-		}}
 	>
+		<div class="red-fade"></div>
+		<img
+			class="logo-image"
+			src="/img/openguessr.svg"
+			alt="OpenGuessr logo - the free geography location-guessing game"
+		/>
 		<div class="navigation-menu">
-			<div class="navigation-box bar-menu" in:scale>
+			<div class="navigation-box bar-menu">
 				<button
 					class="standard-button white navigation-button large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
-						goto("/multiplayer");
 						playSound("basic_button");
-					}}
-					>Multiplayer
-					<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-				</button>
-				<button
-					class="standard-button white navigation-button large-button"
-					disabled={!$singleplayer}
-					onclick={() => {
-						goto("/competitions");
-						playSound("basic_button");
+						$navigationMenu = false;
 					}}
 				>
-					Competitions
-					<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
-				</button>
-				<button
-					class="standard-button white navigation-button large-button"
-					disabled={!$singleplayer}
-					onclick={() => {
-						goto("/maps");
-						playSound("basic_button");
-					}}
-				>
-					Maps
-					<img class="navigation-icon" src="/img/maps_icon.png" alt="Maps" />
+					<div class="navigation-inner-main">
+						Singleplayer
+						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
+					</div>
+					<div class="navigation-inner-options">
+						<div
+							class="standard-button navigation-option"
+							onclick={(e) => {
+								e.stopPropagation();
+								goto("/maps");
+								playSound("basic_button");
+							}}
+						>
+							World
+							<ArrowRight size={20} strokeWidth={2.25} />
+						</div>
+						<div
+							class="standard-button navigation-option"
+							onclick={(e) => {
+								e.stopPropagation();
+								goto("/maps");
+								playSound("basic_button");
+							}}
+						>
+							Capital Cities
+							<ArrowRight size={20} strokeWidth={2.25} />
+						</div>
+						<div
+							class="standard-button navigation-option"
+							onclick={(e) => {
+								e.stopPropagation();
+								goto("/maps");
+								playSound("basic_button");
+							}}
+						>
+							Famous Places
+							<ArrowRight size={20} strokeWidth={2.25} />
+						</div>
+						<div
+							class="standard-button navigation-option"
+							onclick={(e) => {
+								e.stopPropagation();
+								goto("/maps");
+								playSound("basic_button");
+							}}
+						>
+							<Plus size={20} strokeWidth={2.25} />
+							More
+						</div>
+					</div>
 				</button>
 			</div>
-			<div class="navigation-box bar-menu" in:scale={{ delay: 50 }}>
-				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				{#if $isAuthenticated}
-					<div
-						class="navigation-button standard-button white large-button account-name-button"
+			<div class="navigation-row">
+				<div class="navigation-box navigation-box-half bar-menu">
+					<button
+						class="standard-button white navigation-button large-button"
 						onclick={() => {
-							showProfile(localStorage.getItem("id"));
+							goto("/multiplayer");
 							playSound("basic_button");
 						}}
 					>
-						<div id="account-name-area" class:account-name-fade={scrollNameText}>
-							<p id="account-name" contenteditable="false" class:name-scroll={scrollNameText}>
-								{$username || "Guest"}
-							</p>
+						<div class="navigation-inner-main">
+							Multiplayer
+							<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 						</div>
-						<ExperienceLevelCircle />
-					</div>
-				{:else}
+						<div class="navigation-inner-options">
+							<div
+								class="standard-button navigation-option"
+								onclick={(e) => {
+									e.stopPropagation();
+									goto("/multiplayer");
+									playSound("basic_button");
+								}}
+							>
+								Duel
+								<ArrowRight size={20} strokeWidth={2.25} />
+							</div>
+							<div
+								class="standard-button navigation-option"
+								onclick={(e) => {
+									e.stopPropagation();
+									goto("/multiplayer");
+									playSound("basic_button");
+								}}
+							>
+								2v2
+								<ArrowRight size={20} strokeWidth={2.25} />
+							</div>
+						</div>
+					</button>
+				</div>
+				<div class="navigation-box navigation-box-half bar-menu">
 					<button
-						class="standard-button navigation-button large-button"
+						class="standard-button white navigation-button large-button"
+						onclick={() => {
+							goto("/competitions");
+							playSound("basic_button");
+						}}
+					>
+						<div class="navigation-inner-main">
+							Competitions
+							<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
+						</div>
+						<div class="navigation-inner-options">
+							<div class="standard-button navigation-option">
+								Placeholder
+								<ArrowRight size={20} strokeWidth={2.25} />
+							</div>
+							<!-- TODO daily competiiton days widget similar to one on the competition page -->
+						</div>
+					</button>
+				</div>
+			</div>
+			<div class="navigation-row">
+				<div class="navigation-box navigation-box-half bar-menu">
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					{#if $isAuthenticated}
+						<div
+							class="navigation-button standard-button white large-button account-name-button account-button"
+							onclick={() => {
+								showProfile(localStorage.getItem("id"));
+								playSound("basic_button");
+							}}
+						>
+							<div id="account-name-area" class:account-name-fade={scrollNameText}>
+								<p id="account-name" contenteditable="false" class:name-scroll={scrollNameText}>
+									{$username || "Guest"}
+								</p>
+							</div>
+							<ExperienceLevelCircle />
+						</div>
+					{:else}
+						<button
+							class="standard-button navigation-button large-button account-button"
+							onclick={() => {
+								playSound("basic_button");
+								signupPrompt();
+							}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+						>
+					{/if}
+				</div>
+				<div class="navigation-box navigation-box-half bar-menu">
+					<button
+						class="standard-button white navigation-button navigation-button-small large-button"
+						{@attach tooltip({ text: "Leaderboard" })}
 						onclick={() => {
 							playSound("basic_button");
-							signupPrompt();
-						}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+							goto("/leaderboard");
+						}}
 					>
-				{/if}
+						<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
+					</button>
+					<button
+						class="standard-button white navigation-button navigation-button-small large-button"
+						{@attach tooltip({ text: "Shop" })}
+						onclick={() => {
+							goto("/shop");
+							playSound("basic_button");
+						}}
+					>
+						<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
+					</button>
+					<button
+						class="standard-button white navigation-button navigation-button-small large-button"
+						aria-label="Education"
+						{@attach tooltip({ text: "Education" })}
+						onclick={() => {
+							playSound("basic_button");
+							window.open("https://education.openguessr.com", "_blank");
+						}}
+					>
+						<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
+					</button>
+					<button
+						class="standard-button white navigation-button navigation-button-small large-button"
+						id="settings-button-mobile"
+						{@attach tooltip({ text: "Settings" })}
+						onclick={() => {
+							playSound("basic_button");
+							settingsPopup.set(true);
+						}}
+					>
+						<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
+					</button>
+				</div>
 			</div>
-			<div class="navigation-box navigation-icon-row bar-menu" in:scale={{ delay: 100 }}>
+			<div class="navigation-box bar-menu">
 				<button
-					class="standard-button white navigation-button navigation-button-small large-button"
-					disabled={!$singleplayer}
-					{@attach tooltip({ text: "Leaderboard" })}
-					onclick={() => {
-						playSound("basic_button");
-						goto("/leaderboard");
-					}}
-				>
-					<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
-				</button>
-				<button
-					class="standard-button white navigation-button navigation-button-small large-button"
-					disabled={!$singleplayer}
-					{@attach tooltip({ text: "Shop" })}
-					onclick={() => {
-						goto("/shop");
-						playSound("basic_button");
-					}}
-				>
-					<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
-				</button>
-				<button
-					class="standard-button white navigation-button navigation-button-small large-button"
-					disabled={!$singleplayer}
-					{@attach tooltip({ text: "Education" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open("https://education.openguessr.com", "_blank");
-					}}
-				>
-					<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
-				</button>
-				<button
-					class="standard-button white navigation-button navigation-button-small large-button"
-					id="settings-button-mobile"
-					{@attach tooltip({ text: "Settings" })}
-					onclick={() => {
-						playSound("basic_button");
-						settingsPopup.set(true);
-					}}
-				>
-					<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
-				</button>
-			</div>
-		</div>
-
-		{#if navigationListEnlarged}
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div
-				class="navigation-list-hover-overlay"
-				transition:fade={{ duration: 150 }}
-				onclick={() => (navigationListEnlarged = false)}
-			></div>
-		{/if}
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			class="navigation-list bar-menu"
-			class:hovered={navigationListEnlarged}
-			onpointerenter={(e) => {
-				if (e.pointerType !== "touch") navigationListEnlarged = true;
-			}}
-			onpointerleave={(e) => {
-				if (e.pointerType !== "touch") navigationListEnlarged = false;
-			}}
-			onpointerdown={(e) => {
-				if (e.pointerType !== "touch") return;
-				navigationListEnlarged = true;
-				swipeStartY = e.clientY;
-			}}
-			onpointermove={(e) => {
-				if (e.pointerType !== "touch" || swipeStartY === null) return;
-				const deltaY = e.clientY - swipeStartY;
-				if (deltaY > 50) navigationListEnlarged = false;
-			}}
-			onpointerup={() => {
-				swipeStartY = null;
-			}}
-			in:fly={{ delay: 50, x: -10, y: 100, duration: 350 }}
-		>
-			<div class="navigation-list-content" style:pointer-events={navigationContentClickable ? "auto" : "none"}>
-				<TitleSeparator text="Links" noMargin={true} class="main-menu-list-header" />
-				<button
-					class="list-button"
+					class="standard-button white link-button large-button"
 					aria-label="Report bug"
+					{@attach tooltip({ text: "Report bug" })}
 					onclick={() => {
-						navigationListEnlarged = false;
+						playSound("basic_button");
 						$bugspotPopup = true;
 					}}
 				>
-					Report bug
-					<Bug size={21} strokeWidth={2.25} style="margin-bottom: -2px;" />
+					<Bug size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
 				</button>
 				<button
-					class="list-button"
+					class="standard-button white link-button large-button"
+					aria-label="Discord"
+					{@attach tooltip({ text: "Discord" })}
 					onclick={() => {
-						navigationListEnlarged = false;
+						playSound("basic_button");
 						window.open($discordInviteUrl, "_blank").focus();
 					}}
 				>
-					Discord
-					<img src="/img/discord.png" alt="Discord Logo" class="social-icon" />
+					<img src="/img/discord.png" alt="Discord logo" class="navigation-icon" />
 				</button>
 				<button
-					class="list-button"
+					class="standard-button white link-button large-button"
+					aria-label="Reddit"
+					{@attach tooltip({ text: "Reddit" })}
 					onclick={() => {
-						navigationListEnlarged = false;
+						playSound("basic_button");
 						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
 					}}
 				>
-					Reddit
-					<img src="/img/reddit.png" alt="Reddit Logo" class="social-icon" />
+					<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
 				</button>
 				<button
-					class="list-button"
+					class="standard-button white link-button large-button"
+					aria-label="Twitter"
+					{@attach tooltip({ text: "Twitter" })}
 					onclick={() => {
-						navigationListEnlarged = false;
+						playSound("basic_button");
+						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+					}}
+				>
+					<img src="/img/reddit.png" alt="X logo" class="navigation-icon" />
+				</button>
+				<button
+					class="standard-button white link-button large-button"
+					aria-label="YouTube"
+					{@attach tooltip({ text: "YouTube" })}
+					onclick={() => {
+						playSound("basic_button");
+						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+					}}
+				>
+					<img src="/img/reddit.png" alt="X logo" class="navigation-icon" />
+				</button>
+				<button
+					class="standard-button white link-button large-button"
+					aria-label="Legal"
+					{@attach tooltip({ text: "Legal" })}
+					onclick={() => {
+						playSound("basic_button");
 						goto("/legal");
 					}}
 				>
-					Legal <Section size={20} strokeWidth={2.25} />
+					<Section size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
 				</button>
 				<button
-					class="list-button"
+					class="standard-button white link-button large-button"
+					aria-label="About"
+					{@attach tooltip({ text: "About" })}
 					onclick={() => {
-						navigationListEnlarged = false;
+						playSound("basic_button");
 						goto("/about");
 					}}
 				>
-					About <PencilRuler size={20} strokeWidth={2.25} />
+					<PencilRuler size={19} strokeWidth={2.25} style="margin-inline: 2px;" />
 				</button>
 			</div>
 		</div>
@@ -270,26 +328,32 @@
 		z-index: 15;
 		text-align: center;
 		align-content: center;
-		display: block;
+		display: flex;
+		flex-direction: column;
 		background-color: var(--dark-background);
 		backdrop-filter: blur(var(--weak-blur));
-	}
-
-	.social-icon {
-		width: 20px;
-		height: auto;
-		user-select: none;
-		pointer-events: none;
 	}
 
 	.navigation-menu {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
-		gap: var(--box-margin);
-		max-width: 350px;
+		gap: var(--layout-margin);
+		width: 650px;
+		max-width: 100%;
+		box-sizing: border-box;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
+		margin-top: auto;
+		margin-bottom: var(--layout-spacer);
+	}
+
+	.navigation-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+		gap: var(--layout-margin);
+		width: 100%;
 	}
 
 	.navigation-box {
@@ -299,6 +363,21 @@
 		flex-grow: 1;
 		overflow: hidden;
 		width: 100%;
+		box-sizing: border-box;
+		align-items: stretch;
+	}
+
+	.navigation-inner-main {
+		display: flex;
+		gap: var(--content-margin);
+		padding-inline: var(--content-margin);
+		align-items: center;
+	}
+
+	.navigation-inner-options {
+		width: 100%;
+		display: flex;
+		gap: var(--box-margin);
 		box-sizing: border-box;
 	}
 
@@ -323,22 +402,78 @@
 		align-items: center;
 		padding-inline: var(--layout-margin);
 		flex-basis: 100%;
+		box-sizing: border-box;
 	}
 
-	.navigation-icon-row {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+	.navigation-button:has(.navigation-option:hover) {
+		filter: none;
 	}
 
-	@media (max-width: 320px) {
-		.navigation-icon-row {
-			grid-template-columns: repeat(2, 1fr);
-		}
+	.navigation-button:has(.navigation-option:active) {
+		transform: none;
+	}
+
+	.link-button {
+		flex-grow: 1;
+		border: none;
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		aspect-ratio: 1/1;
+	}
+
+	.navigation-option {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--content-margin);
+		flex-grow: 1;
+		padding: var(--box-margin);
+		padding-inline: var(--layout-margin);
+		height: 45px;
+		background-color: var(--box-color);
+	}
+
+	.navigation-button:not(.navigation-button-small) {
+		height: fit-content;
+		display: flex;
+		flex-wrap: wrap;
+		padding: var(--box-margin);
 	}
 
 	.navigation-button-small {
 		justify-content: center;
 		min-width: 0;
+		flex-basis: 40px;
+		padding-inline: var(--box-margin);
+		height: auto;
+	}
+
+	.logo-image {
+		width: 100%;
+		max-width: 800px;
+		margin-inline: auto;
+		box-sizing: border-box;
+		padding-inline: var(--layout-margin);
+		margin-top: 200px;
+		height: auto;
+		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
+	}
+
+	.red-fade {
+		position: absolute;
+		inset: 0;
+		bottom: 50%;
+		background: linear-gradient(var(--panel-color), transparent);
+		opacity: 0.5;
+	}
+
+	.account-button {
+		flex-basis: 60%;
+	}
+
+	.navigation-box-half {
+		width: auto;
+		flex-basis: 0;
 	}
 
 	#account-name-area {
@@ -365,67 +500,6 @@
 		mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
 	}
 
-	.navigation-list {
-		position: fixed;
-		z-index: 3;
-		height: 240px;
-		display: flex;
-		box-sizing: border-box;
-		bottom: calc(-1 * var(--layout-margin) * 4.25);
-		left: var(--layout-margin);
-		width: 200px;
-		overflow: hidden;
-		margin-inline: auto;
-		border-radius: var(--layout-margin);
-		rotate: 5deg;
-		padding-inline: var(--layout-margin);
-		transition:
-			rotate 250ms ease,
-			bottom 250ms ease,
-			left 250ms ease;
-	}
-
-	.navigation-list-content {
-		mask-image: linear-gradient(to bottom, black 40%, rgba(0, 0, 0, 0.15) 75%);
-		justify-content: start;
-		align-items: start;
-		flex-direction: column;
-		display: flex;
-		width: 100%;
-		gap: var(--box-margin);
-		height: 100%;
-	}
-
-	@media (max-width: 1000px) {
-		.navigation-list {
-			bottom: calc(-1 * var(--layout-margin) * 9);
-		}
-
-		.navigation-list-content {
-			mask-image: linear-gradient(to bottom, black 15%, rgba(0, 0, 0, 0.15) 40%);
-		}
-	}
-
-	.hovered {
-		rotate: 0deg !important;
-		left: var(--layout-margin);
-		bottom: var(--layout-margin);
-	}
-
-	.hovered .navigation-list-content {
-		mask-image: none;
-	}
-
-	.list-button {
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		transition:
-			color 250ms ease,
-			opacity 250ms ease;
-	}
-
 	:global(.name-scroll) {
 		animation: scrollText 5s ease-in-out infinite alternate;
 	}
@@ -436,23 +510,8 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 250px));
 			/* adjust second param to be max-width of element minus about 5px */
+			transform: translateX(calc(-100% + 250px));
 		}
-	}
-
-	.navigation-list-hover-overlay {
-		position: fixed;
-		inset: 0;
-		z-index: 1;
-		background-color: var(--box-color-dark);
-	}
-
-	.list-button:hover {
-		opacity: 0.5;
-	}
-
-	:global(.main-menu-list-header) {
-		padding-top: var(--content-margin);
 	}
 </style>

@@ -1,9 +1,16 @@
-import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { page } from '$app/stores';
+import { derived, writable } from 'svelte/store';
 
 // Misc UI Parts
 export const navigationMenu = writable(false);
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignetteVisible = writable(false);
+export const inMenu = derived([navigationMenu, page], ([navigationMenu, page], set) => {
+    if (navigationMenu) set(true);
+    else if (browser && page.url.pathname !== "/") set(true);
+    else set(false);
+});
 
 // Popup Visibility
 export const settingsPopup = writable(false);

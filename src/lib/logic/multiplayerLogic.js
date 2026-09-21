@@ -5,12 +5,10 @@ import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { playSound } from "$lib/utils/soundManager.js";
-import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { leaveFunction } from "$lib/stores/modeStore.js";
+import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
 import {
     teamAmount, roundAmount, roundLength,
     multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -53,17 +51,8 @@ export function getTeamFromClientId(id) {
 
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
 function setMultiplayerUI(enable) {
-    if (enable) {
-        leaveFunction.set(() => {
-            showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
-            playSound("leave_round");
-        });
-        chatVisible.set(true);
-        navigationMenu.set(false); // Disable navigation screen for seamless game entry
-    } else {
-        leaveFunction.set(); // Hides leave option too
-        chatVisible.set(false);
-    }
+    if (enable) chatVisible.set(true);
+    else chatVisible.set(false);
 }
 
 multiplayer.subscribe((isMultiplayer) => {
