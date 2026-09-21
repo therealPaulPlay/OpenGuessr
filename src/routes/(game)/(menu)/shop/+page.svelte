@@ -233,8 +233,8 @@
 							}}
 						>
 							<img class="token-icon-white" alt="token" src="/img/token_icon_white.png" />
-							<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins)}</span>
-							{$specialOfferPrice != 0 ? $specialOfferPrice : "Owned"}
+							<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins).toLocaleString()}</span>
+							{$specialOfferPrice != 0 ? $specialOfferPrice.toLocaleString() : "Owned"}
 						</button>
 					</div>
 				</div>

@@ -12,6 +12,8 @@
 	import { ArrowRight, Bug, PencilRuler, Plus, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { page } from "$app/state";
+	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
+	import { getCompetitions } from "$lib/utils/getCompetitions";
 
 	let scrollNameText = $state(false);
 
@@ -23,6 +25,24 @@
 	username.subscribe((value) => {
 		if (value) checkTextLength(value);
 	});
+
+	// Daily competition streak days overview widget -------------------------------------------
+	let streakDays = $state([]);
+
+	$effect(() => {
+		if ($isAuthenticated) loadStreakDays();
+	});
+
+	async function loadStreakDays() {
+		try {
+			const { errorMessages, streakDays: streakDaysResponse } = await getCompetitions({ daily: true });
+			if (errorMessages) throw new Error(errorMessages.join(" "));
+
+			streakDays = streakDaysResponse ?? [];
+		} catch (error) {
+			console.error("Error occurred during streak load: ", error);
+		}
+	}
 </script>
 
 {#if $navigationMenu}
@@ -155,11 +175,7 @@
 							<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 						</div>
 						<div class="navigation-inner-options">
-							<div class="standard-button navigation-option">
-								Placeholder
-								<ArrowRight size={20} strokeWidth={2.25} />
-							</div>
-							<!-- TODO daily competiiton days widget similar to one on the competition page -->
+							<CompetitionStreakCalendar {streakDays} compact={true} />
 						</div>
 					</button>
 				</div>
@@ -378,6 +394,8 @@
 		width: 100%;
 		display: flex;
 		gap: var(--box-margin);
+		align-self: stretch;
+		flex-grow: 1;
 		box-sizing: border-box;
 	}
 
@@ -429,15 +447,22 @@
 		flex-grow: 1;
 		padding: var(--box-margin);
 		padding-inline: var(--layout-margin);
-		height: 45px;
+		height: 100%;
 		background-color: var(--box-color);
 	}
 
 	.navigation-button:not(.navigation-button-small) {
-		height: fit-content;
+		height: 100%;
 		display: flex;
 		flex-wrap: wrap;
 		padding: var(--box-margin);
+	}
+
+	.navigation-button:has(.navigation-inner-options) {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		align-items: stretch;
+		justify-content: flex-start;
 	}
 
 	.navigation-button-small {

@@ -8,7 +8,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Check, Plus, Search, X } from "@lucide/svelte";
+	import { Plus, Search } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
@@ -16,6 +16,8 @@
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import { openCompetitionLeaderboard } from "$lib/utils/openCompetitionLeaderboard";
 	import { page } from "$app/state";
+	import CompetitionStreakCalendar from "$lib/components/CompetitionStreakCalendar.svelte";
+	import { getCompetitions } from "$lib/utils/getCompetitions";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
 
@@ -152,95 +154,60 @@
 			if (!expired) loadMoreActive = false;
 			if (expired) loadMoreExpired = false;
 
-			// Endpoint selection
-			let Endpoint = null;
-			if (!expired) Endpoint = competitionsEndpoint + "/" + notExpiredIndex;
-			if (expired) Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
-			if (search) Endpoint = competitionsEndpoint + "/search/" + notExpiredIndex;
-			if (daily) Endpoint = competitionsEndpoint + "/daily/daily-competition";
-			if (filterEntered) Endpoint = competitionsEndpoint + "/not-entered/" + notExpiredIndex;
-
-			// Build query params
-			const params = new URLSearchParams();
-			const userId = localStorage.getItem("id");
-			if (userId) params.set("id", userId);
-			if (search) params.set("search", search);
-			if (params.size > 0) Endpoint += "?" + params.toString();
-
-			const headers = {};
-			if (filterEntered) headers["Authorization"] = "Bearer " + localStorage.getItem("bearer");
-
-			const response = await fetch(Endpoint, {
-				method: "GET",
-				headers,
+			const {
+				errorMessages,
+				competitions,
+				streakDays: streakDaysResponse,
+				streak: streakResponse,
+			} = await getCompetitions({
+				expired,
+				search,
+				daily,
+				filterEntered,
+				index: expired ? expiredIndex : notExpiredIndex,
 			});
 
-			if (response.ok) {
+			if (errorMessages) {
+				const errorString = errorMessages.join(" ");
+				if (daily) dailyCompetitionError = errorString;
+				if (!daily && !expired) activeCompetitionError = errorString;
+				if (!daily && expired) expiredCompetitionsError = errorString;
+			} else {
 				let noContentLoaded = true;
 
-				try {
-					const data = await response.json();
+				// Populate arrays, set messages
+				if (expired) expiredCompetitionData = [...expiredCompetitionData, ...competitions];
+				if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...competitions];
+				if (!expired && daily) dailyCompetitionData = competitions; // Only one, so no need to concatinate arrays here
+				if (!expired && daily) streakDays = streakDaysResponse ?? [];
+				if (!expired && daily) streakNumber = streakResponse ?? 0;
 
-					if (expired) expiredCompetitionData = [...expiredCompetitionData, ...data.competitions];
-					if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...data.competitions];
-					if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
-					if (!expired && daily) streakDays = data.streakDays ?? [];
-					if (!expired && daily) dailyCompetitionStreak = data.streak ?? 0;
-
-					if (!daily) {
-						if (!expired) notExpiredIndex += data.competitions?.length;
-						else expiredIndex += data.competitions?.length;
-					}
-
-					if (data.competitions?.length > 0) noContentLoaded = false;
-					let maxAmountLoaded = data.competitions.length == 10;
-
-					if (!daily) {
-						if (expired)
-							loadMoreExpired = maxAmountLoaded; // Max amount loaded = more available
-						else loadMoreActive = maxAmountLoaded;
-					}
-
-					if (search && noContentLoaded && notExpiredIndex == 0) activeCompetitionError = "Search returned no results.";
-					if (!daily && !search && !expired && noContentLoaded && notExpiredIndex == 0)
-						activeCompetitionError = "No active competitions found.";
-					if (!daily && !search && expired && noContentLoaded && expiredIndex == 0)
-						expiredCompetitionsError = "No expired competitions found.";
-					if (daily && !expired && !search && noContentLoaded)
-						dailyCompetitionError = "The daily competition is likely being generated right now.";
-				} catch (error) {
-					console.error("Error during the competition loading and add process: " + error);
+				if (!daily) {
+					if (!expired) notExpiredIndex += competitions?.length;
+					else expiredIndex += competitions?.length;
 				}
-			} else {
-				let responseData = null;
 
-				try {
-					responseData = await response.json();
+				if (competitions?.length > 0) noContentLoaded = false;
+				let maxAmountLoaded = competitions.length === 10;
 
-					let errorMessages = [];
-
-					if (responseData.error) errorMessages.push(responseData.error);
-					if (responseData.message) errorMessages.push(responseData.message);
-
-					if (responseData.errors && Array.isArray(responseData.errors)) {
-						responseData.errors.forEach((err) => {
-							if (err.msg) errorMessages.push(err.msg);
-							else errorMessages.push(JSON.stringify(err));
-						});
-					}
-
-					document.querySelectorAll(".error-text").forEach((e) => {
-						e.textContent = "Error: " + errorMessages.join(" ");
-					});
-				} catch {
-					document.querySelectorAll(".error-text").forEach((e) => {
-						e.textContent = "Error did not include json.";
-					});
+				if (!daily) {
+					// Max amount means more are usually available
+					if (expired) loadMoreExpired = maxAmountLoaded;
+					else loadMoreActive = maxAmountLoaded;
 				}
+
+				if (search && noContentLoaded && notExpiredIndex == 0) activeCompetitionError = "Search returned no results.";
+				if (!daily && !search && !expired && noContentLoaded && notExpiredIndex == 0) {
+					activeCompetitionError = "No active competitions.";
+				}
+				if (!daily && !search && expired && noContentLoaded && expiredIndex == 0) {
+					expiredCompetitionsError = "No expired competitions.";
+				}
+				if (daily && !expired && !search && noContentLoaded) dailyCompetitionError = "No daily competition.";
 			}
 		} catch (error) {
 			console.error("Error occurred during competition load: ", error);
-			return "A network error has occurred.";
+			return "The request failed.";
 		}
 	}
 
@@ -264,27 +231,9 @@
 		getCompetitionsFromServer(false, query);
 	}
 
-	// Daily competition streak ---------------------------------------------------------------------------------------------
-	const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-	let streakDays = $state([]); // "YYYY-MM-DD" UTC days the user entered the daily comp
-	let dailyCompetitionStreak = $state(0);
-
-	let lastFiveDays = $derived.by(() => {
-		const playedDays = new Set(streakDays);
-		let result = [];
-
-		// Days roll over at UTC midnight, same as the daily competition itself
-		for (let daysAgo = 4; daysAgo >= 0; daysAgo--) {
-			const date = new Date();
-			date.setUTCDate(date.getUTCDate() - daysAgo);
-			const day = date.toISOString().slice(0, 10);
-
-			result.push({ name: days[(date.getUTCDay() + 6) % 7], played: playedDays.has(day) });
-		}
-
-		return result;
-	});
+	// Daily competition streak -------------------------------------------
+	let streakNumber = $state(0);
+	let streakDays = $state([]);
 </script>
 
 <svelte:head>
@@ -469,33 +418,9 @@
 							class="streak-flame"
 						/>
 						<h2 class="streak-count">
-							{dailyCompetitionStreak > 0 ? "Streak of " + dailyCompetitionStreak.toLocaleString() : "No streak"}
+							{streakNumber > 0 ? "Streak of " + streakNumber.toLocaleString() : "No streak"}
 						</h2>
-						<div class="daily-competition-days-container">
-							{#if !$isAuthenticated}
-								<div class="streak-not-authed">
-									<p>Sign up to start a streak!</p>
-								</div>
-							{/if}
-							<div
-								class="days-scroll of-left of-right"
-								style:filter={!$isAuthenticated ? "blur(1.5px)" : ""}
-								style:opacity={!$isAuthenticated ? 0.5 : ""}
-							>
-								{#each lastFiveDays as day}
-									<div class="streak-day-item" style:opacity={day.played ? "" : 0.5}>
-										<p>
-											{#if day.played}
-												<Check size={20} strokeWidth={2.25} />
-											{:else}
-												<X size={20} strokeWidth={2.25} />
-											{/if}
-										</p>
-										<p class="streak-day-name">{day.name}</p>
-									</div>
-								{/each}
-							</div>
-						</div>
+						<CompetitionStreakCalendar {streakDays} />
 					</div>
 				{:else}
 					<Drawer
@@ -921,45 +846,6 @@
 		z-index: 2;
 	}
 
-	.daily-competition-days-container {
-		background-color: var(--box-color);
-		padding: var(--box-margin);
-		border-radius: var(--box-margin);
-		box-shadow: var(--box-shadow);
-		position: relative;
-		overflow: hidden;
-	}
-
-	.days-scroll {
-		overflow-x: auto;
-		scrollbar-width: none;
-		display: flex;
-		justify-content: safe center;
-		gap: var(--box-margin);
-		padding: calc(var(--layout-margin) + var(--box-margin));
-		margin: calc((var(--layout-margin) + var(--box-margin)) * -1);
-	}
-
-	.streak-day-item {
-		min-width: 25px;
-		flex-grow: 1;
-		padding: var(--content-margin);
-		background-color: var(--box-color);
-		border-radius: var(--content-margin);
-		box-shadow: var(--box-shadow);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		flex-basis: 0;
-	}
-
-	.streak-day-name {
-		font-size: 18px;
-		opacity: 0.5;
-		text-wrap: nowrap;
-	}
-
 	.daily-competition-container {
 		container-type: inline-size;
 		container-name: daily-competition;
@@ -978,24 +864,6 @@
 		.competition-area-daily {
 			grid-template-columns: minmax(0, 1fr) minmax(0, min(350px, 40%));
 		}
-	}
-
-	.streak-not-authed {
-		display: flex;
-		justify-content: center;
-		background-color: var(--box-color-dark);
-		align-items: center;
-		padding: var(--box-margin);
-		position: absolute;
-		inset: 0;
-		z-index: 5;
-	}
-
-	.streak-not-authed p {
-		opacity: 0.5;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		text-wrap: nowrap;
 	}
 
 	.desc-section {
