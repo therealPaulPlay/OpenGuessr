@@ -105,7 +105,6 @@
 
 	.segmented-input-box-compact .segment-input::placeholder {
 		font-size: 18px;
-		opacity: 0.5 !important;
 	}
 
 	.segmented-input-box-compact .segment-input:not(:focus) {

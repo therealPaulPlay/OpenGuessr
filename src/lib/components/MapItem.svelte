@@ -173,8 +173,4 @@
 		padding-inline: var(--content-margin);
 		padding-bottom: 2px;
 	}
-
-	.map-item-compact .map-name {
-		font-size: 20px;
-	}
 </style>
