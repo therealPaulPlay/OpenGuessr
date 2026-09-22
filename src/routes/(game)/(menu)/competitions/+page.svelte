@@ -721,6 +721,7 @@
 		overflow: hidden;
 		user-select: none;
 		opacity: 0.5;
+		width: fit-content;
 	}
 
 	.competition-author:hover {

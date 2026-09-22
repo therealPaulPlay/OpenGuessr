@@ -242,25 +242,25 @@
 				</button>
 				<button
 					class="standard-button white link-button large-button"
-					aria-label="Twitter"
-					{@attach tooltip({ text: "Twitter" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
-					}}
-				>
-					<img src="/img/reddit.png" alt="X logo" class="navigation-icon" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
 					aria-label="YouTube"
 					{@attach tooltip({ text: "YouTube" })}
 					onclick={() => {
 						playSound("basic_button");
-						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+						window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank").focus();
 					}}
 				>
-					<img src="/img/reddit.png" alt="X logo" class="navigation-icon" />
+					<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
+				</button>
+				<button
+					class="standard-button white link-button large-button"
+					aria-label="Twitter"
+					{@attach tooltip({ text: "Twitter" })}
+					onclick={() => {
+						playSound("basic_button");
+						window.open("https://x.com/PaulPlayStudio", "_blank").focus();
+					}}
+				>
+					<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />
 				</button>
 				<button
 					class="standard-button white link-button large-button"
