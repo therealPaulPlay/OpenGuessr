@@ -95,7 +95,7 @@
 	}
 
 	.selected-map-item {
-		background-color: rgba(255, 255, 255, 0.3);
+		background-color: rgba(255, 255, 255, 0.25);
 	}
 
 	.map-cover-image {
@@ -159,7 +159,7 @@
 		padding: var(--content-margin);
 		min-width: 80px;
 		flex-basis: 0;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--button-shadow);
 	}
 
 	.map-item-compact .map-cover-image,

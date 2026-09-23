@@ -5,15 +5,15 @@ export const defaultMap = readable("World");
 export const tutorialMap = readable("Tutorial");
 
 export const baseMaps = readable([
-    { map: "World", imgUrl: "/img/map-covers/world_cover.jpg" },
-    { map: "Capital Cities", imgUrl: "/img/map-covers/capital_cities_cover.jpg" },
-    { map: "Famous Places", imgUrl: "/img/map-covers/famous_places_cover.jpg" }
+    { map: "World", imgUrl: "/img/map-covers/world_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/world_cover.jpg" },
+    { map: "Capital Cities", imgUrl: "/img/map-covers/capital_cities_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/capital_cities_cover.jpg" },
+    { map: "Famous Places", imgUrl: "/img/map-covers/famous_places_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/famous_places_cover.jpg" }
 ]);
 
 export const specialMaps = readable([
-    { map: "Country Guessr", imgUrl: "/img/map-covers/country_guessr_cover.jpg" },
-    { map: "Image Guessr", imgUrl: "/img/map-covers/image_guessr_cover.jpg" },
-    { map: "Meta Guessr", imgUrl: "/img/map-covers/meta_guessr_cover.jpg" }
+    { map: "Country Guessr", imgUrl: "/img/map-covers/country_guessr_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/country_guessr_cover.jpg" },
+    { map: "Image Guessr", imgUrl: "/img/map-covers/image_guessr_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/image_guessr_cover.jpg" },
+    { map: "Meta Guessr", imgUrl: "/img/map-covers/meta_guessr_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/meta_guessr_cover.jpg" }
 ]);
 
 export const continentMaps = readable([

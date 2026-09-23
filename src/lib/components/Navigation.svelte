@@ -9,7 +9,7 @@
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Bug, PencilRuler, Plus, Section, UserRoundPlus } from "@lucide/svelte";
+	import { Bug, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
@@ -18,6 +18,7 @@
 	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 	import RoomCodeInput from "./RoomCodeInput.svelte";
+	import MoreMapsVisualization from "./MoreMapsVisualization.svelte";
 
 	let scrollNameText = $state(false);
 
@@ -87,11 +88,8 @@
 						goto("/maps");
 						playSound("basic_button");
 					}}
-				>
-					{#snippet cover()}
-						<Plus size={25} strokeWidth={2} />
-					{/snippet}
-				</MapItem>
+					cover={MoreMapsVisualization}
+				/>
 			</div>
 			<div class="navigation-row">
 				<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">

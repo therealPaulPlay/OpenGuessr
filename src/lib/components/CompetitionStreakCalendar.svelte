@@ -96,6 +96,7 @@
 		align-items: center;
 		justify-content: center;
 		flex-basis: 0;
+		transition: opacity 250ms ease;
 	}
 
 	.streak-day-name {
