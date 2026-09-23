@@ -12,7 +12,10 @@ export async function changeMap(mapName, regenerate = false, goBackAfterNav = fa
 }
 
 export function selectMap(name, { community = false, returnToMultiplayer = false } = {}) {
-    changeMap((community ? "community_" : "") + name, true, returnToMultiplayer);
+    // Only regenerate if the new map differs from the current selection
+    const doRegenerate = localStorage.getItem("selectedMap") !== (community ? "community_" + name : name);
+
+    changeMap((community ? "community_" : "") + name, doRegenerate, returnToMultiplayer);
     if (returnToMultiplayer) return;
 
     navigationMenu.set(false);
