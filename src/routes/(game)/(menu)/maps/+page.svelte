@@ -338,6 +338,7 @@
 			name="Quizzes"
 			imgUrl="/img/map-covers/quiz_cover.jpg"
 			slim={true}
+			link={true}
 			onclick={() => {
 				playSound("button_juicy");
 				window.open("https://education.openguessr.com/quiz", "_blank").focus();

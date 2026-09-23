@@ -12,10 +12,11 @@ export async function changeMap(mapName, regenerate = false, goBackAfterNav = fa
 }
 
 export function selectMap(name, { community = false, returnToMultiplayer = false } = {}) {
-    // Only regenerate if the new map differs from the current selection
-    const doRegenerate = localStorage.getItem("selectedMap") !== (community ? "community_" + name : name);
+    const newMap = (community ? "community_" : "") + name;
+    const currentMap = localStorage.getItem("selectedMap") ?? get(defaultMap); // No map stored means default is selected
 
-    changeMap((community ? "community_" : "") + name, doRegenerate, returnToMultiplayer);
+    // Only regenerate if the new map differs from the current selection
+    changeMap(newMap, currentMap !== newMap, returnToMultiplayer);
     if (returnToMultiplayer) return;
 
     navigationMenu.set(false);
@@ -27,5 +28,5 @@ export function isMapSelected(name, community = false) {
 
     const selectedMap = localStorage.getItem("selectedMap");
     if (community) name = "community_" + name;
-    return selectedMap == name || (name == get(defaultMap) && !selectedMap);
+    return selectedMap === name || (name === get(defaultMap) && !selectedMap);
 }

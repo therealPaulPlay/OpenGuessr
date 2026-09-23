@@ -1,4 +1,6 @@
 <script>
+	import { ExternalLink, Play } from "@lucide/svelte";
+
 	let {
 		name,
 		imgUrl = null,
@@ -12,6 +14,7 @@
 		chip,
 		cover,
 		children,
+		link = false,
 	} = $props();
 </script>
 
@@ -28,7 +31,16 @@
 	{onclick}
 >
 	{#if imgUrl}
-		<img class="map-cover-image" src={imgUrl} alt="map cover" />
+		<div class="image-container">
+			<div class="play-map-cover">
+				{#if !link}
+					<Play size={28} strokeWidth={1.75} style="filter: drop-shadow(0 0 5px rgba(0, 0, 0, 1))" />
+				{:else}
+					<ExternalLink size={28} strokeWidth={1.75} style="filter: drop-shadow(0 0 5px rgba(0, 0, 0, 1))" />
+				{/if}
+			</div>
+			<img class="map-cover-image" src={imgUrl} alt="map cover" />
+		</div>
 	{:else if cover}
 		<div class="map-cover-placeholder">{@render cover()}</div>
 	{/if}
@@ -172,5 +184,27 @@
 		flex-grow: 0;
 		padding-inline: var(--content-margin);
 		padding-bottom: 2px;
+	}
+
+	.image-container {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 16/9;
+	}
+
+	.map-item:hover .play-map-cover {
+		opacity: 1;
+	}
+
+	.play-map-cover {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.5);
+		border-radius: var(--content-margin);
+		opacity: 0;
+		transition: opacity 250ms ease;
 	}
 </style>
