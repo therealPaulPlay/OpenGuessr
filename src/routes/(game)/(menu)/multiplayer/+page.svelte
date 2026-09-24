@@ -33,7 +33,8 @@
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
-	import { hasNewMessageOrInvite, hcClient, initialHasNew } from "$lib/stores/context-specific/headlessChatStore";
+	import { hasNewMessageOrInvite, hcClient } from "$lib/stores/context-specific/headlessChatStore";
+	import { loadInitialHasNew } from "$lib/logic/headlessChatLogic";
 	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 	import InfoBanner from "$lib/components/InfoBanner.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -61,16 +62,8 @@
 	});
 
 	// Check if user has new messages or new invites (only if they have a hcClient, and only once)
-	$effect(async () => {
-		if ($hcClient && $hasNewMessageOrInvite === null) {
-			try {
-				$initialHasNew = false; // Set non-null to prevent re-runs (updates the derived hasNewMessageOrInvite)
-				const result = await $hcClient.getHasNew();
-				$initialHasNew = result.hasNewMessages || result.hasNewInvites;
-			} catch (error) {
-				console.error("Failed to get hasNew state from headless-chat:", error);
-			}
-		}
+	$effect(() => {
+		if ($hcClient) loadInitialHasNew();
 	});
 
 	// Load matchmaking player count

@@ -63,6 +63,21 @@ export function disposeHeadlessChatClient() {
     initialHasNew.set(null);
 }
 
+// Cheap check if the user has new invites or messages (does not need an active subscription, but does need SSE)
+export async function loadInitialHasNew() {
+    const client = get(hcClient);
+    if (!client || get(initialDataLoaded) || get(initialHasNew) !== null) return;
+
+    try {
+        initialHasNew.set(false); // Set non-null to prevent concurrent re-runs (updates the derived hasNewMessageOrInvite)
+        const result = await client.getHasNew();
+        initialHasNew.set(result.hasNewMessages || result.hasNewInvites);
+    } catch (error) {
+        initialHasNew.set(null); // Allow a retry if this function is called again (e.g. SSE was reconnecting)
+        console.error("Failed to get hasNew state from headless-chat:", error);
+    }
+}
+
 let initialLoadPromise = null; // Avoid loading multiple times if load is already active
 
 // Load initial data for conversations + invites + participant activity

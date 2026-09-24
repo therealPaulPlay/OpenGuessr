@@ -21,6 +21,10 @@
 	import MoreMapsVisualization from "./MoreMapsVisualization.svelte";
 	import { dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
+	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
+	import { hasNewMessageOrInvite, hcClient } from "$lib/stores/context-specific/headlessChatStore";
+	import { loadInitialHasNew } from "$lib/logic/headlessChatLogic";
+	import Chip from "./ui/Chip.svelte";
 
 	let scrollNameText = $state(false);
 
@@ -48,6 +52,11 @@
 			console.error("Error occurred during streak load: ", error);
 		}
 	}
+
+	// New HC messages or invites -----------------------------------------------
+	$effect(() => {
+		if ($navigationMenu && page.url.pathname === "/" && $hcClient) loadInitialHasNew();
+	});
 </script>
 
 {#if $navigationMenu}
@@ -101,6 +110,9 @@
 						}}
 					>
 						Multiplayer
+						{#if $newFriendRequest || $hasNewMessageOrInvite}
+							<Chip text="New" italic={true} red={true} mutedOpacity={false} class="navigation-new-chip" />
+						{/if}
 						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 					</button>
 					<div class="navigation-inner-options">
@@ -180,9 +192,7 @@
 					>
 						<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
 						{#if !$freeDailyTokensClaimed}
-							<div class="free-tokens-available">
-								<p>Free</p>
-							</div>
+							<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
 						{/if}
 					</button>
 					<button
@@ -370,6 +380,10 @@
 		pointer-events: none;
 	}
 
+	:global(.navigation-new-chip) {
+		margin-right: auto;
+	}
+
 	.navigation-button {
 		border-radius: var(--box-margin);
 		flex-grow: 1;
@@ -450,19 +464,15 @@
 		pointer-events: none;
 	}
 
-	.free-tokens-available {
-		border-radius: var(--content-margin);
-		background-color: var(--brand-color);
-		width: fit-content;
-		padding: 1px;
-		padding-inline: var(--content-margin);
+	:global(.chip.free-tokens-chip) {
 		position: absolute;
 		top: calc(-1 * var(--content-margin));
 		right: -5px;
-		box-shadow: var(--bulb-shadow);
+		padding-top: 1px;
+		padding-bottom: 1px;
 	}
 
-	.free-tokens-available p {
+	:global(.chip.free-tokens-chip, .chip.free-tokens-chip *) {
 		font-size: 16px;
 	}
 
