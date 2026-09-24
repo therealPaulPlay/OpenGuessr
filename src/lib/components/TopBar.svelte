@@ -3,7 +3,7 @@
 </script>
 
 <script>
-	import { inMenu, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
+	import { inMenu, mainMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur } from "svelte/transition";
 	import { competition, multiplayer } from "$lib/stores/modeStore.js";
@@ -47,32 +47,29 @@
 			})}
 			onclick={() => {
 				playSound("leave_round");
-
-				const toMenu = () => {
-					menuIntroductionNote.visible = false;
-					$navigationMenu = true;
-				};
+				menuIntroductionNote.visible = false; // Hide in case it was enabled (the player interacted with the menu, they now know it)
 
 				// Defer leave
 				switch (true) {
 					case $tutorial:
-						showConfirmPopup("Leave tutorial?", "To explore on your own, you need to leave the tutorial.", () => {
-							leaveTutorial();
-							toMenu();
-						});
+						showConfirmPopup(
+							"Leave tutorial?",
+							"To explore on your own, you need to leave the tutorial.",
+							leaveTutorial,
+						);
 						break;
 					case $multiplayer:
-						showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", () => {
-							leaveMultiplayer();
-							toMenu();
-						});
+						showConfirmPopup(
+							"Leave room?",
+							"You are about to leave the multiplayer room. Are you sure?",
+							leaveMultiplayer,
+						);
 						break;
 					case $competition:
 						leaveCompetition(true);
-						toMenu();
 						break;
 					default:
-						toMenu();
+						mainMenu.set(true);
 						break;
 				}
 			}}><LogOut size={22} /> <span class="leave-button-span">Menu</span></button

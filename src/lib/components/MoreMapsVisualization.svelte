@@ -11,7 +11,6 @@
 	function offset(array, amount = 1) {
 		const end = array.slice(-amount);
 		array = [...end, ...array];
-		console.log(array);
 		return array;
 	}
 </script>

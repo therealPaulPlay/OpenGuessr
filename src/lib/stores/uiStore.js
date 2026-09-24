@@ -3,11 +3,11 @@ import { page } from '$app/stores';
 import { derived, writable } from 'svelte/store';
 
 // Main menu, fades and loading
-export const navigationMenu = writable(false);
+export const mainMenu = writable(true); // Default to true, but tutorial might set it to false
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignetteVisible = writable(false);
-export const inMenu = derived([navigationMenu, page], ([navigationMenu, page], set) => {
-    if (navigationMenu) set(true);
+export const inMenu = derived([mainMenu, page], ([mainMenu, page], set) => {
+    if (mainMenu) set(true);
     else if (browser && page.url.pathname !== "/") set(true);
     else set(false);
 });

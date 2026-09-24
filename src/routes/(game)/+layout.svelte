@@ -49,7 +49,7 @@
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ModerationPopup from "$lib/components/Moderation.svelte";
-	import Navigation from "$lib/components/Navigation.svelte";
+	import Navigation from "$lib/components/MainMenu.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import Notification from "$lib/components/Notification.svelte";

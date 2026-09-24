@@ -2,7 +2,7 @@ import { goto } from "$app/navigation";
 import { get } from "svelte/store";
 import { browser } from "$app/environment";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
-import { navigationMenu } from "$lib/stores/uiStore";
+import { mainMenu } from "$lib/stores/uiStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 export async function changeMap(mapName, regenerate = false, goBackAfterNav = false) {
@@ -19,7 +19,8 @@ export function selectMap(name, { community = false, returnToMultiplayer = false
     changeMap(newMap, currentMap !== newMap, returnToMultiplayer);
     if (returnToMultiplayer) return;
 
-    navigationMenu.set(false);
+    // Close main menu and bring to homepage
+    mainMenu.set(false);
     goto("/");
 }
 

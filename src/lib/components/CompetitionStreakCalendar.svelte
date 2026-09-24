@@ -1,5 +1,4 @@
 <script>
-	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { Check, Clock, X } from "@lucide/svelte";
 
 	let { streakDays = [], compact = false } = $props(); // "YYYY-MM-DD" UTC days the user entered the daily comp
@@ -24,15 +23,8 @@
 </script>
 
 <div class="daily-competition-days-container" class:compact-container={compact}>
-	{#if !$isAuthenticated && !compact}
-		<div class="streak-not-authed">
-			<p>Sign up to start a streak!</p>
-		</div>
-	{/if}
 	<div
 		class="days-scroll of-left of-right"
-		style:filter={!$isAuthenticated && !compact ? "blur(1px) brightness(0.65)" : ""}
-		style:opacity={!$isAuthenticated && !compact ? 0.5 : ""}
 	>
 		{#each lastFiveDays as day}
 			<div class="streak-day-item" style:opacity={day.played ? "" : 0.5}>
@@ -40,7 +32,7 @@
 					{#if day.played}
 						<Check size={20} strokeWidth={2.25} />
 					{:else if day.isToday}
-						<Clock size={16} strokeWidth={2.75} />
+						<Clock size={18} strokeWidth={2.5} />
 					{:else}
 						<X size={20} strokeWidth={2.25} />
 					{/if}
@@ -106,28 +98,12 @@
 		justify-content: center;
 		align-items: center;
 		color: white;
+		flex-grow: 1;
 	}
 
 	.streak-day-name {
 		font-size: 18px;
 		opacity: 0.5;
-		text-wrap: nowrap;
-	}
-
-	.streak-not-authed {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: var(--box-margin);
-		position: absolute;
-		inset: 0;
-		z-index: 5;
-	}
-
-	.streak-not-authed p {
-		opacity: 0.5;
-		text-overflow: ellipsis;
-		overflow: hidden;
 		text-wrap: nowrap;
 	}
 </style>

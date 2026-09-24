@@ -2,10 +2,10 @@
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
 	import { isAuthenticated, username } from "$lib/stores/accountStore";
-	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
+	import { bugspotPopup, mainMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { fade, scale } from "svelte/transition";
+	import { blur, fade, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -55,11 +55,11 @@
 
 	// New HC messages or invites -----------------------------------------------
 	$effect(() => {
-		if ($navigationMenu && page.url.pathname === "/" && $hcClient) loadInitialHasNew();
+		if ($mainMenu && page.url.pathname === "/" && $hcClient) loadInitialHasNew();
 	});
 </script>
 
-{#if $navigationMenu}
+{#if $mainMenu}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
@@ -83,7 +83,7 @@
 						name={map}
 						{imgUrl}
 						compact={true}
-						selected={isMapSelected(map) && $navigationMenu}
+						selected={isMapSelected(map) && $mainMenu}
 						onclick={() => {
 							playSound("button_juicy");
 							selectMap(map);
@@ -111,7 +111,9 @@
 					>
 						Multiplayer
 						{#if $newFriendRequest || $hasNewMessageOrInvite}
-							<Chip text="New" italic={true} red={true} mutedOpacity={false} class="navigation-new-chip" />
+							<div class="navigation-new-chip" transition:blur>
+								<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+							</div>
 						{/if}
 						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 					</button>
@@ -138,7 +140,7 @@
 						Competitions
 						<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 					</button>
-					<CompetitionStreakCalendar {$dailyStreakDays} compact={true} />
+					<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
 				</div>
 			</div>
 			<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
@@ -382,6 +384,8 @@
 
 	:global(.navigation-new-chip) {
 		margin-right: auto;
+		margin-top: calc(-1 * var(--content-margin));
+		margin-bottom: calc(-1 * var(--content-margin));
 	}
 
 	.navigation-button {
@@ -467,9 +471,9 @@
 	:global(.chip.free-tokens-chip) {
 		position: absolute;
 		top: calc(-1 * var(--content-margin));
-		right: -5px;
-		padding-top: 1px;
-		padding-bottom: 1px;
+		right: calc(-1 * var(--content-margin));
+		padding-top: 1px !important;
+		padding-bottom: 1px !important;
 	}
 
 	:global(.chip.free-tokens-chip, .chip.free-tokens-chip *) {

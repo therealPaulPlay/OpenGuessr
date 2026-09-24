@@ -55,7 +55,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						show = false;
-						leaveTutorial();
+						leaveTutorial(false);
 					}}
 				>
 					<X size={22} strokeWidth={2.25} />

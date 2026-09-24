@@ -8,7 +8,7 @@ import { playSound } from "$lib/utils/soundManager.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
+import { guestNamePickerPopup, linkJoinPopup, mainMenu } from "$lib/stores/uiStore";
 import {
     teamAmount, roundAmount, roundLength,
     multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -358,6 +358,9 @@ export function leaveMultiplayer(destroy = true) {
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         checkGenerationTypeAndGenerate(); // Generate new location to match the singleplayer settings (selected map, timer etc.)
     }
+
+    // Bring player to main menu
+    mainMenu.set(true);
 }
 
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------

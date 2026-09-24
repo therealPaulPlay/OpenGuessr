@@ -406,7 +406,7 @@
 						<h2 class="streak-count">
 							{streakNumber > 0 ? "Streak of " + streakNumber.toLocaleString() : "No streak"}
 						</h2>
-						<CompetitionStreakCalendar {$dailyStreakDays} />
+						<CompetitionStreakCalendar streakDays={$dailyStreakDays} />
 					</div>
 				{:else}
 					<Drawer

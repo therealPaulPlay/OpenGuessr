@@ -4,13 +4,17 @@
 		tutorialStep.set(1);
 	}
 
-	export function leaveTutorial() {
+	export function leaveTutorial(toMenu = true) {
 		clearTimeout(finishTimeout);
 		tutorialStep.set(0);
 		tutorial.set(false);
 		localStorage.setItem("tutorialCompleted", true);
+
 		// In case this gets triggered because we enter multiplayer or a comp, don't regenerate and only change the map
 		if (localStorage.getItem("selectedMap") === get(tutorialMap)) changeMap(get(defaultMap), get(singleplayer));
+
+		// Return to main menu
+		if (toMenu) mainMenu.set(true);
 	}
 
 	let finishTimeout;
@@ -50,7 +54,7 @@
 	import { menuIntroductionNote } from "./TopBar.svelte";
 	import { page } from "$app/state";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
-	import { navigationMenu } from "$lib/stores/uiStore";
+	import { mainMenu } from "$lib/stores/uiStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	// If the user leaves singleplayer while the overlay is shown or the tutorial is active, leave tutorial
@@ -89,12 +93,11 @@
 		{
 			title: "Browse menu",
 			isPlay: false,
-			action: () => setTimeout(() => ($navigationMenu = true), 150),
+			action: () => setTimeout(() => ($mainMenu = true), 150),
 		},
 	];
 
-	// Since the overlay has a weak blur background like the navigation menu, it should be dismissable like the nav menu,
-	// but require a confirmation unless on the last slide (since leaving the tutorial is potentially unintended)
+	// Clicking anywhere could be interpreted as a "close this" gesture, hence we ask the user whether they want to leave
 	function dismissOverlay() {
 		if ($tutorial) {
 			return showConfirmPopup("Leave tutorial?", "Do you want to abort and leave the tutorial?", () => {
