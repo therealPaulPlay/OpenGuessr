@@ -24,15 +24,15 @@
 </script>
 
 <div class="daily-competition-days-container" class:compact-container={compact}>
-	{#if !$isAuthenticated}
+	{#if !$isAuthenticated && !compact}
 		<div class="streak-not-authed">
 			<p>Sign up to start a streak!</p>
 		</div>
 	{/if}
 	<div
 		class="days-scroll of-left of-right"
-		style:filter={!$isAuthenticated ? "blur(1.5px)" : ""}
-		style:opacity={!$isAuthenticated ? 0.5 : ""}
+		style:filter={!$isAuthenticated && !compact ? "blur(1px) brightness(0.65)" : ""}
+		style:opacity={!$isAuthenticated && !compact ? 0.5 : ""}
 	>
 		{#each lastFiveDays as day}
 			<div class="streak-day-item" style:opacity={day.played ? "" : 0.5}>
@@ -117,7 +117,6 @@
 	.streak-not-authed {
 		display: flex;
 		justify-content: center;
-		background-color: var(--box-color-dark);
 		align-items: center;
 		padding: var(--box-margin);
 		position: absolute;

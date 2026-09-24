@@ -20,6 +20,7 @@
 	import RoomCodeInput from "./RoomCodeInput.svelte";
 	import MoreMapsVisualization from "./MoreMapsVisualization.svelte";
 	import { dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
+	import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
 
 	let scrollNameText = $state(false);
 
@@ -170,6 +171,7 @@
 					</button>
 					<button
 						class="standard-button white navigation-button navigation-button-small large-button"
+						style:position="relative"
 						{@attach tooltip({ text: "Shop" })}
 						onclick={() => {
 							goto("/shop");
@@ -177,6 +179,11 @@
 						}}
 					>
 						<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
+						{#if !$freeDailyTokensClaimed}
+							<div class="free-tokens-available">
+								<p>Free</p>
+							</div>
+						{/if}
 					</button>
 					<button
 						class="standard-button white navigation-button navigation-button-small large-button"
@@ -441,6 +448,22 @@
 		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
 		user-select: none;
 		pointer-events: none;
+	}
+
+	.free-tokens-available {
+		border-radius: var(--content-margin);
+		background-color: var(--brand-color);
+		width: fit-content;
+		padding: 1px;
+		padding-inline: var(--content-margin);
+		position: absolute;
+		top: calc(-1 * var(--content-margin));
+		right: -5px;
+		box-shadow: var(--bulb-shadow);
+	}
+
+	.free-tokens-available p {
+		font-size: 16px;
 	}
 
 	.panel-fade {

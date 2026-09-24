@@ -213,7 +213,7 @@
 						class:epic-color={$specialOfferRarity == "epic"}
 						class:legendary-color={$specialOfferRarity == "legendary"}
 					>
-						<p>{$specialOfferRarity}</p>
+						<p>{$specialOfferRarity?.[0]?.toUpperCase() + $specialOfferRarity.slice(1)}</p>
 					</div>
 					<h1 class="special-offer-title">
 						{$specialOfferRarity?.[0]?.toUpperCase() + $specialOfferRarity.slice(1) || "Default"} bundle!
@@ -233,7 +233,9 @@
 							}}
 						>
 							<img class="token-icon-white" alt="token" src="/img/token_icon_white.png" />
-							<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins).toLocaleString()}</span>
+							<span class="special-offer-crossed-out"
+								>{calculateRegularBundlePrice($specialOfferPins).toLocaleString()}</span
+							>
 							{$specialOfferPrice != 0 ? $specialOfferPrice.toLocaleString() : "Owned"}
 						</button>
 					</div>
@@ -699,6 +701,7 @@
 		border-bottom-left-radius: var(--box-margin);
 		top: 0;
 		right: 0;
+		padding: 1px;
 		padding-inline: var(--panel-margin);
 		user-select: none;
 	}
