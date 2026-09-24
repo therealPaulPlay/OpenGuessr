@@ -457,13 +457,13 @@
 
 	.logo-image {
 		width: 100%;
-		max-width: 800px;
+		max-width: 700px;
 		margin-inline: auto;
 		box-sizing: border-box;
 		padding-inline: var(--layout-margin);
 		margin-top: 200px;
 		height: auto;
-		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
+		filter: drop-shadow(0 0 10px var(--dark-shadow-color));
 		user-select: none;
 		pointer-events: none;
 	}

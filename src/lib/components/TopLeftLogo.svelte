@@ -23,7 +23,7 @@
 	.image {
 		width: 165px;
 		height: 35px;
-		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
+		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
 	}
 
 	/* hide logo on screens that don't have room for it */

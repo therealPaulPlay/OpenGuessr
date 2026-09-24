@@ -85,7 +85,6 @@
 		right: var(--box-margin);
 		position: fixed;
 		width: auto;
-		display: flex;
 		justify-content: center;
 		align-items: center;
 		gap: var(--panel-margin);

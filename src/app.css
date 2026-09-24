@@ -22,6 +22,7 @@
     --supporter-green-soft: rgba(17, 217, 49, 0.5);
     --supporter-green-tint: rgba(17, 217, 49, 0.15);
     --panorama-background: rgb(19, 21, 28);
+    --dark-shadow-color: rgba(0, 0, 5, 0.3);
 
     /* Rarities */
     --common-color: rgba(145, 111, 111, 0.75);
@@ -43,8 +44,8 @@
     --box-shadow-bottom: inset 0 -0.1375rem 1px -1px rgba(0, 0, 10, 0.35);
     --box-shadow: var(--box-shadow-top), var(--box-shadow-bottom);
     --box-shadow-supporter: inset 0 0.075rem 0 var(--supporter-green-soft), inset 0 -0.075rem 0 rgba(6, 39, 12, 0.9);
-    --bulb-shadow: 0 0 5px rgba(0, 0, 5, 0.3), inset 0 0.075rem 3px hsla(0, 0%, 100%, 0.4), inset 0 -0.2rem 5px rgba(0, 0, 5, 0.3);
-    --panel-shadow: 0 2px 20px rgba(5, 6, 10, 0.3), inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 1px rgba(0, 0, 2, 0.3);
+    --bulb-shadow: 0 0 5px var(--dark-shadow-color), inset 0 0.075rem 3px hsla(0, 0%, 100%, 0.4), inset 0 -0.2rem 5px rgba(0, 0, 5, 0.3);
+    --panel-shadow: 0 2px 20px var(--dark-shadow-color), inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 1px rgba(0, 0, 2, 0.3);
 
     /* Blur values */
     --strong-blur: 50px;
