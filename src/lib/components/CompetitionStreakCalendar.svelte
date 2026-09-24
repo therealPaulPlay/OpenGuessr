@@ -1,6 +1,6 @@
 <script>
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { Check, X } from "@lucide/svelte";
+	import { Check, Clock, X } from "@lucide/svelte";
 
 	let { streakDays = [], compact = false } = $props(); // "YYYY-MM-DD" UTC days the user entered the daily comp
 
@@ -16,7 +16,7 @@
 			date.setUTCDate(date.getUTCDate() - daysAgo);
 			const day = date.toISOString().slice(0, 10);
 
-			result.push({ name: DAYS[(date.getUTCDay() + 6) % 7], played: playedDays.has(day) });
+			result.push({ name: DAYS[(date.getUTCDay() + 6) % 7], played: playedDays.has(day), isToday: daysAgo === 0 });
 		}
 
 		return result;
@@ -36,13 +36,15 @@
 	>
 		{#each lastFiveDays as day}
 			<div class="streak-day-item" style:opacity={day.played ? "" : 0.5}>
-				<p style:height={compact ? "calc(var(--layout-margin) + var(--content-margin))" : ""}>
+				<div style:height={compact ? "calc(var(--layout-margin) + var(--content-margin))" : ""}>
 					{#if day.played}
 						<Check size={20} strokeWidth={2.25} />
+					{:else if day.isToday}
+						<Clock size={16} strokeWidth={2.75} />
 					{:else}
 						<X size={20} strokeWidth={2.25} />
 					{/if}
-				</p>
+				</div>
 				<p class="streak-day-name">{day.name}</p>
 			</div>
 		{/each}
@@ -97,6 +99,13 @@
 		justify-content: center;
 		flex-basis: 0;
 		transition: opacity 250ms ease;
+	}
+
+	.streak-day-item div {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
 	}
 
 	.streak-day-name {
