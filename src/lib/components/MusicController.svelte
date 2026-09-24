@@ -1,11 +1,11 @@
 <!-- Control which music to play -->
 <script>
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-	import { page } from "$app/state";
 	import { playMusic } from "$lib/utils/soundManager";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	let musicStarted = $state(false);
 	let startMusicTimeout;
@@ -28,10 +28,7 @@
 	// Adjust volume to screen
 	$effect(() => {
 		if (!musicStarted) return;
-		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay) {
-			playMusic("regular", 0.35);
-		} else {
-			$singleplayer ? playMusic("regular") : playMusic("intense");
-		}
+		if ($resultScreenEnabled || $inMenu || $multiplayerOverlay) playMusic("regular", 0.35);
+		else $singleplayer ? playMusic("regular") : playMusic("intense");
 	});
 </script>

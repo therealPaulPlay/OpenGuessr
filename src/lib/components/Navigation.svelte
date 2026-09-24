@@ -5,7 +5,7 @@
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { fade } from "svelte/transition";
+	import { fade, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -77,7 +77,7 @@
 			alt="OpenGuessr logo - the free geography location-guessing game"
 		/>
 		<div class="navigation-menu">
-			<div class="navigation-box bar-menu">
+			<div class="navigation-box bar-menu" transition:scale={{ duration: 150, start: 0.9, delay: 50 }}>
 				{#each $baseMaps as { map, imgUrl }}
 					<MapItem
 						name={map}
@@ -100,7 +100,7 @@
 					cover={MoreMapsVisualization}
 				/>
 			</div>
-			<div class="navigation-row">
+			<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
 				<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 					<button
 						class="standard-button white navigation-button large-button navigation-button-small-wide"
@@ -141,7 +141,7 @@
 					<CompetitionStreakCalendar {$dailyStreakDays} compact={true} />
 				</div>
 			</div>
-			<div class="navigation-row">
+			<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
 				<div class="navigation-box navigation-box-half bar-menu">
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
