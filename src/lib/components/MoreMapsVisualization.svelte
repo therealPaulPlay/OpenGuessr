@@ -2,14 +2,18 @@
 	import { baseMaps, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { Plus } from "@lucide/svelte";
 
-	let mapList = $derived([...$baseMaps, ...$specialMaps]);
+	let mapList = $derived([
+		...$baseMaps,
+		...$specialMaps,
+		{ imgUrlTiny: "/img/map-covers/map-covers-tiny/quiz_cover.jpg" },
+	]);
 
-    function offset(array, amount = 1) {
-        const end = array.slice(-amount);
-        array = [...end, ...array];
-        console.log(array);
-        return array;
-    }
+	function offset(array, amount = 1) {
+		const end = array.slice(-amount);
+		array = [...end, ...array];
+		console.log(array);
+		return array;
+	}
 </script>
 
 <div class="container">
@@ -22,7 +26,7 @@
 				<!-- Render the same shuffled row twice so translating by -50% loops it -->
 				{#each [...shuffledMapList, ...shuffledMapList] as map}
 					<div class="map">
-						<img class="map-image" src={map.imgUrlTiny} alt="map cover" />
+						<img class="map-image" src={map.imgUrlTiny} alt="" />
 					</div>
 				{/each}
 			</div>
@@ -66,7 +70,7 @@
 		width: 110%;
 		height: 110%;
 		margin-left: -55px;
-        margin-top: -12px;
+		margin-top: -12px;
 	}
 
 	.horizontal-flex {
@@ -87,7 +91,7 @@
 		width: 30px;
 		aspect-ratio: 16/9;
 		border-radius: 3px;
-        pointer-events: none;
-        user-select: none;
+		pointer-events: none;
+		user-select: none;
 	}
 </style>
