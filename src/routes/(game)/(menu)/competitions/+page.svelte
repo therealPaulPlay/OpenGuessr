@@ -3,7 +3,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import { competitionData } from "$lib/stores/context-specific/competitionStore";
+	import { competitionData, dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -145,7 +145,7 @@
 			const {
 				error,
 				competitions,
-				streakDays: streakDaysResponse,
+				streakDays,
 				streak: streakResponse,
 			} = await getCompetitions({
 				expired,
@@ -166,7 +166,7 @@
 				if (expired) expiredCompetitionData = [...expiredCompetitionData, ...competitions];
 				if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...competitions];
 				if (!expired && daily) dailyCompetitionData = competitions; // Only one, so no need to concatinate arrays here
-				if (!expired && daily) streakDays = streakDaysResponse ?? [];
+				if (!expired && daily) $dailyStreakDays = streakDays ?? [];
 				if (!expired && daily) streakNumber = streakResponse ?? 0;
 
 				if (!daily) {
@@ -220,7 +220,6 @@
 
 	// Daily competition streak -------------------------------------------
 	let streakNumber = $state(0);
-	let streakDays = $state([]);
 </script>
 
 <svelte:head>
@@ -407,7 +406,7 @@
 						<h2 class="streak-count">
 							{streakNumber > 0 ? "Streak of " + streakNumber.toLocaleString() : "No streak"}
 						</h2>
-						<CompetitionStreakCalendar {streakDays} />
+						<CompetitionStreakCalendar {$dailyStreakDays} />
 					</div>
 				{:else}
 					<Drawer

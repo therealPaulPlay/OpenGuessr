@@ -19,6 +19,7 @@
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 	import RoomCodeInput from "./RoomCodeInput.svelte";
 	import MoreMapsVisualization from "./MoreMapsVisualization.svelte";
+	import { dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 
 	let scrollNameText = $state(false);
 
@@ -32,18 +33,16 @@
 	});
 
 	// Daily competition streak widget -------------------------------------------
-	let streakDays = $state([]);
-
 	$effect(() => {
 		if ($isAuthenticated) loadStreakDays();
 	});
 
 	async function loadStreakDays() {
 		try {
-			const { error, streakDays: streakDaysResponse } = await getCompetitions({ daily: true });
+			const { error, streakDays } = await getCompetitions({ daily: true });
 			if (error) throw new Error(error);
 
-			streakDays = streakDaysResponse ?? [];
+			$dailyStreakDays = streakDays ?? [];
 		} catch (error) {
 			console.error("Error occurred during streak load: ", error);
 		}
@@ -126,7 +125,7 @@
 						Competitions
 						<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 					</button>
-					<CompetitionStreakCalendar {streakDays} compact={true} />
+					<CompetitionStreakCalendar {$dailyStreakDays} compact={true} />
 				</div>
 			</div>
 			<div class="navigation-row">

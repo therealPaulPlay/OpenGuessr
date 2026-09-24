@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { derived, writable } from 'svelte/store';
 
-// Misc UI Parts
+// Main menu, fades and loading
 export const navigationMenu = writable(false);
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignetteVisible = writable(false);
