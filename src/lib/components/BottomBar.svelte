@@ -57,8 +57,8 @@
 </script>
 
 {#if !$inMenu}
-	<div id="bottom-bar" class="bottom-bar" transition:blur={{ duration: 250 }}>
-		<div class="bottom-left-menu bar-menu">
+	<div id="bottom-bar" class="bottom-bar">
+		<div class="bottom-left-menu bar-menu" transition:blur={{ duration: 250 }}>
 			<button
 				class="standard-button white"
 				{@attach tooltip({
@@ -97,7 +97,7 @@
 			{/if}
 		</div>
 		{#if !$countryGuessr}
-			<div class="bar-menu bottom-right-menu" transition:blur={{ duration: 250 }}>
+			<div class="bottom-right-menu bar-menu" transition:blur|global={{ duration: 250 }}>
 				<button
 					class="standard-button confirm-button white"
 					id="confirm-button"
