@@ -58,237 +58,245 @@
 		role="button"
 		transition:fade={{ duration: 100 }}
 	>
-		<!-- Dark-ish panel color fade from bottom up to make the controls more legible -->
-		<div class="panel-fade"></div>
 		<img
 			class="logo-image"
 			src="/img/openguessr.svg"
 			alt="OpenGuessr logo - the free geography location-guessing game"
 		/>
-		<div class="navigation-menu">
-			<div class="navigation-box bar-menu" transition:scale={{ duration: 150, start: 0.9, delay: 50 }}>
-				{#each $baseMaps as { map, imgUrl }}
-					<MapItem
-						name={map}
-						{imgUrl}
-						compact={true}
-						selected={isMapSelected(map) && $mainMenu}
-						onclick={() => {
-							playSound("button_juicy");
-							selectMap(map);
-						}}
-					/>
-				{/each}
-				<MapItem
-					name="More maps"
-					compact={true}
-					onclick={() => {
-						goto("/maps");
-						playSound("basic_button");
-					}}
-					cover={MoreMapsVisualization}
-				/>
-			</div>
-			<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
-				<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
-					<button
-						class="standard-button white navigation-button large-button navigation-button-small-wide"
-						onclick={() => {
-							goto("/multiplayer");
-							playSound("basic_button");
-						}}
-					>
-						Multiplayer
-						{#if $newFriendRequest || $hasNewMessageOrInvite}
-							<div class="navigation-new-chip" transition:blur>
-								<Chip text="New" italic={true} red={true} mutedOpacity={false} />
-							</div>
-						{/if}
-						<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-					</button>
-					<div class="navigation-inner-options">
-						<div class="multiplayer-quick-play">
-							<RoomCodeInput
+		<div class="navigation-menu-container">
+			<!-- Dark-ish panel color fade from bottom up to make the controls more legible -->
+			<div class="panel-fade"></div>
+			<div class="navigation-menu">
+				<div class="navigation-box bar-menu" transition:scale={{ duration: 150, start: 0.9, delay: 50 }}>
+					<div class="navigation-box-scroll of-left of-right">
+						{#each $baseMaps as { map, imgUrl }}
+							<MapItem
+								name={map}
+								{imgUrl}
 								compact={true}
-								submitFn={(code) => {
-									playSound("basic_button");
-									joinFromAnywhere(code);
+								selected={isMapSelected(map) && $mainMenu}
+								onclick={() => {
+									playSound("button_juicy");
+									selectMap(map);
 								}}
 							/>
-						</div>
+						{/each}
+						<MapItem
+							name="More maps"
+							compact={true}
+							onclick={() => {
+								goto("/maps");
+								playSound("basic_button");
+							}}
+							cover={MoreMapsVisualization}
+						/>
 					</div>
 				</div>
-				<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
-					<button
-						class="standard-button white large-button navigation-button navigation-button-small-wide"
-						onclick={() => {
-							goto("/competitions");
-							playSound("basic_button");
-						}}
-					>
-						Competitions
-						<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
-					</button>
-					<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
-				</div>
-			</div>
-			<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
-				<div class="navigation-box navigation-box-half bar-menu">
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					{#if $isAuthenticated}
-						<div
-							class="navigation-button standard-button white large-button account-name-button account-button"
+				<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
+					<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
+						<button
+							class="standard-button white navigation-button large-button navigation-button-small-wide"
 							onclick={() => {
-								showProfile(localStorage.getItem("id"));
+								goto("/multiplayer");
 								playSound("basic_button");
 							}}
 						>
-							<div class="account-name-area" class:account-name-fade={scrollNameText}>
-								<p class:name-scroll={scrollNameText}>
-									{$username || "Guest"}
-								</p>
+							Multiplayer
+							{#if $newFriendRequest || $hasNewMessageOrInvite}
+								<div class="navigation-new-chip" transition:blur>
+									<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+								</div>
+							{/if}
+							<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
+						</button>
+						<div class="navigation-inner-options">
+							<div class="multiplayer-quick-play">
+								<RoomCodeInput
+									compact={true}
+									submitFn={(code) => {
+										playSound("basic_button");
+										joinFromAnywhere(code);
+									}}
+								/>
 							</div>
-							<ExperienceLevelCircle />
 						</div>
-					{:else}
+					</div>
+					<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 						<button
-							class="standard-button navigation-button large-button account-button"
+							class="standard-button white large-button navigation-button navigation-button-small-wide"
+							onclick={() => {
+								goto("/competitions");
+								playSound("basic_button");
+							}}
+						>
+							Competitions
+							<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
+						</button>
+						<div class="navigation-inner-options">
+							<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
+						</div>
+					</div>
+				</div>
+				<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
+					<div class="navigation-box navigation-box-half bar-menu">
+						<!-- svelte-ignore a11y_no_static_element_interactions -->
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						{#if $isAuthenticated}
+							<div
+								class="navigation-button standard-button white large-button account-name-button account-button"
+								onclick={() => {
+									showProfile(localStorage.getItem("id"));
+									playSound("basic_button");
+								}}
+							>
+								<div class="account-name-area" class:account-name-fade={scrollNameText}>
+									<p class:name-scroll={scrollNameText}>
+										{$username || "Guest"}
+									</p>
+								</div>
+								<ExperienceLevelCircle />
+							</div>
+						{:else}
+							<button
+								class="standard-button navigation-button large-button account-button"
+								onclick={() => {
+									playSound("basic_button");
+									signupPrompt();
+								}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+							>
+						{/if}
+					</div>
+					<div class="navigation-box navigation-box-half bar-menu">
+						<button
+							class="standard-button white navigation-button navigation-button-small large-button"
+							{@attach tooltip({ text: "Leaderboard" })}
 							onclick={() => {
 								playSound("basic_button");
-								signupPrompt();
-							}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+								goto("/leaderboard");
+							}}
 						>
-					{/if}
+							<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
+						</button>
+						<button
+							class="standard-button white navigation-button navigation-button-small large-button"
+							style:position="relative"
+							{@attach tooltip({ text: "Shop" })}
+							onclick={() => {
+								goto("/shop");
+								playSound("basic_button");
+							}}
+						>
+							<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
+							{#if !$freeDailyTokensClaimed}
+								<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
+							{/if}
+						</button>
+						<button
+							class="standard-button white navigation-button navigation-button-small large-button"
+							aria-label="Education"
+							{@attach tooltip({ text: "Education" })}
+							onclick={() => {
+								playSound("basic_button");
+								window.open("https://education.openguessr.com", "_blank");
+							}}
+						>
+							<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
+						</button>
+						<button
+							class="standard-button white navigation-button navigation-button-small large-button"
+							id="settings-button-mobile"
+							{@attach tooltip({ text: "Settings" })}
+							onclick={() => {
+								playSound("basic_button");
+								settingsPopup.set(true);
+							}}
+						>
+							<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
+						</button>
+					</div>
 				</div>
-				<div class="navigation-box navigation-box-half bar-menu">
-					<button
-						class="standard-button white navigation-button navigation-button-small large-button"
-						{@attach tooltip({ text: "Leaderboard" })}
-						onclick={() => {
-							playSound("basic_button");
-							goto("/leaderboard");
-						}}
-					>
-						<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
-					</button>
-					<button
-						class="standard-button white navigation-button navigation-button-small large-button"
-						style:position="relative"
-						{@attach tooltip({ text: "Shop" })}
-						onclick={() => {
-							goto("/shop");
-							playSound("basic_button");
-						}}
-					>
-						<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
-						{#if !$freeDailyTokensClaimed}
-							<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
-						{/if}
-					</button>
-					<button
-						class="standard-button white navigation-button navigation-button-small large-button"
-						aria-label="Education"
-						{@attach tooltip({ text: "Education" })}
-						onclick={() => {
-							playSound("basic_button");
-							window.open("https://education.openguessr.com", "_blank");
-						}}
-					>
-						<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
-					</button>
-					<button
-						class="standard-button white navigation-button navigation-button-small large-button"
-						id="settings-button-mobile"
-						{@attach tooltip({ text: "Settings" })}
-						onclick={() => {
-							playSound("basic_button");
-							settingsPopup.set(true);
-						}}
-					>
-						<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
-					</button>
+				<!-- Link section -->
+				<div class="navigation-box bar-menu link-box">
+					<div class="navigation-box-scroll of-left of-right of-length-2">
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="Report bug"
+							{@attach tooltip({ text: "Report bug" })}
+							onclick={() => {
+								playSound("basic_button");
+								$bugspotPopup = true;
+							}}
+						>
+							<Bug size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
+						</button>
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="Discord"
+							{@attach tooltip({ text: "Discord" })}
+							onclick={() => {
+								playSound("basic_button");
+								window.open($discordInviteUrl, "_blank").focus();
+							}}
+						>
+							<img src="/img/discord.png" alt="Discord logo" class="navigation-icon" />
+						</button>
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="Reddit"
+							{@attach tooltip({ text: "Reddit" })}
+							onclick={() => {
+								playSound("basic_button");
+								window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+							}}
+						>
+							<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
+						</button>
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="YouTube"
+							{@attach tooltip({ text: "YouTube" })}
+							onclick={() => {
+								playSound("basic_button");
+								window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank").focus();
+							}}
+						>
+							<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
+						</button>
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="Twitter"
+							{@attach tooltip({ text: "Twitter" })}
+							onclick={() => {
+								playSound("basic_button");
+								window.open("https://x.com/PaulPlayStudio", "_blank").focus();
+							}}
+						>
+							<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />
+						</button>
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="Legal"
+							{@attach tooltip({ text: "Legal" })}
+							onclick={() => {
+								playSound("basic_button");
+								goto("/legal");
+							}}
+						>
+							<Section size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
+						</button>
+						<button
+							class="standard-button white link-button large-button"
+							aria-label="About"
+							{@attach tooltip({ text: "About" })}
+							onclick={() => {
+								playSound("basic_button");
+								goto("/about");
+							}}
+						>
+							<PencilRuler size={19} strokeWidth={2.25} style="margin-inline: 2px;" />
+						</button>
+					</div>
 				</div>
-			</div>
-			<!-- Link section -->
-			<div class="navigation-box bar-menu link-box">
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="Report bug"
-					{@attach tooltip({ text: "Report bug" })}
-					onclick={() => {
-						playSound("basic_button");
-						$bugspotPopup = true;
-					}}
-				>
-					<Bug size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="Discord"
-					{@attach tooltip({ text: "Discord" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open($discordInviteUrl, "_blank").focus();
-					}}
-				>
-					<img src="/img/discord.png" alt="Discord logo" class="navigation-icon" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="Reddit"
-					{@attach tooltip({ text: "Reddit" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
-					}}
-				>
-					<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="YouTube"
-					{@attach tooltip({ text: "YouTube" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank").focus();
-					}}
-				>
-					<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="Twitter"
-					{@attach tooltip({ text: "Twitter" })}
-					onclick={() => {
-						playSound("basic_button");
-						window.open("https://x.com/PaulPlayStudio", "_blank").focus();
-					}}
-				>
-					<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="Legal"
-					{@attach tooltip({ text: "Legal" })}
-					onclick={() => {
-						playSound("basic_button");
-						goto("/legal");
-					}}
-				>
-					<Section size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
-				</button>
-				<button
-					class="standard-button white link-button large-button"
-					aria-label="About"
-					{@attach tooltip({ text: "About" })}
-					onclick={() => {
-						playSound("basic_button");
-						goto("/about");
-					}}
-				>
-					<PencilRuler size={19} strokeWidth={2.25} style="margin-inline: 2px;" />
-				</button>
 			</div>
 		</div>
 	</div>
@@ -317,8 +325,14 @@
 		box-sizing: border-box;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
-		margin-top: auto;
-		position: relative;
+	}
+
+	.navigation-menu-container {
+		position: absolute;
+		height: fit-content;
+		bottom: 0;
+		left: 0;
+		right: 0;
 	}
 
 	.navigation-row {
@@ -338,6 +352,13 @@
 		width: 100%;
 		box-sizing: border-box;
 		align-items: stretch;
+	}
+
+	.navigation-box-scroll {
+		overflow-x: auto;
+		scrollbar-width: none;
+		display: flex;
+		gap: var(--box-margin);
 	}
 
 	.navigation-box-stack {
@@ -397,9 +418,7 @@
 	}
 
 	.navigation-button:not(.navigation-button-small) {
-		height: 100%;
 		display: flex;
-		flex-wrap: wrap;
 		padding: var(--box-margin);
 	}
 
@@ -408,7 +427,7 @@
 		min-width: 0;
 		flex-basis: 40px;
 		padding-inline: var(--box-margin);
-		height: auto;
+		min-height: 100%;
 	}
 
 	.navigation-button-small-wide {
@@ -420,31 +439,33 @@
 	}
 
 	.navigation-inner-options {
-		display: flex;
-		gap: var(--box-margin);
-		width: 100%;
-		align-self: stretch;
-		flex-grow: 1;
-		box-sizing: border-box;
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		padding: var(--box-margin);
-		padding-top: calc(var(--layout-margin) + var(--content-margin));
-		margin-top: calc(-1 * var(--box-margin));
-		border-radius: var(--box-margin);
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-		mask-image: linear-gradient(transparent, black 40%);
 		transition: opacity 250ms ease;
+		flex-grow: 1;
+		align-self: stretch;
+		width: 100%;
 	}
 
 	.multiplayer-quick-play {
 		display: flex;
 		gap: var(--content-margin);
-		overflow: hidden;
+		box-sizing: border-box;
+		border-radius: var(--box-margin);
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		padding: var(--box-margin);
+		padding-top: calc(var(--layout-margin) + var(--content-margin));
+		margin-top: calc(-1 * var(--box-margin));
+		width: 100%;
+		height: calc(100% + var(--box-margin));
+		mask-image: linear-gradient(transparent, black 40%);
 	}
 
 	.logo-image {
+		position: absolute;
+		inset: 0;
+		top: 0;
 		width: 100%;
 		max-width: 700px;
 		margin-inline: auto;
@@ -472,7 +493,7 @@
 	.panel-fade {
 		position: absolute;
 		inset: 0;
-		top: 40%;
+		top: -15svh;
 		background: linear-gradient(to top, var(--panel-color), transparent);
 		opacity: 0.75;
 	}
@@ -519,6 +540,20 @@
 		100% {
 			/* Adjust second param to be max-width of element minus about 5px */
 			transform: translateX(calc(-100% + 215px));
+		}
+	}
+
+	@media (max-width: 800px) {
+		.navigation-row {
+			flex-direction: column;
+		}
+
+		.navigation-box-half {
+			flex-basis: unset;
+		}
+
+		.navigation-inner-options {
+			display: none;
 		}
 	}
 </style>

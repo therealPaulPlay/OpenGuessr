@@ -169,7 +169,7 @@
 		justify-content: flex-start;
 		gap: var(--content-margin);
 		padding: var(--content-margin);
-		min-width: 80px;
+		min-width: 140px;
 		flex-basis: 0;
 		box-shadow: var(--button-shadow);
 	}
