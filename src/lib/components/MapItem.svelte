@@ -171,7 +171,7 @@
 		padding: var(--content-margin);
 		min-width: 140px;
 		flex-basis: 0;
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--box-shadow);
 	}
 
 	.map-item-compact .map-cover-image,

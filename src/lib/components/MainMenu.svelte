@@ -60,7 +60,12 @@
 	>
 		<div class="logo-visualization-container">
 			<div class="logo-visualization-area">
-				<img class="logo-icon" src="/img/favicon.svg" alt="OpenGuessr icon" />
+				<img
+					class="logo-icon"
+					src="/img/icon_3d.png"
+					alt="OpenGuessr icon"
+					transition:scale={{ duration: 150, start: 0.7, delay: 50 }}
+				/>
 				<img class="red-smoke-background" src="/img/red_smoke.png" alt="Red smoke" />
 			</div>
 		</div>
@@ -97,18 +102,19 @@
 					<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
 						<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 							<button
-								class="standard-button white navigation-button large-button navigation-button-small-wide"
+								class="standard-button white navigation-button large-button navigation-button-wide"
 								onclick={() => {
 									goto("/multiplayer");
 									playSound("basic_button");
 								}}
 							>
-								Multiplayer
-								{#if $newFriendRequest || $hasNewMessageOrInvite}
-									<div class="navigation-new-chip" transition:blur>
-										<Chip text="New" italic={true} red={true} mutedOpacity={false} />
-									</div>
-								{/if}
+								<span class="of-right">
+									Multiplayer {#if $newFriendRequest || $hasNewMessageOrInvite}
+										<div class="navigation-new-chip" transition:blur>
+											<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+										</div>
+									{/if}
+								</span>
 								<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 							</button>
 							<div class="navigation-inner-options">
@@ -125,13 +131,13 @@
 						</div>
 						<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 							<button
-								class="standard-button white large-button navigation-button navigation-button-small-wide"
+								class="standard-button white large-button navigation-button navigation-button-wide"
 								onclick={() => {
 									goto("/competitions");
 									playSound("basic_button");
 								}}
 							>
-								Competitions
+								<span class="of-right">Competitions</span>
 								<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 							</button>
 							<div class="navigation-inner-options">
@@ -139,7 +145,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
+					<div
+						class="navigation-row navigation-row-mobile-column"
+						transition:scale={{ duration: 150, start: 0.8, delay: 100 }}
+					>
 						<div class="navigation-box navigation-box-half bar-menu">
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -357,7 +366,6 @@
 	.navigation-box {
 		border-radius: var(--layout-margin);
 		justify-content: end;
-		flex-wrap: wrap;
 		flex-grow: 1;
 		overflow: hidden;
 		width: 100%;
@@ -370,6 +378,8 @@
 		scrollbar-width: none;
 		display: flex;
 		gap: var(--box-margin);
+		transition: opacity 250ms ease;
+		border-radius: var(--content-margin);
 	}
 
 	.navigation-box-stack {
@@ -380,18 +390,13 @@
 	.link-box {
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
-		margin-inline: auto;
-		flex-grow: 0;
 		width: fit-content;
-		margin-inline: calc(var(--layout-margin) * 2 + var(--content-margin));
 		margin-top: var(--box-margin);
+		max-width: 100%;
+		flex-grow: 0;
 	}
 
 	.link-box:not(:hover) > * {
-		opacity: 0.5;
-	}
-
-	:global(.navigation-menu:has(.link-box:hover) .navigation-box:not(.link-box) > *) {
 		opacity: 0.5;
 	}
 
@@ -421,6 +426,18 @@
 		box-sizing: border-box;
 	}
 
+	.navigation-button span {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		min-width: 0;
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		margin: calc(-1 * var(--layout-margin));
+		padding: var(--layout-margin);
+		margin-right: 0;
+	}
+
 	.link-button {
 		flex-grow: 1;
 		border: none;
@@ -442,7 +459,7 @@
 		min-height: 100%;
 	}
 
-	.navigation-button-small-wide {
+	.navigation-button-wide {
 		height: auto !important;
 		width: 100%;
 		flex-grow: 0;
@@ -482,7 +499,7 @@
 		object-fit: contain;
 		margin: auto;
 		z-index: 1;
-		filter: drop-shadow(0 0 25px var(--dark-shadow-color));
+		filter: drop-shadow(0 0 20px var(--dark-shadow-color));
 	}
 
 	.red-smoke-background {
@@ -501,8 +518,8 @@
 		margin-inline: auto;
 		flex-grow: 1;
 		align-content: center;
-		padding-top: calc(var(--layout-spacer) + var(--layout-margin));
-		padding-bottom: var(--layout-spacer);
+		padding-top: var(--layout-margin);
+		transition: opacity 250ms ease;
 	}
 
 	.logo-visualization-area {
@@ -578,24 +595,29 @@
 		}
 	}
 
-	@media (max-width: 1600px) {
-		.logo-visualization-container {
-			padding-top: calc(var(--layout-margin) + var(--box-margin));
-			padding-bottom: var(--layout-margin);
+	@media (min-width: 550px) {
+		:global(.navigation-menu:has(.link-box:hover) .navigation-box:not(.link-box) > *) {
+			opacity: 0.5;
 		}
 	}
 
 	@media (max-width: 550px) {
-		.navigation-row {
+		.navigation-row-mobile-column {
 			flex-direction: column;
 		}
 
-		.navigation-box-half {
+		.navigation-row-mobile-column .navigation-box-half {
 			flex-basis: unset;
 		}
 
 		.navigation-inner-options {
 			display: none;
+		}
+	}
+
+	@media (max-height: 675px) {
+		.logo-visualization-container {
+			opacity: 0;
 		}
 	}
 </style>
