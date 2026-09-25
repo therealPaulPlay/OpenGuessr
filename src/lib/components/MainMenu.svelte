@@ -478,18 +478,18 @@
 		overflow-x: auto;
 		scrollbar-width: none;
 		display: flex;
-		gap: var(--box-margin);
+		gap: var(--panel-margin);
 		transition: opacity 250ms ease;
 		border-radius: var(--content-margin);
 	}
 
 	.map-select-scroll {
 		flex: var(--map-count) 1
-			calc((var(--map-count) - 1) * var(--box-margin) + var(--map-count) * 2 * var(--content-margin));
+			calc((var(--map-count) - 1) * var(--panel-margin) + var(--map-count) * 2 * var(--content-margin));
 	}
 
 	.map-select-scroll > :global(.map-item) {
-		flex: 0 0 calc((100% - (var(--map-count) - 1) * var(--box-margin)) / var(--map-count));
+		flex: 0 0 calc((100% - (var(--map-count) - 1) * var(--panel-margin)) / var(--map-count));
 	}
 
 	.navigation-box-stack {
