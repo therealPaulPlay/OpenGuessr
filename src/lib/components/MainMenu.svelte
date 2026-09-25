@@ -58,161 +58,164 @@
 		role="button"
 		transition:fade={{ duration: 100 }}
 	>
-		<img
-			class="logo-image"
-			src="/img/openguessr.svg"
-			alt="OpenGuessr logo - the free geography location-guessing game"
-		/>
+		<div class="logo-visualization-container">
+			<div class="logo-visualization-area">
+				<img class="logo-icon" src="/img/favicon.svg" alt="OpenGuessr icon" />
+				<img class="red-smoke-background" src="/img/red_smoke.png" alt="Red smoke" />
+			</div>
+		</div>
 		<div class="navigation-menu-container">
 			<!-- Dark-ish panel color fade from bottom up to make the controls more legible -->
 			<div class="panel-fade"></div>
 			<div class="navigation-menu">
-				<div class="navigation-box bar-menu" transition:scale={{ duration: 150, start: 0.9, delay: 50 }}>
-					<div class="navigation-box-scroll of-left of-right">
-						{#each $baseMaps as { map, imgUrl }}
-							<MapItem
-								name={map}
-								{imgUrl}
-								compact={true}
-								selected={isMapSelected(map) && $mainMenu}
-								onclick={() => {
-									playSound("button_juicy");
-									selectMap(map);
-								}}
-							/>
-						{/each}
-						<MapItem
-							name="More maps"
-							compact={true}
-							onclick={() => {
-								goto("/maps");
-								playSound("basic_button");
-							}}
-							cover={MoreMapsVisualization}
-						/>
-					</div>
-				</div>
-				<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
-					<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
-						<button
-							class="standard-button white navigation-button large-button navigation-button-small-wide"
-							onclick={() => {
-								goto("/multiplayer");
-								playSound("basic_button");
-							}}
-						>
-							Multiplayer
-							{#if $newFriendRequest || $hasNewMessageOrInvite}
-								<div class="navigation-new-chip" transition:blur>
-									<Chip text="New" italic={true} red={true} mutedOpacity={false} />
-								</div>
-							{/if}
-							<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-						</button>
-						<div class="navigation-inner-options">
-							<div class="multiplayer-quick-play">
-								<RoomCodeInput
+				<div class="navigation-menu-top">
+					<div class="navigation-box bar-menu" transition:scale={{ duration: 150, start: 0.9, delay: 50 }}>
+						<div class="navigation-box-scroll of-left of-right">
+							{#each $baseMaps as { map, imgUrl }}
+								<MapItem
+									name={map}
+									{imgUrl}
 									compact={true}
-									submitFn={(code) => {
-										playSound("basic_button");
-										joinFromAnywhere(code);
+									selected={isMapSelected(map) && $mainMenu}
+									onclick={() => {
+										playSound("button_juicy");
+										selectMap(map);
 									}}
 								/>
-							</div>
-						</div>
-					</div>
-					<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
-						<button
-							class="standard-button white large-button navigation-button navigation-button-small-wide"
-							onclick={() => {
-								goto("/competitions");
-								playSound("basic_button");
-							}}
-						>
-							Competitions
-							<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
-						</button>
-						<div class="navigation-inner-options">
-							<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
-						</div>
-					</div>
-				</div>
-				<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
-					<div class="navigation-box navigation-box-half bar-menu">
-						<!-- svelte-ignore a11y_no_static_element_interactions -->
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						{#if $isAuthenticated}
-							<div
-								class="navigation-button standard-button white large-button account-name-button account-button"
+							{/each}
+							<MapItem
+								name="More maps"
+								compact={true}
 								onclick={() => {
-									showProfile(localStorage.getItem("id"));
+									goto("/maps");
+									playSound("basic_button");
+								}}
+								cover={MoreMapsVisualization}
+							/>
+						</div>
+					</div>
+					<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
+						<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
+							<button
+								class="standard-button white navigation-button large-button navigation-button-small-wide"
+								onclick={() => {
+									goto("/multiplayer");
 									playSound("basic_button");
 								}}
 							>
-								<div class="account-name-area" class:account-name-fade={scrollNameText}>
-									<p class:name-scroll={scrollNameText}>
-										{$username || "Guest"}
-									</p>
+								Multiplayer
+								{#if $newFriendRequest || $hasNewMessageOrInvite}
+									<div class="navigation-new-chip" transition:blur>
+										<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+									</div>
+								{/if}
+								<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
+							</button>
+							<div class="navigation-inner-options">
+								<div class="multiplayer-quick-play">
+									<RoomCodeInput
+										compact={true}
+										submitFn={(code) => {
+											playSound("basic_button");
+											joinFromAnywhere(code);
+										}}
+									/>
 								</div>
-								<ExperienceLevelCircle />
 							</div>
-						{:else}
+						</div>
+						<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 							<button
-								class="standard-button navigation-button large-button account-button"
+								class="standard-button white large-button navigation-button navigation-button-small-wide"
+								onclick={() => {
+									goto("/competitions");
+									playSound("basic_button");
+								}}
+							>
+								Competitions
+								<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
+							</button>
+							<div class="navigation-inner-options">
+								<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
+							</div>
+						</div>
+					</div>
+					<div class="navigation-row" transition:scale={{ duration: 150, start: 0.8, delay: 100 }}>
+						<div class="navigation-box navigation-box-half bar-menu">
+							<!-- svelte-ignore a11y_no_static_element_interactions -->
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							{#if $isAuthenticated}
+								<div
+									class="navigation-button standard-button white large-button account-name-button account-button"
+									onclick={() => {
+										showProfile(localStorage.getItem("id"));
+										playSound("basic_button");
+									}}
+								>
+									<div class="account-name-area" class:account-name-fade={scrollNameText}>
+										<p class:name-scroll={scrollNameText}>
+											{$username || "Guest"}
+										</p>
+									</div>
+									<ExperienceLevelCircle />
+								</div>
+							{:else}
+								<button
+									class="standard-button navigation-button large-button account-button"
+									onclick={() => {
+										playSound("basic_button");
+										signupPrompt();
+									}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+								>
+							{/if}
+						</div>
+						<div class="navigation-box navigation-box-half bar-menu">
+							<button
+								class="standard-button white navigation-button navigation-button-small large-button"
+								{@attach tooltip({ text: "Leaderboard" })}
 								onclick={() => {
 									playSound("basic_button");
-									signupPrompt();
-								}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+									goto("/leaderboard");
+								}}
 							>
-						{/if}
-					</div>
-					<div class="navigation-box navigation-box-half bar-menu">
-						<button
-							class="standard-button white navigation-button navigation-button-small large-button"
-							{@attach tooltip({ text: "Leaderboard" })}
-							onclick={() => {
-								playSound("basic_button");
-								goto("/leaderboard");
-							}}
-						>
-							<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
-						</button>
-						<button
-							class="standard-button white navigation-button navigation-button-small large-button"
-							style:position="relative"
-							{@attach tooltip({ text: "Shop" })}
-							onclick={() => {
-								goto("/shop");
-								playSound("basic_button");
-							}}
-						>
-							<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
-							{#if !$freeDailyTokensClaimed}
-								<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
-							{/if}
-						</button>
-						<button
-							class="standard-button white navigation-button navigation-button-small large-button"
-							aria-label="Education"
-							{@attach tooltip({ text: "Education" })}
-							onclick={() => {
-								playSound("basic_button");
-								window.open("https://education.openguessr.com", "_blank");
-							}}
-						>
-							<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
-						</button>
-						<button
-							class="standard-button white navigation-button navigation-button-small large-button"
-							id="settings-button-mobile"
-							{@attach tooltip({ text: "Settings" })}
-							onclick={() => {
-								playSound("basic_button");
-								settingsPopup.set(true);
-							}}
-						>
-							<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
-						</button>
+								<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
+							</button>
+							<button
+								class="standard-button white navigation-button navigation-button-small large-button"
+								style:position="relative"
+								{@attach tooltip({ text: "Shop" })}
+								onclick={() => {
+									goto("/shop");
+									playSound("basic_button");
+								}}
+							>
+								<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
+								{#if !$freeDailyTokensClaimed}
+									<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
+								{/if}
+							</button>
+							<button
+								class="standard-button white navigation-button navigation-button-small large-button"
+								aria-label="Education"
+								{@attach tooltip({ text: "Education" })}
+								onclick={() => {
+									playSound("basic_button");
+									window.open("https://education.openguessr.com", "_blank");
+								}}
+							>
+								<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
+							</button>
+							<button
+								class="standard-button white navigation-button navigation-button-small large-button"
+								id="settings-button-mobile"
+								{@attach tooltip({ text: "Settings" })}
+								onclick={() => {
+									playSound("basic_button");
+									settingsPopup.set(true);
+								}}
+							>
+								<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
+							</button>
+						</div>
 					</div>
 				</div>
 				<!-- Link section -->
@@ -315,24 +318,32 @@
 		backdrop-filter: blur(var(--weak-blur));
 	}
 
+	.navigation-menu-container {
+		height: fit-content;
+		margin-top: auto;
+		min-height: calc(385px + 10%);
+	}
+
 	.navigation-menu {
 		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		flex-direction: column;
 		gap: var(--layout-margin);
 		width: 650px;
 		max-width: 100%;
+		height: 100%;
 		box-sizing: border-box;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
 	}
 
-	.navigation-menu-container {
-		position: absolute;
-		height: fit-content;
-		bottom: 0;
-		left: 0;
-		right: 0;
+	.navigation-menu-top {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: var(--layout-margin);
+		width: 100%;
 	}
 
 	.navigation-row {
@@ -367,12 +378,13 @@
 	}
 
 	.link-box {
-		margin-top: calc(var(--layout-spacer) - var(--layout-margin));
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
 		margin-inline: auto;
 		flex-grow: 0;
 		width: fit-content;
+		margin-inline: calc(var(--layout-margin) * 2 + var(--content-margin));
+		margin-top: var(--box-margin);
 	}
 
 	.link-box:not(:hover) > * {
@@ -462,18 +474,41 @@
 		mask-image: linear-gradient(transparent, black 40%);
 	}
 
-	.logo-image {
+	.logo-icon {
 		position: absolute;
 		inset: 0;
-		top: 0;
+		width: 50%;
+		height: 50%;
+		object-fit: contain;
+		margin: auto;
+		z-index: 1;
+		filter: drop-shadow(0 0 25px var(--dark-shadow-color));
+	}
+
+	.red-smoke-background {
+		position: absolute;
+		inset: 0;
 		width: 100%;
-		max-width: 700px;
-		margin-inline: auto;
+		height: 100%;
+		object-fit: contain;
+		margin: auto;
+	}
+
+	.logo-visualization-container {
+		width: 100%;
+		max-width: 450px;
 		box-sizing: border-box;
-		padding-inline: var(--layout-margin);
-		margin-top: 200px;
-		height: auto;
-		filter: drop-shadow(0 0 10px var(--dark-shadow-color));
+		margin-inline: auto;
+		flex-grow: 1;
+		align-content: center;
+		padding-top: calc(var(--layout-spacer) + var(--layout-margin));
+		padding-bottom: var(--layout-spacer);
+	}
+
+	.logo-visualization-area {
+		position: relative;
+		height: 100%;
+		width: 100%;
 		user-select: none;
 		pointer-events: none;
 	}
@@ -543,7 +578,14 @@
 		}
 	}
 
-	@media (max-width: 800px) {
+	@media (max-width: 1600px) {
+		.logo-visualization-container {
+			padding-top: calc(var(--layout-margin) + var(--box-margin));
+			padding-bottom: var(--layout-margin);
+		}
+	}
+
+	@media (max-width: 550px) {
 		.navigation-row {
 			flex-direction: column;
 		}

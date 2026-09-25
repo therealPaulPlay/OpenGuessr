@@ -385,13 +385,6 @@
 		flex-grow: 1;
 	}
 
-	.mobile-result-ad {
-		overflow: hidden;
-		text-align: center;
-		width: 320px;
-		height: 50px;
-	}
-
 	.result-ad-area {
 		width: 728px;
 		height: 90px;
@@ -407,9 +400,21 @@
 	}
 
 	.result-ad {
+		/* Overflow hidden and contain paint to stop basic misconfigured ads */
+		overflow: hidden;
+		contain: layout paint;
 		width: 728px;
 		height: 90px;
 		text-align: center;
+	}
+
+	.mobile-result-ad {
+		/* Overflow hidden and contain paint to stop basic misconfigured ads */
+		overflow: hidden;
+		contain: layout paint;
+		text-align: center;
+		width: 320px;
+		height: 50px;
 	}
 
 	#experience-area {

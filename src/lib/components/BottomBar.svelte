@@ -191,7 +191,9 @@
 	}
 
 	.gameplay-ad {
+		/* Overflow hidden and contain to stop basic misconfigured ads */
 		overflow: hidden;
+		contain: layout paint;
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
