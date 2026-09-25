@@ -143,7 +143,10 @@ export async function createMultiplayerInstance() {
             // If game has started, go to game page & disable matchmaking
             if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) {
                 gameHasStarted = true;
-                goto("/"); // E.g. host or duel page -> game page 
+
+                // Move home and close main menu (e.g. from host or duel page)
+                mainMenu.set(false);
+                goto("/");
             }
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
@@ -303,7 +306,11 @@ export async function joinMultiplayerRoom(code) {
         multiplayer.set(true); // Set multiplayer after successful join
         roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
-        goto("/"); // Always move to gameplay scene on join
+
+        // Move home and close main menu
+        mainMenu.set(false);
+        goto("/");
+
         return true; // Success
     } catch (error) {
         console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs

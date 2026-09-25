@@ -13,7 +13,7 @@
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
-	import { getCompetitions } from "$lib/utils/getCompetitions";
+	import { loadStreakDays } from "$lib/utils/getCompetitions";
 	import { baseMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
@@ -41,17 +41,6 @@
 	$effect(() => {
 		if ($isAuthenticated) loadStreakDays();
 	});
-
-	async function loadStreakDays() {
-		try {
-			const { error, streakDays } = await getCompetitions({ daily: true });
-			if (error) throw new Error(error);
-
-			$dailyStreakDays = streakDays ?? [];
-		} catch (error) {
-			console.error("Error occurred during streak load: ", error);
-		}
-	}
 
 	// New HC messages or invites -----------------------------------------------
 	$effect(() => {

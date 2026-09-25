@@ -1,4 +1,5 @@
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 import { get } from "svelte/store";
 
 const competitionsEndpoint = get(apiUrl) + "/competitions";
@@ -51,5 +52,16 @@ export async function getCompetitions({ expired = false, search = "", daily = fa
     } catch (error) {
         console.error("Error occurred during competition load:", error);
         return { error: "A network error has occurred." };
+    }
+}
+
+export async function loadStreakDays() {
+    try {
+        const { error, streakDays } = await getCompetitions({ daily: true });
+        if (error) throw new Error(error);
+
+        dailyStreakDays.set(streakDays ?? []);
+    } catch (error) {
+        console.error("Error occurred during streak load: ", error);
     }
 }

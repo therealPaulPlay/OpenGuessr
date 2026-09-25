@@ -68,6 +68,7 @@
 						roundLength: data.round_length,
 						restriction: data.restriction,
 						locations: data.locations.locations,
+						isDaily: data.isDaily,
 					};
 
 					// Go back to main page and start competition
