@@ -9,7 +9,7 @@
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Bug, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
+	import { Bug, InfinityIcon, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
@@ -74,7 +74,20 @@
 			<div class="panel-fade"></div>
 			<div class="navigation-menu">
 				<div class="navigation-menu-top">
-					<div class="navigation-box bar-menu" transition:scale={{ duration: 150, start: 0.9, delay: 50 }}>
+					<div
+						class="navigation-box bar-menu"
+						transition:scale={{ duration: 150, start: 0.9, delay: 50 }}
+						style:overflow="visible"
+					>
+						<div class="bar-menu singleplayer-label">
+							<p>
+								Singleplayer <InfinityIcon
+									size={22}
+									strokeWidth={2.25}
+									style="margin-bottom: calc(-1 * var(--content-margin)); margin-left: var(--content-margin);"
+								/>
+							</p>
+						</div>
 						<div class="navigation-box-scroll of-left of-right">
 							{#each $baseMaps as { map, imgUrl }}
 								<MapItem
@@ -327,6 +340,17 @@
 		backdrop-filter: blur(var(--weak-blur));
 	}
 
+	.singleplayer-label {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		margin-left: var(--panel-margin);
+		position: absolute;
+		left: var(--layout-margin);
+		bottom: 100%;
+		padding: calc(var(--layout-margin) - var(--panel-margin));
+		padding-inline: var(--box-margin);
+	}
+
 	.navigation-menu-container {
 		height: fit-content;
 		margin-top: auto;
@@ -453,7 +477,6 @@
 
 	.navigation-button-small {
 		justify-content: center;
-		min-width: 0;
 		flex-basis: 40px;
 		padding-inline: var(--box-margin);
 		min-height: 100%;

@@ -465,7 +465,6 @@
 
 	.online-indicator p {
 		opacity: 0.75;
-		font-size: 20px;
 	}
 
 	.multiplayer-illustration {
