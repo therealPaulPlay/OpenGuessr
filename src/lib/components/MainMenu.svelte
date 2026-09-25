@@ -9,12 +9,12 @@
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Bug, InfinityIcon, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
+	import { Bug, InfinityIcon, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
 	import { loadStreakDays } from "$lib/utils/getCompetitions";
-	import { baseMaps } from "$lib/stores/context-specific/officialMapsStore";
+	import { baseMaps, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 	import RoomCodeInput from "./RoomCodeInput.svelte";
@@ -25,6 +25,8 @@
 	import { hasNewMessageOrInvite, hcClient } from "$lib/stores/context-specific/headlessChatStore";
 	import { loadInitialHasNew } from "$lib/logic/headlessChatLogic";
 	import Chip from "./ui/Chip.svelte";
+	import { idToMapName } from "$lib/utils/idToMapName";
+	import { browser } from "$app/environment";
 
 	let scrollNameText = $state(false);
 
@@ -34,7 +36,7 @@
 			delay: 250,
 			easing: "ease-out",
 			fill: "both",
-			pseudoElement: "::before"
+			pseudoElement: "::before",
 		});
 	}
 
@@ -103,29 +105,53 @@
 								/>
 							</p>
 						</div>
-						<div class="navigation-box-scroll of-left of-right">
+						<div
+							class="navigation-box-scroll map-select-scroll of-left of-right of-length-4"
+							style:--map-count={Math.max($baseMaps.length, 1)}
+						>
+							{#if $baseMaps.every((e) => !isMapSelected(e.map)) && browser}
+								{const imgUrl = $specialMaps.find((e) => e.map === localStorage.getItem("selectedMap"))?.imgUrl}
+								{#snippet cover()}
+									<div class="generic-map-cover">
+										<img alt="Generic map icon" src="/img/maps_icon.png" class="map-map-icon" />
+										<span class="map-play-icon"> <Play size={28} strokeWidth={1.75} style="opacity: 0.5;" /></span>
+									</div>
+								{/snippet}
+								<MapItem
+									name={browser ? idToMapName(localStorage.getItem("selectedMap")) : "..."}
+									compact={true}
+									selected={true}
+									id="custom-map"
+									{imgUrl}
+									cover={imgUrl ? undefined : cover}
+									onclick={() => {
+										playSound("button_juicy");
+										selectMap(localStorage.getItem("selectedMap"));
+									}}
+								/>
+							{/if}
 							{#each $baseMaps as { map, imgUrl }}
 								<MapItem
 									name={map}
 									{imgUrl}
 									compact={true}
-									selected={isMapSelected(map) && $mainMenu}
+									selected={isMapSelected(map)}
 									onclick={() => {
 										playSound("button_juicy");
 										selectMap(map);
 									}}
 								/>
 							{/each}
-							<MapItem
-								name="More maps"
-								compact={true}
-								onclick={() => {
-									goto("/maps");
-									playSound("basic_button");
-								}}
-								cover={MoreMapsVisualization}
-							/>
 						</div>
+						<MapItem
+							name="More maps"
+							compact={true}
+							onclick={() => {
+								goto("/maps");
+								playSound("basic_button");
+							}}
+							cover={MoreMapsVisualization}
+						/>
 					</div>
 					<div class="navigation-row" transition:scale={{ duration: 150, start: 0.85, delay: 75 }}>
 						<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
@@ -366,6 +392,42 @@
 		padding-inline: var(--box-margin);
 	}
 
+	.generic-map-cover {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background-color: var(--box-color-dark);
+		border-radius: var(--content-margin);
+	}
+
+	.map-map-icon {
+		width: 28px;
+		height: 28px;
+		opacity: 0.5;
+	}
+
+	.map-play-icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.map-map-icon,
+	.map-play-icon {
+		transition:
+			scale 250ms ease,
+			opacity 250ms ease;
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		will-change: scale, opacity;
+	}
+
+	:global(#custom-map:not(:hover) .map-play-icon, #custom-map:hover .map-map-icon) {
+		scale: 0;
+		opacity: 0;
+	}
+
 	.navigation-menu-container {
 		height: fit-content;
 		margin-top: auto;
@@ -419,6 +481,15 @@
 		gap: var(--box-margin);
 		transition: opacity 250ms ease;
 		border-radius: var(--content-margin);
+	}
+
+	.map-select-scroll {
+		flex: var(--map-count) 1
+			calc((var(--map-count) - 1) * var(--box-margin) + var(--map-count) * 2 * var(--content-margin));
+	}
+
+	.map-select-scroll > :global(.map-item) {
+		flex: 0 0 calc((100% - (var(--map-count) - 1) * var(--box-margin)) / var(--map-count));
 	}
 
 	.navigation-box-stack {
@@ -538,6 +609,9 @@
 		margin: auto;
 		z-index: 1;
 		filter: drop-shadow(0 0 20px var(--dark-shadow-color));
+		aspect-ratio: 1/1;
+		/* To hide the alt text during load */
+		color: transparent;
 	}
 
 	.logo-glint {
@@ -563,6 +637,9 @@
 		height: 100%;
 		object-fit: contain;
 		margin: auto;
+		aspect-ratio: 1/1;
+		/* To hide the alt text during load */
+		color: transparent;
 	}
 
 	.logo-visualization-container {

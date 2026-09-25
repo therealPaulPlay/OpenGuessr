@@ -15,6 +15,7 @@
 		cover,
 		children,
 		link = false,
+		id,
 	} = $props();
 </script>
 
@@ -26,6 +27,7 @@
 	class:map-item-compact={compact}
 	class:map-item-load-more={loadMore}
 	class:selected-map-item={selected}
+	{id}
 	role="button"
 	tabindex="0"
 	{onclick}
@@ -118,6 +120,8 @@
 		border-radius: var(--content-margin);
 		pointer-events: none;
 		user-select: none;
+		/* To hide the alt text during load */
+		color: transparent;
 	}
 
 	.map-cover-placeholder {
