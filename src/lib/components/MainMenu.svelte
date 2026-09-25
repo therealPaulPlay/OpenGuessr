@@ -28,6 +28,16 @@
 
 	let scrollNameText = $state(false);
 
+	function logoGlint(element) {
+		element.animate([{ left: "-50%" }, { left: "150%" }], {
+			duration: 1000,
+			delay: 250,
+			easing: "ease-out",
+			fill: "both",
+			pseudoElement: "::before"
+		});
+	}
+
 	function checkTextLength(text) {
 		const textLength = text.length;
 		scrollNameText = textLength > 25;
@@ -66,6 +76,11 @@
 					alt="OpenGuessr icon"
 					transition:scale={{ duration: 150, start: 0.7, delay: 50 }}
 				/>
+				<div
+					class="logo-icon logo-glint"
+					transition:scale={{ duration: 150, start: 0.7, delay: 50 }}
+					{@attach logoGlint}
+				></div>
 				<img class="red-smoke-background" src="/img/red_smoke.png" alt="Red smoke" />
 			</div>
 		</div>
@@ -523,6 +538,22 @@
 		margin: auto;
 		z-index: 1;
 		filter: drop-shadow(0 0 20px var(--dark-shadow-color));
+	}
+
+	.logo-glint {
+		filter: none;
+		mask: url("/img/icon_3d.png") center / contain no-repeat;
+	}
+
+	.logo-glint::before {
+		content: "";
+		position: absolute;
+		inset: -50% auto;
+		left: -50%;
+		width: 25%;
+		background: white;
+		filter: blur(var(--strong-blur));
+		transform: rotate(25deg);
 	}
 
 	.red-smoke-background {
