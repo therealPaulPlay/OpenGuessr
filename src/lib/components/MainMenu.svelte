@@ -780,6 +780,10 @@
 		.navigation-inner-options {
 			display: none;
 		}
+
+		.logo-visualization-container {
+			padding-top: 0;
+		}
 	}
 
 	@media (max-height: 675px) {
