@@ -29,7 +29,7 @@
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { finalizeTutorial } from "./TutorialOverlay.svelte";
+	import { finalizeTutorial } from "./Tutorial.svelte";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { countryGuessr } from "$lib/stores/modeStore";
 
@@ -162,6 +162,7 @@
 	}}
 />
 
+<!-- Display: none to ensure ads are not rendered, but kept mounted to avoid constant re-registration -->
 <div class="end-bottom-area" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="end-bottom-bar">
 		<!-- No transition since it would awkwardly trigger on the first result-open -->

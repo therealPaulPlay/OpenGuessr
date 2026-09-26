@@ -4,6 +4,8 @@ import { browser } from "$app/environment";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 import { mainMenu } from "$lib/stores/uiStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { tutorialStep } from "$lib/stores/context-specific/tutorialStore";
+import { markTutorialCompleted } from "$lib/components/Tutorial.svelte";
 
 export async function changeMap(mapName, regenerate = false, goBackAfterNav = false) {
     localStorage.setItem("selectedMap", mapName);
@@ -18,6 +20,9 @@ export function selectMap(name, { community = false, returnToMultiplayer = false
     // Only regenerate if the new map differs from the current selection
     changeMap(newMap, currentMap !== newMap, returnToMultiplayer);
     if (returnToMultiplayer) return;
+
+    // Mark tutorial as completed (map was selected via e.g. straight visit to /maps, let player play the map instead of tutorial)
+    if (get(tutorialStep) > 0) markTutorialCompleted();
 
     // Close main menu and bring to homepage
     mainMenu.set(false);

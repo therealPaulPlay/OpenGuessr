@@ -1,13 +1,14 @@
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { derived, writable } from 'svelte/store';
+import { tutorialStep } from '$lib/stores/context-specific/tutorialStore';
 
 // Main menu, fades and loading
 export const mainMenu = writable(true); // Default to true, but tutorial might set it to false
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignetteVisible = writable(false);
-export const inMenu = derived([mainMenu, page], ([mainMenu, page], set) => {
-    if (mainMenu) set(true);
+export const inMenu = derived([mainMenu, page, tutorialStep], ([mainMenu, page, tutorialStep], set) => {
+    if (mainMenu || tutorialStep > 0) set(true);
     else if (browser && page.url.pathname !== "/") set(true);
     else set(false);
 });

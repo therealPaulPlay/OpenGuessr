@@ -1,7 +1,3 @@
-<script module>
-	export let menuIntroductionNote = $state({ visible: false });
-</script>
-
 <script>
 	import { inMenu, mainMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -9,7 +5,7 @@
 	import { competition, multiplayer } from "$lib/stores/modeStore.js";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
-	import { leaveTutorial } from "./TutorialOverlay.svelte";
+	import { leaveTutorial } from "./Tutorial.svelte";
 	import TopLeftLogo from "./TopLeftLogo.svelte";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { leaveCompetition } from "$lib/logic/competitionLogic";
@@ -35,19 +31,8 @@
 		</button>
 		<button
 			class="standard-button leave-button"
-			{@attach tooltip({
-				text: "Discover multiplayer, maps, competitions & more!",
-				imageSrc: "/img/tutorial/tutorial_menu.png",
-				imageAspectRatio: "15 / 7",
-				state: menuIntroductionNote,
-				maxWidth: 225,
-				showDelay: 15_000,
-				zIndex: 14,
-				mobile: false,
-			})}
 			onclick={() => {
 				playSound("leave_round");
-				menuIntroductionNote.visible = false; // Hide in case it was enabled (the player interacted with the menu, they now know it)
 
 				// Defer leave
 				switch (true) {

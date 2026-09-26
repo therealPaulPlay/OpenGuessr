@@ -21,7 +21,7 @@
 		}}
 	>
 		{#if !$inMenu}
-			<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading" class="spinner" transition:fade />
+			<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading" class="spinner" transition:fade={{ duration: 150 }} />
 		{/if}
 	</div>
 {/if}

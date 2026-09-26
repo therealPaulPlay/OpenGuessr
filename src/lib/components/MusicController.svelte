@@ -4,25 +4,15 @@
 	import { playMusic } from "$lib/utils/soundManager";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
-	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { inMenu } from "$lib/stores/uiStore";
 
 	let musicStarted = $state(false);
 	let startMusicTimeout;
 
-	// Start music after first round, with slight delay to avoid impacting result map load speed
-	resultScreenEnabled.subscribe((value) => {
-		if (value && !musicStarted && !startMusicTimeout) startMusicTimeout = setTimeout(() => (musicStarted = true), 250);
-	});
-
-	// Start music when the first tutorial round starts (tutorial active, but tutorial overlay hidden since step is zero)
-	tutorialStep.subscribe((value) => {
-		if (value === 0 && $tutorial && !musicStarted && !startMusicTimeout) musicStarted = true;
-	});
-
-	// If player starts with multiplayer or competitions, start music
-	singleplayer.subscribe((value) => {
-		if (!value && !musicStarted) musicStarted = true;
+	// Start music when the first round is started (tutorial open counts as in-menu too)
+	// Slightly deferred to avoid interfering with panorama load if a different map was chosen
+	$effect(() => {
+		if (!$inMenu && !startMusicTimeout) startMusicTimeout = setTimeout(() => (musicStarted = true), 500);
 	});
 
 	// Adjust volume to screen

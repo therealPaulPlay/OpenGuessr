@@ -37,9 +37,22 @@
 	});
 
 	// Gameplay ad registration ----------------------------------------------------------------
+
+	// Register the gameplay ad once it has been visible (not in menu) at least once, afterwards only hide it
+	let gameplayShownOnceSinceAdsEnabled = $state(false);
+	let showGameplayAd = $derived(!$adsDisabled && gameplayShownOnceSinceAdsEnabled);
+
+	$effect(() => {
+		if (!$inMenu && !$adsDisabled) gameplayShownOnceSinceAdsEnabled = true;
+	});
+
+	adsDisabled.subscribe((value) => {
+		// Reset when ads get (re-)enabled, so that the re-registration happens when the ad is visible
+		if (!value) gameplayShownOnceSinceAdsEnabled = false;
+	});
+
 	$effect(async () => {
-		// Whenever the gameplay ad gets (re-)mounted, (re-)register
-		if (!$adsDisabled) {
+		if (showGameplayAd) {
 			await tick();
 			registerGameplayAd();
 		}
@@ -123,8 +136,9 @@
 	</div>
 {/if}
 
-{#if !$adsDisabled && !$inMenu}
-	<div class="gameplay-ad-area bar-menu" transition:blur={{ duration: 250 }}>
+<!-- Display: none to ensure ads are kept mounted when hidden to avoid re-registration -->
+{#if showGameplayAd}
+	<div class="gameplay-ad-area bar-menu" class:display-hidden={$inMenu}>
 		<div class="gameplay-ad" id="gameplay-ad" data-fuse="Game_incontent_1"></div>
 		<p class="no-adverts-text">Ads keep OpenGuessr free.</p>
 	</div>
@@ -182,6 +196,23 @@
 		margin-inline: auto;
 		z-index: 8;
 		text-align: center !important;
+		transition:
+			opacity 250ms ease,
+			filter 250ms ease,
+			display 250ms allow-discrete;
+	}
+
+	.gameplay-ad-area.display-hidden {
+		display: none;
+		opacity: 0;
+		filter: blur(var(--weak-blur));
+	}
+
+	@starting-style {
+		.gameplay-ad-area {
+			opacity: 0;
+			filter: blur(var(--weak-blur));
+		}
 	}
 
 	.gameplay-ad-area,
