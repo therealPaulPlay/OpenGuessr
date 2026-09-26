@@ -631,7 +631,7 @@
 	}
 
 	.token-savings {
-		background-color: rgba(255, 255, 255, 0.15);
+		background-color: var(--line-color);
 		color: white;
 		padding-inline: 3px;
 		font-size: 18px;

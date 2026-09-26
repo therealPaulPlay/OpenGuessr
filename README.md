@@ -58,6 +58,7 @@ Please refer to the color section in `app.css`, but the most important ones are:
 - `--box-color` The standard color for containers
 - `--box-color-dark` Dark container color, often used for explanations or text-heavy containers
 - `--box-color-dark-soft` A lighter dark container color
+- `--dark-background` A dark background color used for fullscreen overlays
 
 Colors that are only used for one specific thing should not be placed in `app.css` – only commonly used ones. Trying to stick to colors from the `app.css` is however recommended for consistency.
 

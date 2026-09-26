@@ -106,7 +106,7 @@
 							</p>
 						</div>
 						<div
-							class="navigation-box-scroll map-select-scroll of-left of-right of-length-4"
+							class="navigation-box-scroll map-select-scroll of-left of-right of-length-2"
 							style:--map-count={Math.max($baseMaps.length, 1)}
 						>
 							{#if $baseMaps.every((e) => !isMapSelected(e.map)) && browser}
@@ -129,6 +129,7 @@
 										selectMap(localStorage.getItem("selectedMap"));
 									}}
 								/>
+								<div class="custom-map-separator"></div>
 							{/if}
 							{#each $baseMaps as { map, imgUrl }}
 								<MapItem
@@ -490,6 +491,13 @@
 
 	.map-select-scroll > :global(.map-item) {
 		flex: 0 0 calc((100% - (var(--map-count) - 1) * var(--panel-margin)) / var(--map-count));
+	}
+
+	.custom-map-separator {
+		flex: 0 0 2px;
+		margin-block: var(--content-margin);
+		border-radius: 3px;
+		background-color: var(--line-color);
 	}
 
 	.navigation-box-stack {
