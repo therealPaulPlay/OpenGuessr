@@ -49,14 +49,10 @@ export function getTeamFromClientId(id) {
     return playerArray?.teamIndex;
 }
 
-// Game UI ----------------------------------------------------------------------------------------------------------------------------------
-function setMultiplayerUI(enable) {
-    if (enable) chatVisible.set(true);
-    else chatVisible.set(false);
-}
-
+// Chat UI ----------------------------------------------------------------------------------------------------------------------------------
 multiplayer.subscribe((isMultiplayer) => {
-    setMultiplayerUI(isMultiplayer);
+    if (isMultiplayer) chatVisible.set(true);
+    else chatVisible.set(false);
 });
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
