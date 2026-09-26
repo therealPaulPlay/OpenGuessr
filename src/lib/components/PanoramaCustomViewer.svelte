@@ -12,7 +12,7 @@
 	import { getPanoramaDataByCoords, getPanoramaDataById, getPanoramaTileUrl } from "$lib/utils/streetViewUrl";
 	import { get } from "svelte/store";
 
-	let { onload, onfail } = $props();
+	let { onload, onfail, zoomScale = 1 } = $props();
 
 	let container = $state();
 	let compassHeading = $state(0);
@@ -140,41 +140,49 @@
 	});
 </script>
 
-<div id="custom-panorama" bind:this={container}></div>
+<div class="panorama-layer" style:scale={zoomScale}>
+	<div id="custom-panorama" bind:this={container}></div>
 
-<div class="panorama-compass">
-	<svg class="compass-background" viewBox="0 0 100 100">
-		<circle cx="50" cy="50" r="50" fill="#222222" />
-		<circle cx="50" cy="50" r="22" fill="#595959" />
-	</svg>
-	<svg class="compass-turn" viewBox="0 0 30 100">
-		<path
-			fill="#b3b3b3"
-			d="m24.84 69.76-.84-11.76-4.28 2.34C18.61 57.09 18 53.62 18 50c0-6.17 1.75-11.93 4.78-16.82l-2.5-1.66C16.94 36.88 15 43.21 15 50c0 4.14.72 8.11 2.04 11.79L13 64l7.7 5.13L25 72z"
-		/>
-	</svg>
-	<svg class="compass-turn compass-turn-opposite" viewBox="0 0 30 100">
-		<path
-			fill="#b3b3b3"
-			d="m24.84 69.76-.84-11.76-4.28 2.34C18.61 57.09 18 53.62 18 50c0-6.17 1.75-11.93 4.78-16.82l-2.5-1.66C16.94 36.88 15 43.21 15 50c0 4.14.72 8.11 2.04 11.79L13 64l7.7 5.13L25 72z"
-		/>
-	</svg>
-	<svg class="compass-needle" viewBox="0 0 40 100" style:rotate={-compassHeading + "deg"}>
-		<path fill="#c1272d" d="m10 50 10-32 10 32z" />
-		<path fill="#d1d1d1" d="M30 50 20 82 10 50z" />
-	</svg>
+	<div class="panorama-compass">
+		<svg class="compass-background" viewBox="0 0 100 100">
+			<circle cx="50" cy="50" r="50" fill="#222222" />
+			<circle cx="50" cy="50" r="22" fill="#595959" />
+		</svg>
+		<svg class="compass-turn" viewBox="0 0 30 100">
+			<path
+				fill="#b3b3b3"
+				d="m24.84 69.76-.84-11.76-4.28 2.34C18.61 57.09 18 53.62 18 50c0-6.17 1.75-11.93 4.78-16.82l-2.5-1.66C16.94 36.88 15 43.21 15 50c0 4.14.72 8.11 2.04 11.79L13 64l7.7 5.13L25 72z"
+			/>
+		</svg>
+		<svg class="compass-turn compass-turn-opposite" viewBox="0 0 30 100">
+			<path
+				fill="#b3b3b3"
+				d="m24.84 69.76-.84-11.76-4.28 2.34C18.61 57.09 18 53.62 18 50c0-6.17 1.75-11.93 4.78-16.82l-2.5-1.66C16.94 36.88 15 43.21 15 50c0 4.14.72 8.11 2.04 11.79L13 64l7.7 5.13L25 72z"
+			/>
+		</svg>
+		<svg class="compass-needle" viewBox="0 0 40 100" style:rotate={-compassHeading + "deg"}>
+			<path fill="#c1272d" d="m10 50 10-32 10 32z" />
+			<path fill="#d1d1d1" d="M30 50 20 82 10 50z" />
+		</svg>
+	</div>
 </div>
 
 <style>
-	#custom-panorama {
-		background-color: var(--panorama-background);
+	.panorama-layer {
 		position: fixed;
 		inset: 0;
 		z-index: 0;
+		transition: scale 400ms cubic-bezier(0.25, 1, 0.5, 1);
+	}
+
+	#custom-panorama {
+		background-color: var(--panorama-background);
+		position: absolute;
+		inset: 0;
 	}
 
 	.panorama-compass {
-		position: fixed;
+		position: absolute;
 		right: 10px;
 		bottom: 137px;
 		width: 48px;

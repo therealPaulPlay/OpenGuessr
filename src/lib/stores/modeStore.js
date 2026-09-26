@@ -11,6 +11,3 @@ export const competition = writable(false);
 export const singleplayer = derived([multiplayer, competition], ([$multiplayer, $competition]) => {
     return !($multiplayer || $competition);
 });
-
-// Leave current mode / return to singleplayer
-export const leaveFunction = writable(false);

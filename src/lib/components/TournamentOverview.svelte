@@ -128,7 +128,7 @@
 	}
 
 	.container-min-height {
-		min-height: 80px;
+		min-height: 63px;
 	}
 
 	.tournament-name-title {
@@ -168,8 +168,8 @@
 		align-items: center;
 		gap: var(--box-margin);
 		overflow: hidden;
-		margin: calc(-1 * var(--box-margin));
-		padding: var(--box-margin);
+		margin: calc(-1 * var(--layout-margin));
+		padding: var(--layout-margin);
 	}
 
 	:global(.status-chip) {

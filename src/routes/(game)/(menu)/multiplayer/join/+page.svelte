@@ -10,36 +10,13 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
+	import RoomCodeInput from "$lib/components/RoomCodeInput.svelte";
 
 	let roomCodeInput = $derived(segments.slice(0, 3).join("") + segments.slice(3, 6).join(""));
 	let openRooms = $state([]);
-	let inputRefs = $state([]); // Store references to input elements
 	let segments = $state(["", "", "", "", "", ""]); // 6 segments for XXX-XXX
 
 	let fetchRoomsInterval;
-
-	function handleInput(index, event) {
-		const value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-		segments[index] = value.slice(-1); // Only keep last character
-		if (value && index < 5) inputRefs[index + 1]?.focus(); // Move to next input
-	}
-
-	function handleKeydown(index, event) {
-		if (event.key === "Backspace" && !segments[index] && index > 0) inputRefs[index - 1]?.focus(); // Move to previous input on backspace
-	}
-
-	function handlePaste(event) {
-		event.preventDefault();
-		const paste = event.clipboardData
-			.getData("text")
-			.toUpperCase()
-			.replace(/[^A-Z0-9]/g, "");
-		if (paste.length <= 6) {
-			for (let i = 0; i < 6; i++) {
-				segments[i] = paste[i] || "";
-			}
-		}
-	}
 
 	onMount(async () => {
 		clearInterval(fetchRoomsInterval);
@@ -64,24 +41,7 @@
 	<div class="input-center-box">
 		<div class="multiplayer-join-field">
 			<p class="multiplayer-input-info">{$multiplayerStatus || ""}</p>
-			<div class="segmented-input-box" onpaste={handlePaste}>
-				{#each segments, i}
-					{const placeholder = ["A", "B", "C", "1", "2", "3"]}
-					<input
-						type="text"
-						class="segment-input"
-						placeholder={placeholder[i]}
-						bind:this={inputRefs[i]}
-						bind:value={segments[i]}
-						oninput={(e) => handleInput(i, e)}
-						onkeydown={(e) => handleKeydown(i, e)}
-						maxlength={1}
-					/>
-					{#if i === 2}
-						<span class="dash">-</span>
-					{/if}
-				{/each}
-			</div>
+			<RoomCodeInput bind:segments />
 		</div>
 		<div class="bar-menu join-button-container">
 			<button
@@ -203,32 +163,6 @@
 		flex-direction: column;
 		width: 100%;
 		max-width: 320px;
-	}
-
-	.segmented-input-box {
-		display: flex;
-		align-items: center;
-		gap: var(--box-margin);
-		justify-content: center;
-	}
-
-	.segment-input {
-		width: 38px;
-		height: 50px;
-		border-radius: var(--box-margin);
-		text-align: center;
-		text-transform: uppercase;
-		box-shadow: var(--panel-shadow);
-	}
-
-	.segment-input::placeholder {
-		opacity: 0.25 !important;
-	}
-
-	.dash {
-		opacity: 0.25;
-		color: white;
-		font-size: 22px;
 	}
 
 	.multiplayer-join-field {

@@ -5,17 +5,19 @@ import { littleTimeVignetteVisible } from "$lib/stores/uiStore";
 let activeTimer = null;
 
 export function startTimer(durationInSeconds, onTimerExpired) {
-    if (activeTimer) activeTimer.stopTimer();
+    if (activeTimer) activeTimer.stopTimer(); // If another timer is active, stop it (there should only be 1 timer)
 
     let currentTimerIntervalId;
     let isRunning = false;
+    let isPaused = false;
     let timer = durationInSeconds;
-    let intervalDuration = durationInSeconds < 1 ? 0.1 : 1;
+    let intervalDuration = durationInSeconds < 1 ? 0.1 : 1; // One blink mode compatibility
 
     // Display initial time immediately
     updateDisplay();
 
     currentTimerIntervalId = setInterval(function () {
+        if (isPaused) return; // Interval keeps running while paused to preserve tick timing
         isRunning = true;
         timer -= intervalDuration;
 
@@ -52,25 +54,43 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     function stopTimer() {
         clearInterval(currentTimerIntervalId);
         isRunning = false;
+        if (activeTimer !== timerInstance) return; // Don't reset sound or UI if another timer is active
+
+        // Reset UI, sound, timer text, and set active timer null
         mapModeIndicatorFading.set(false);
         littleTimeVignetteVisible.set(false);
         stopSound("timerSound");
-        if (activeTimer === timerInstance) activeTimer = null;
-        if (!activeTimer) timerText.set(null);
+        timerText.set(null);
+        activeTimer = null;
+    }
+
+    function pauseTimer() {
+        if (isPaused || activeTimer !== timerInstance) return;
+        isPaused = true;
+        littleTimeVignetteVisible.set(false);
+        stopSound("timerSound");
+    }
+
+    function resumeTimer() {
+        if (!isPaused || activeTimer !== timerInstance) return;
+        isPaused = false;
+        updateDisplay();
     }
 
     function getRemainingTime() {
         return timer;
     }
 
-    function isTimerRunning() {
+    function isTimerActive() {
         return isRunning;
     }
 
     const timerInstance = {
         getRemainingTime,
         stopTimer,
-        isTimerRunning
+        pauseTimer,
+        resumeTimer,
+        isTimerActive
     };
 
     activeTimer = timerInstance;

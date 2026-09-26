@@ -6,6 +6,7 @@
 	import Flag from "./Flag.svelte";
 	import { blur } from "svelte/transition";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	function selectCountry(index) {
 		playSound("item_select");
@@ -14,13 +15,13 @@
 	}
 </script>
 
-{#if $countryGuessr}
+{#if $countryGuessr && !$inMenu}
 	<div
 		class="country-guessr-selector bar-menu"
 		role="menu"
 		tabindex="0"
 		class:country-guessr-selector-ad-shift={!$adsDisabled}
-		transition:blur={{ duration: 150 }}
+		transition:blur={{ duration: 250 }}
 	>
 		{#if $countryGuessrCountriesArray?.length}
 			{#each $countryGuessrCountriesArray as country, index}

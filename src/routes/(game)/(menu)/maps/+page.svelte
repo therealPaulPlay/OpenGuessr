@@ -6,7 +6,7 @@
 	import { onMount, getContext } from "svelte";
 	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { changeMap } from "$lib/utils/changeMap.js";
+	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils.js";
 	import {
 		specialMaps,
 		continentMaps,
@@ -17,10 +17,9 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
-	import { navigationMenu } from "$lib/stores/uiStore";
 	import Chip from "$lib/components/ui/Chip.svelte";
+	import MapItem from "$lib/components/MapItem.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { browser } from "$app/environment";
 	import { get } from "svelte/store";
 
 	const snapshotStore = getContext("snapshotStore");
@@ -159,20 +158,9 @@
 		}
 	}
 
-	function selectMap(name, community = false) {
+	function playMap(name, community = false) {
 		playSound("button_juicy");
-		changeMap((community ? "community_" : "") + name, true, returnAfterChange);
-		if (!returnAfterChange) {
-			navigationMenu.set(false);
-			goto("/");
-		}
-	}
-
-	function checkIfSelected(name, community = false) {
-		if (!browser) return false;
-		const selectedMap = localStorage.getItem("selectedMap");
-		if (community) name = "community_" + name;
-		return selectedMap == name || (name == $defaultMap && !selectedMap);
+		selectMap(name, { community, returnToMultiplayer: returnAfterChange });
 	}
 
 	function saveCommunityMap(name) {
@@ -227,7 +215,7 @@
 		}
 	}
 
-	// Snapshot functions for state restoration
+	// Snapshot functions for state restoration ---------------------------------------
 	function captureSnapshot() {
 		return {
 			scrollY: window.scrollY,
@@ -277,22 +265,33 @@
 	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
 
+{#snippet liveChip()}
+	<Chip
+		mutedOpacity={!isMapSelected($defaultMap)}
+		onclick={(e) => {
+			e.stopPropagation();
+			showConfirmPopup(
+				"Live-generated",
+				"The world map is continuously regenerated to feature a complete list of fresh locations every couple of hours.",
+			);
+		}}
+	>
+		<Info size={17} strokeWidth={2.25} style="margin-right: var(--content-margin); margin-bottom: -2px;" />
+		Live
+	</Chip>
+{/snippet}
+
 {#snippet communityMapItem(map)}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<div
-		class="map-item standard-button white-soft map-item-animate"
-		role="button"
-		tabindex="0"
+	<MapItem
+		name={map.name || "Unnamed (error)"}
+		author={map.author || "Error"}
+		animate={true}
 		onclick={() => {
 			playSound("basic_button");
 			const nameFormattedForUrl = map.name.split(" ").join("_").toLowerCase();
 			goto("/maps/community/" + nameFormattedForUrl + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
 		}}
 	>
-		<div class="map-info">
-			<p class="map-name">{map.name || "Unnamed (Error)"}</p>
-			<p class="map-author">by {map.author || "Error"}</p>
-		</div>
 		<button
 			class="add-button standard-button dark"
 			{@attach tooltip({ text: "Save" })}
@@ -309,45 +308,25 @@
 				<Bookmark size={20} strokeWidth={2.25} />
 			{/if}
 		</button>
-	</div>
+	</MapItem>
 {/snippet}
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
 	<div class="header-container">
 		<h2 class="header">Base</h2>
 	</div>
 	<div class="map-container map-container-grow-first">
 		{#each [...$baseMaps].reverse() as { map, imgUrl }}
-			<div
-				class="map-item standard-button white-soft map-item-slim"
-				class:selected-map-item={checkIfSelected(map)}
-				role="button"
-				tabindex="0"
+			<MapItem
+				name={map}
+				{imgUrl}
+				slim={true}
+				selected={isMapSelected(map)}
+				chip={map === $defaultMap ? liveChip : undefined}
 				onclick={() => {
-					selectMap(map);
+					playMap(map);
 				}}
-			>
-				<img class="map-cover-image" src={imgUrl} alt="map cover" />
-				<div class="map-info {map === $defaultMap ? 'map-info-flex' : ''}">
-					<p class="map-name">{map}</p>
-					{#if map === $defaultMap}
-						<Chip
-							mutedOpacity={!checkIfSelected(map)}
-							onclick={(e) => {
-								e.stopPropagation();
-								showConfirmPopup(
-									"Live-generated",
-									"The world map is continuously regenerated to feature a complete list of fresh locations every couple of hours.",
-								);
-							}}
-						>
-							<Info size={17} strokeWidth={2.25} style="margin-right: var(--content-margin); margin-bottom: -2px;" />
-							Live
-						</Chip>
-					{/if}
-				</div>
-			</div>
+			/>
 		{/each}
 	</div>
 	<!-- Special game modes and OpenGuessr sites -->
@@ -355,36 +334,30 @@
 		<h2 class="header">Special</h2>
 	</div>
 	<div class="map-container map-container-grow-first">
-		<div
-			class="map-item standard-button white-soft map-item-slim"
-			role="button"
-			tabindex="0"
+		<MapItem
+			name="Quizzes"
+			imgUrl="/img/map-covers/quiz_cover.jpg"
+			slim={true}
+			link={true}
 			onclick={() => {
 				playSound("button_juicy");
 				window.open("https://education.openguessr.com/quiz", "_blank").focus();
 			}}
 		>
-			<img class="map-cover-image" src="/img/map-covers/quiz_cover.jpg" alt="map cover" />
-			<div class="map-info map-info-flex">
-				<p class="map-name">Quizzes</p>
+			{#snippet chip()}
 				<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
-			</div>
-		</div>
+			{/snippet}
+		</MapItem>
 		{#each [...$specialMaps].reverse() as { map, imgUrl }}
-			<div
-				class="map-item standard-button white-soft map-item-slim"
-				class:selected-map-item={checkIfSelected(map)}
-				role="button"
-				tabindex="0"
+			<MapItem
+				name={map}
+				{imgUrl}
+				slim={true}
+				selected={isMapSelected(map)}
 				onclick={() => {
-					selectMap(map);
+					playMap(map);
 				}}
-			>
-				<img class="map-cover-image" src={imgUrl} alt="map cover" />
-				<div class="map-info">
-					<p class="map-name">{map}</p>
-				</div>
-			</div>
+			/>
 		{/each}
 	</div>
 	<!-- Expandable country section -->
@@ -393,19 +366,14 @@
 	</div>
 	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
 		{#each $countryMaps as map}
-			<div
-				class="map-item standard-button white-soft map-item-slim"
-				class:selected-map-item={checkIfSelected(map)}
-				role="button"
-				tabindex="0"
+			<MapItem
+				name={map}
+				slim={true}
+				selected={isMapSelected(map)}
 				onclick={() => {
-					selectMap(map);
+					playMap(map);
 				}}
-			>
-				<div class="map-info">
-					<p class="map-name">{map}</p>
-				</div>
-			</div>
+			/>
 		{/each}
 	</div>
 	<div class="bar-menu show-all-button-container" style:margin-top={countrySectionExpanded ? "" : "-35px"}>
@@ -430,19 +398,14 @@
 	</div>
 	<div class="map-container">
 		{#each $continentMaps as map}
-			<div
-				class="map-item standard-button white-soft map-item-slim"
-				class:selected-map-item={checkIfSelected(map)}
-				role="button"
-				tabindex="0"
+			<MapItem
+				name={map}
+				slim={true}
+				selected={isMapSelected(map)}
 				onclick={() => {
-					selectMap(map);
+					playMap(map);
 				}}
-			>
-				<div class="map-info">
-					<p class="map-name">{map}</p>
-				</div>
-			</div>
+			/>
 		{/each}
 	</div>
 	<!-- Saved Community Maps -->
@@ -452,18 +415,15 @@
 	<div class="map-container map-container-grid map-container-grid-slim">
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
-				<div
-					class="map-item standard-button white-soft map-item-slim map-item-bookmark map-item-animate"
-					class:selected-map-item={checkIfSelected(map, true)}
-					role="button"
-					tabindex="0"
+				<MapItem
+					name={map}
+					slim={true}
+					animate={true}
+					selected={isMapSelected(map, true)}
 					onclick={() => {
-						selectMap(map, true);
+						playMap(map, true);
 					}}
 				>
-					<div class="map-info">
-						<p class="map-name">{map}</p>
-					</div>
 					<button
 						class="standard-button dark remove-button"
 						onclick={(e) => {
@@ -474,7 +434,7 @@
 					>
 						<X size={20} strokeWidth={2.25} style="margin-bottom: 2px;" />
 					</button>
-				</div>
+				</MapItem>
 			{/each}
 		{:else}
 			<p class="nothing-found no-saved-maps">No saved community maps.</p>
@@ -583,16 +543,16 @@
 			{@render communityMapItem(map)}
 		{/each}
 		{#if showLoadMore}
-			<button
-				class="map-item load-more standard-button white-soft"
+			<MapItem
+				name="More"
+				loadMore={true}
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50);
 				}}
 			>
-				More
-				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
-			</button>
+				<Plus strokeWidth={2.25} size={20} style="margin-bottom: -3px;" />
+			</MapItem>
 		{/if}
 		{#if errorMessageShown}
 			<p class="nothing-found">{errorMessageText}</p>
@@ -616,97 +576,8 @@
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
 	}
 
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-
-	.map-info {
-		flex-grow: 1;
-		padding-left: var(--content-margin);
-		min-width: 0;
-	}
-
-	.map-info-flex {
-		display: flex;
-		gap: var(--box-margin);
-		overflow: hidden;
-		margin-top: calc(-1 * var(--box-margin));
-		margin-bottom: calc(-1 * var(--box-margin));
-		padding: var(--box-margin);
-		padding-inline: inherit;
-	}
-
 	.no-bottom-padding {
 		padding-bottom: 0;
-	}
-
-	.map-item {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--box-margin);
-		justify-content: space-between;
-		box-shadow: var(--panel-shadow);
-		text-decoration: none;
-		align-items: center;
-		border-radius: var(--box-margin);
-		padding: var(--box-margin);
-		box-sizing: border-box;
-		text-align: start;
-		min-width: 300px;
-		flex-grow: 1;
-		flex-basis: 30%;
-		overflow: hidden;
-		width: 100%;
-		height: unset;
-		border: none;
-	}
-
-	.map-item-animate {
-		animation: fadeIn 250ms ease-in-out;
-		flex-wrap: nowrap;
-	}
-
-	.map-item-slim {
-		min-width: 150px;
-		flex-basis: 15%;
-	}
-
-	.map-cover-image {
-		width: 100%;
-		aspect-ratio: 16/9;
-		object-fit: cover;
-		border-radius: var(--content-margin);
-		pointer-events: none;
-		user-select: none;
-	}
-
-	.map-item-bookmark {
-		padding-right: var(--box-margin);
-	}
-
-	.selected-map-item {
-		background-color: rgba(255, 255, 255, 0.3);
-	}
-
-	.map-name {
-		font-size: 22px;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.map-author {
-		font-size: 20px;
-		color: rgba(255, 255, 255, 0.5);
-		overflow: hidden;
-		max-width: 150px;
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 
 	.map-container {
@@ -877,7 +748,7 @@
 	}
 
 	.selected {
-		background-color: rgba(255, 255, 255, 0.3);
+		background-color: rgba(255, 255, 255, 0.25);
 	}
 
 	.categories-search-area {
@@ -892,17 +763,6 @@
 		padding: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
-	}
-
-	.load-more {
-		height: auto;
-		min-height: 71px;
-		justify-content: center;
-		transition:
-			filter 250ms ease,
-			box-shadow 250ms ease,
-			transform 150ms ease,
-			opacity 250ms ease;
 	}
 
 	@media (max-width: 1000px) {

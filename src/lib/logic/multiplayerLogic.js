@@ -5,12 +5,10 @@ import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { playSound } from "$lib/utils/soundManager.js";
-import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { leaveFunction } from "$lib/stores/modeStore.js";
+import { guestNamePickerPopup, linkJoinPopup, mainMenu } from "$lib/stores/uiStore";
 import {
     teamAmount, roundAmount, roundLength,
     multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -51,23 +49,10 @@ export function getTeamFromClientId(id) {
     return playerArray?.teamIndex;
 }
 
-// Game UI ----------------------------------------------------------------------------------------------------------------------------------
-function setMultiplayerUI(enable) {
-    if (enable) {
-        leaveFunction.set(() => {
-            showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
-            playSound("leave_round");
-        });
-        chatVisible.set(true);
-        navigationMenu.set(false); // Disable navigation screen for seamless game entry
-    } else {
-        leaveFunction.set(); // Hides leave option too
-        chatVisible.set(false);
-    }
-}
-
+// Chat UI ----------------------------------------------------------------------------------------------------------------------------------
 multiplayer.subscribe((isMultiplayer) => {
-    setMultiplayerUI(isMultiplayer);
+    if (isMultiplayer) chatVisible.set(true);
+    else chatVisible.set(false);
 });
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
@@ -82,8 +67,15 @@ export async function createMultiplayerInstance() {
     }
 
     if (!get(isAuthenticated) && !get(guestNamePromise)) {
+        // If linkjoin popup is open, close it and open it again after the guest name popup was dismissed to avoid stacking popups
+        let wasLinkJoinOpen = false;
+        if (get(linkJoinPopup)) { 
+            linkJoinPopup.set(false); 
+            wasLinkJoinOpen = true;
+        }
         guestNamePickerPopup.set(true);
         await new Promise((resolve) => guestNamePromise.set(resolve));
+        if (wasLinkJoinOpen) linkJoinPopup.set(true); // Now, re-open
     }
 
     // Create the new instance
@@ -154,7 +146,10 @@ export async function createMultiplayerInstance() {
             // If game has started, go to game page & disable matchmaking
             if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) {
                 gameHasStarted = true;
-                goto("/"); // E.g. host or duel page -> game page 
+
+                // Move home and close main menu (e.g. from host or duel page)
+                mainMenu.set(false);
+                goto("/");
             }
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
@@ -212,7 +207,7 @@ export async function createMultiplayerInstance() {
             if (storage.countdownActive) multiplayerOverlayCountdown(); // Display countdown
 
             if (storage.timerStart && storage.timerStart.length != null && storage.timerStart.length !== Infinity) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
-            if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
+            if (!storage.timerStart && multiplayerTimer?.isTimerActive()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
 
             if (storage.timeReducedOverlay != null && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
                 if (storage.timeReducedOverlay && !storage?.confirmedArray?.includes(get(socket)?.id)) showTimeReducedOverlay();
@@ -314,7 +309,11 @@ export async function joinMultiplayerRoom(code) {
         multiplayer.set(true); // Set multiplayer after successful join
         roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
-        goto("/"); // Always move to gameplay scene on join
+
+        // Move home and close main menu
+        mainMenu.set(false);
+        goto("/");
+
         return true; // Success
     } catch (error) {
         console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs
@@ -369,6 +368,9 @@ export function leaveMultiplayer(destroy = true) {
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         checkGenerationTypeAndGenerate(); // Generate new location to match the singleplayer settings (selected map, timer etc.)
     }
+
+    // Bring player to main menu
+    mainMenu.set(true);
 }
 
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------

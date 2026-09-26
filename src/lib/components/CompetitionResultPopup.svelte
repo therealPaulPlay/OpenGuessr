@@ -58,24 +58,15 @@
 
 				try {
 					responseData = await response.json();
-					let errorMessages = [];
+				} catch {}
 
-					if (responseData.error) errorMessages.push(responseData.error);
-					if (responseData.message) errorMessages.push(responseData.message);
-
-					if (responseData.errors && Array.isArray(responseData.errors)) {
-						responseData.errors.forEach((err) => {
-							if (err.msg) errorMessages.push(err.msg);
-							else errorMessages.push(JSON.stringify(err));
-						});
-					}
-
-					errorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", errorMessages.join(" "));
-				} catch {
+				if (responseData?.error) {
+					errorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", responseData.error);
+				} else {
 					errorPopup(
 						"Unknown error loading a leaderboard",
 						"An unknown erorr occured loading a leaderboard.",
-						"Please inspect console logs and network requests for more details.",
+						"Request failed with status " + response.status + ".",
 					);
 				}
 			}
@@ -172,7 +163,12 @@
 						.writeText(window.location.origin + "/competitions?enter=" + $competitionResultId)
 						.then(() => showNotification("Copied!"))
 						.catch((error) => showNotification("Error: " + error));
-				}}>Copy link<Link size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: var(--content-margin);" /></button
+				}}
+				>Copy link<Link
+					size={20}
+					strokeWidth={2.25}
+					style="margin-bottom: -2px; margin-left: var(--content-margin);"
+				/></button
 			>
 		</div>
 	{/if}

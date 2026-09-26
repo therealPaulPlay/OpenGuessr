@@ -1,15 +1,15 @@
 <!-- Used for the singleplayer timer countdown -->
 <script>
-	import { page } from "$app/state";
 	import {
 		timerCountdownOverlay,
 		timerCountdownOverlayTitle,
 	} from "$lib/stores/context-specific/timerCountdownOverlayStore";
+	import { inMenu } from "$lib/stores/uiStore";
 	import { fade } from "svelte/transition";
 </script>
 
-{#if $timerCountdownOverlay}
-	<div transition:fade={{ duration: 150 }} id="timer-countdown" style:display={page.url.pathname !== "/" ? "none" : ""}>
+{#if $timerCountdownOverlay && !$inMenu}
+	<div transition:fade={{ duration: 150 }} id="timer-countdown">
 		<h1>{$timerCountdownOverlayTitle}</h1>
 	</div>
 {/if}
@@ -31,7 +31,7 @@
 
 	#timer-countdown h1 {
 		font-size: 75px;
-		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+		text-shadow: 2px 2px 15px var(--dark-shadow-color);
 		margin-bottom: var(--layout-margin);
 	}
 

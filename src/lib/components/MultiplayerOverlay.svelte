@@ -294,11 +294,11 @@
 
 	.multiplayer-overlay h1 {
 		font-size: 50px;
-		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+		text-shadow: 2px 2px 15px var(--dark-shadow-color);
 	}
 
 	.multiplayer-overlay h2 {
-		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+		text-shadow: 2px 2px 15px var(--dark-shadow-color);
 		opacity: 0.75;
 	}
 

@@ -12,7 +12,6 @@
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";
 	import TopBar from "$lib/components/TopBar.svelte";
-	import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
 	import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
 	import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
 	import MapHolder from "$lib/components/MapHolder.svelte";
@@ -50,7 +49,7 @@
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ModerationPopup from "$lib/components/Moderation.svelte";
-	import Navigation from "$lib/components/Navigation.svelte";
+	import Navigation from "$lib/components/MainMenu.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import Notification from "$lib/components/Notification.svelte";
@@ -58,8 +57,6 @@
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
 	import CompetitionResultPopup from "$lib/components/CompetitionResultPopup.svelte";
 	import Authentication from "$lib/components/Authentication.svelte";
-	import TutorialOverlay from "$lib/components/TutorialOverlay.svelte";
-	import TutorialNote from "$lib/components/TutorialNote.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(async () => {
@@ -110,7 +107,6 @@
 <Authentication />
 
 <!-- Logo and Nav -->
-<TopLeftLogo />
 <TopBar />
 <Notification />
 
@@ -134,7 +130,6 @@
 <TournamentMatchResultsPopup />
 <InboxPopup />
 <OutboxPopup />
-<TutorialOverlay />
 <CompetitionResultPopup />
 <DuelResultPopup />
 <SignupIframe />
@@ -157,7 +152,6 @@
 <CountryGuesserBar />
 <MapHolder>
 	<MobileMapToggles />
-	<TutorialNote />
 	<Map />
 	<MapModeIndicator />
 </MapHolder>

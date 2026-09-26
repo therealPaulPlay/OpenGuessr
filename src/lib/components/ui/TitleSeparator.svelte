@@ -10,8 +10,7 @@
 <style>
 	.line {
 		height: 2px;
-		background-color: white;
-		opacity: 0.15;
+		background-color: var(--line-color);
 		flex-grow: 1;
 		border-radius: var(--box-margin);
 		margin-top: var(--content-margin);

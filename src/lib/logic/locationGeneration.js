@@ -4,7 +4,7 @@ import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { savedMapBounds } from "$lib/stores/locationStore";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
-import { changeMap } from "$lib/utils/changeMap";
+import { changeMap } from "$lib/utils/changeMapUtils";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 // This is THE function to get locations (all others here are NOT export) - not the function to start a new round!
