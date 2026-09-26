@@ -57,7 +57,7 @@
 						mainMenu.set(true);
 						break;
 				}
-			}}><LogOut size={22} /> <span class="leave-button-span">Menu</span></button
+			}}><LogOut size={22} strokeWidth={2.25} /> <span class="leave-button-span">Menu</span></button
 		>
 	</nav>
 {/if}

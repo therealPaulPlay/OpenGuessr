@@ -263,10 +263,10 @@
 		style:box-shadow={yesterdaysDaily ? "var(--box-shadow)" : ""}
 		class:daily-competition-item={daily}
 	>
+		{#if !expired && daily}
+			<img alt="Mascot with clock" src="/img/mascot_with_clock.png" class="clock-mascot" />
+		{/if}
 		<div>
-			{#if !expired && daily}
-				<img alt="Mascot with clock" src="/img/mascot_with_clock.png" class="clock-mascot" />
-			{/if}
 			<h2 class="competition-item-header">{name}</h2>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

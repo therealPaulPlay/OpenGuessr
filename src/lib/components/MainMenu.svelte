@@ -30,6 +30,7 @@
 	import { onMount } from "svelte";
 	import { tutorialStep } from "$lib/stores/context-specific/tutorialStore";
 	import Tutorial, { checkTutorialStart } from "./Tutorial.svelte";
+	import GuessyBotInvite from "./DiscordBotInvite.svelte";
 
 	// Check for tutorial -----------------------------------
 	onMount(checkTutorialStart);
@@ -82,24 +83,29 @@
 						class="logo-icon"
 						src="/img/icon_3d.png"
 						alt="OpenGuessr icon"
-						in:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
+						transition:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
 					/>
 					<div
 						class="logo-icon logo-glint"
-						in:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
+						transition:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
 						{@attach logoGlint}
 					></div>
-					<img class="red-smoke-background" src="/img/red_smoke.png" alt="Red smoke" />
+					<img
+						class="red-smoke-background"
+						src="/img/red_smoke.png"
+						alt="Red smoke"
+						transition:fade|global={{ duration: 150 }}
+					/>
 				</div>
 			</div>
 			<div class="navigation-menu-container">
 				<!-- Dark-ish panel color fade from bottom up to make the controls more legible -->
-				<div class="panel-fade" in:fade|global={{ duration: 150 }}></div>
+				<div class="panel-fade" transition:fade|global={{ duration: 150 }}></div>
 				<div class="navigation-menu">
 					<div class="navigation-menu-top">
 						<div
 							class="navigation-box bar-menu"
-							in:scale|global={{ duration: 150, start: 0.9, delay: 50 }}
+							transition:scale|global={{ duration: 150, start: 0.9, delay: 50 }}
 							style:overflow="visible"
 						>
 							<div class="bar-menu singleplayer-label">
@@ -120,7 +126,7 @@
 									{#snippet cover()}
 										<div class="generic-map-cover">
 											<img alt="Generic map icon" src="/img/maps_icon.png" class="map-map-icon" />
-											<span class="map-play-icon"> <Play size={28} strokeWidth={1.75} style="opacity: 0.5;" /></span>
+											<span class="map-play-icon"> <Play size={28} strokeWidth={2} style="opacity: 0.5;" /></span>
 										</div>
 									{/snippet}
 									<MapItem
@@ -160,7 +166,7 @@
 								cover={MoreMapsVisualization}
 							/>
 						</div>
-						<div class="navigation-row" in:scale|global={{ duration: 150, start: 0.85, delay: 75 }}>
+						<div class="navigation-row" transition:scale|global={{ duration: 150, start: 0.85, delay: 75 }}>
 							<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
 								<button
 									class="standard-button white navigation-button large-button navigation-button-wide"
@@ -208,7 +214,7 @@
 						</div>
 						<div
 							class="navigation-row navigation-row-mobile-column"
-							in:scale|global={{ duration: 150, start: 0.8, delay: 100 }}
+							transition:scale|global={{ duration: 150, start: 0.8, delay: 100 }}
 						>
 							<div class="navigation-box navigation-box-half bar-menu">
 								<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -377,6 +383,8 @@
 							</button>
 						</div>
 					</div>
+					<!-- Discord bot promotion -->
+					<GuessyBotInvite />
 				</div>
 			</div>
 		{/if}
