@@ -71,8 +71,15 @@ export async function createMultiplayerInstance() {
     }
 
     if (!get(isAuthenticated) && !get(guestNamePromise)) {
+        // If linkjoin popup is open, close it and open it again after the guest name popup was dismissed to avoid stacking popups
+        let wasLinkJoinOpen = false;
+        if (get(linkJoinPopup)) { 
+            linkJoinPopup.set(false); 
+            wasLinkJoinOpen = true;
+        }
         guestNamePickerPopup.set(true);
         await new Promise((resolve) => guestNamePromise.set(resolve));
+        if (wasLinkJoinOpen) linkJoinPopup.set(true); // Now, re-open
     }
 
     // Create the new instance
