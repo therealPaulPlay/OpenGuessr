@@ -263,7 +263,7 @@
 			{/if}
 			{#if $profileData?.dailyCompetitionStreak >= 1}
 				<div class="name-box-icon white-soft" {@attach tooltip({ text: "Daily Comp. streak" })}>
-					<p>{$profileData?.dailyCompetitionStreak}</p>
+					<p>{$profileData.dailyCompetitionStreak.toLocaleString()}</p>
 					<img id="supporter-icon" alt="streak icon" src="/img/streak_icon.png" />
 				</div>
 			{/if}

@@ -254,7 +254,9 @@
 							>
 								<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
 								{#if !$freeDailyTokensClaimed}
-									<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
+									<div transition:blur class="free-tokens-chip-container">
+										<Chip text="Free" red={true} italic={false} mutedOpacity={false} class="free-tokens-chip" />
+									</div>
 								{/if}
 							</button>
 							<button
@@ -669,15 +671,19 @@
 		pointer-events: none;
 	}
 
-	:global(.chip.free-tokens-chip) {
+	.free-tokens-chip-container {
 		position: absolute;
+		display: flex;
 		top: calc(-1 * var(--content-margin));
 		right: calc(-1 * var(--content-margin));
+	}
+
+	:global(.chip.free-tokens-chip) {
 		padding-top: 1px !important;
 		padding-bottom: 1px !important;
 	}
 
-	:global(.chip.free-tokens-chip, .chip.free-tokens-chip *) {
+	:global(.chip.free-tokens-chip *) {
 		font-size: 16px;
 	}
 
