@@ -219,7 +219,7 @@
 										style:--name-scroll-offset="calc({nameAreaWidth - nameTextWidth}px - var(--content-margin))"
 									>
 										<p class:name-scroll={scrollNameText} bind:offsetWidth={nameTextWidth}>
-											{$username || "Guest"}
+											{$username}
 										</p>
 									</div>
 									<ExperienceLevelCircle />
