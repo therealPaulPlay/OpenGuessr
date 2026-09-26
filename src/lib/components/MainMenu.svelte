@@ -28,8 +28,14 @@
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { browser } from "$app/environment";
 
-	let scrollNameText = $state(false);
+	// Username scroll -----------------------------------------------------------
 
+	// Scroll the username only when it overflows by exactly the overflow px amount
+	let nameAreaWidth = $state(0);
+	let nameTextWidth = $state(0);
+	let scrollNameText = $derived(nameAreaWidth > 0 && nameTextWidth > nameAreaWidth);
+
+	// Logo glint ------------------------------------------------------------
 	function logoGlint(element) {
 		element.animate([{ left: "-50%" }, { left: "150%" }], {
 			duration: 1000,
@@ -39,15 +45,6 @@
 			pseudoElement: "::before",
 		});
 	}
-
-	function checkTextLength(text) {
-		const textLength = text.length;
-		scrollNameText = textLength > 25;
-	}
-
-	username.subscribe((value) => {
-		if (value) checkTextLength(value);
-	});
 
 	// Daily competition streak widget -------------------------------------------
 	$effect(() => {
@@ -215,8 +212,13 @@
 										playSound("basic_button");
 									}}
 								>
-									<div class="account-name-area" class:account-name-fade={scrollNameText}>
-										<p class:name-scroll={scrollNameText}>
+									<div
+										class="account-name-area"
+										class:account-name-fade={scrollNameText}
+										bind:clientWidth={nameAreaWidth}
+										style:--name-scroll-offset="calc({nameAreaWidth - nameTextWidth}px - var(--content-margin))"
+									>
+										<p class:name-scroll={scrollNameText} bind:offsetWidth={nameTextWidth}>
 											{$username || "Guest"}
 										</p>
 									</div>
@@ -473,6 +475,7 @@
 		flex-grow: 1;
 		overflow: hidden;
 		width: 100%;
+		max-width: 100%;
 		box-sizing: border-box;
 		align-items: stretch;
 	}
@@ -731,12 +734,11 @@
 
 	@keyframes scrollText {
 		0% {
-			transform: translateX(5px);
+			transform: translateX(var(--content-margin));
 		}
 
 		100% {
-			/* Adjust second param to be max-width of element minus about 5px */
-			transform: translateX(calc(-100% + 215px));
+			transform: translateX(var(--name-scroll-offset));
 		}
 	}
 
