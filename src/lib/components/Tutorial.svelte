@@ -138,7 +138,7 @@
 				</div>
 			</div>
 		{:else if $tutorialStep == 3}
-			<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tutorial completed!</h1>
+			<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tutorial complete!</h1>
 			<div class="subtitle-container">
 				<p class="subtitle" in:blur|global={{ duration: 500 }}>Now, explore at your own pace.</p>
 			</div>
