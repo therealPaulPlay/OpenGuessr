@@ -577,7 +577,7 @@
 		width: auto;
 		transition: scale 250ms ease;
 		margin-top: auto;
-		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
+		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
 		user-select: none;
 		pointer-events: none;
 	}

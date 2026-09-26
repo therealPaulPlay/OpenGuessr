@@ -122,7 +122,7 @@
 	.purchase-animation-title {
 		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		z-index: 1;
-		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
+		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
 		text-align: center;
 		margin-inline: var(--layout-margin);
 	}

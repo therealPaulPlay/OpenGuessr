@@ -188,7 +188,7 @@
 		opacity: 0.5;
 		cursor: pointer;
 		transition: opacity 250ms ease;
-		text-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+		text-shadow: 0 0 10px var(--dark-shadow-color);
 	}
 
 	.subtle-button:hover {
@@ -213,7 +213,7 @@
 		margin-inline: auto;
 		font-size: 25px;
 		max-width: 400px;
-		text-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+		text-shadow: 0 0 20px var(--dark-shadow-color);
 		text-wrap: balance;
 	}
 
@@ -224,7 +224,7 @@
 	.title {
 		text-align: center;
 		font-size: 75px;
-		text-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+		text-shadow: 0 0 30px var(--dark-shadow-color);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
 		padding-inline: var(--layout-margin);
@@ -285,7 +285,7 @@
 		padding-inline: calc(var(--layout-margin) * 2);
 		width: 100%;
 		box-sizing: border-box;
-		text-shadow: 0 0 var(--layout-margin) black;
+		text-shadow: 0 0 var(--layout-margin) var(--dark-shadow-color);
 	}
 
 	@media (max-width: 800px) {

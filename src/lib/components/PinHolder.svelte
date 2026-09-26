@@ -224,7 +224,7 @@
 		line-height: 0.9;
 		padding-inline: 2px;
 		user-select: none;
-		text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+		text-shadow: 2px 2px 10px var(--dark-shadow-color);
 	}
 
 	.pin-select-icon {
