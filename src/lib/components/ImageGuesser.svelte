@@ -4,6 +4,7 @@
 	import { innerWidth, innerHeight } from "svelte/reactivity/window";
 	import { onDestroy } from "svelte";
 	import { browser } from "$app/environment";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	let zoomLevel = $state(1);
 	let translateX = $state(0);
@@ -124,7 +125,12 @@
 
 {#if $imageGuessr}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="image-guessr-overlay" onwheel={handleWheel} onpointerdown={handlePointerDown}>
+	<div
+		class="image-guessr-overlay"
+		style:scale={$inMenu ? 1.1 : 1}
+		onwheel={handleWheel}
+		onpointerdown={handlePointerDown}
+	>
 		{const baseTransitions = "filter 250ms ease, rotate 250ms ease, opacity 500ms ease"}
 		<div
 			class="image-guessr-image"
@@ -163,6 +169,7 @@
 		color: white;
 		user-select: none;
 		background-color: rgb(22, 22, 22);
+		transition: scale 400ms cubic-bezier(0.25, 1, 0.5, 1);
 	}
 
 	.image-guessr-image {

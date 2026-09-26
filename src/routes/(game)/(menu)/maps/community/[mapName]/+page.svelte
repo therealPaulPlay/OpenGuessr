@@ -5,7 +5,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { showNotification } from "$lib/utils/notifications";
-	import { changeMap } from "$lib/utils/changeMap.js";
+	import { selectMap } from "$lib/utils/changeMapUtils.js";
 	import {
 		Link,
 		MapPin,
@@ -29,7 +29,6 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
-	import { navigationMenu } from "$lib/stores/uiStore.js";
 	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl.js";
 
 	let { data } = $props();
@@ -439,11 +438,7 @@
 						if (!map) return showNotification("Map not loaded yet, please try again.");
 
 						// Change to map
-						changeMap("community_" + map?.name, true, returnAfterChange);
-						if (!returnAfterChange) {
-							navigationMenu.set(false);
-							goto("/");
-						}
+						selectMap(map?.name, { community: true, returnToMultiplayer: returnAfterChange });
 					}}
 				>
 					<Play strokeWidth={2.5} />

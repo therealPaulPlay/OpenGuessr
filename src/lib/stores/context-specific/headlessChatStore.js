@@ -32,4 +32,5 @@ export const hasNewMessageOrInvite = derived(
 // Currently open conversation in the popup
 export const activeConversationId = writable(null);
 
+// Cached usernames
 export const aliasCache = new SvelteMap();

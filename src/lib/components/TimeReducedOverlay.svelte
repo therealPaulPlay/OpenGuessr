@@ -41,7 +41,7 @@
 
 	.duels-time-reduced h1 {
 		font-size: 75px;
-		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+		text-shadow: 2px 2px 15px var(--dark-shadow-color);
 		margin-bottom: 20px;
 		opacity: 0.75;
 		text-align: center;
@@ -50,7 +50,7 @@
 
 	.duels-time-reduced p {
 		font-size: 35px;
-		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+		text-shadow: 2px 2px 15px var(--dark-shadow-color);
 		margin-bottom: 20px;
 		opacity: 0.75;
 		text-align: center;

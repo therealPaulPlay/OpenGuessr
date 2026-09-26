@@ -66,7 +66,7 @@
 			class:epic-color={rarity == "epic"}
 			class:legendary-color={rarity == "legendary"}
 		>
-			<p>{rarity}</p>
+			<p>{rarity?.[0]?.toUpperCase() + rarity.slice(1)}</p>
 		</div>
 	{/if}
 	<div class="pin-flex">
@@ -138,6 +138,7 @@
 		border-bottom-left-radius: var(--box-margin);
 		top: 0;
 		right: 0;
+		padding: 1px;
 		padding-inline: var(--panel-margin);
 		user-select: none;
 		box-shadow: var(--bulb-shadow);
@@ -223,7 +224,7 @@
 		line-height: 0.9;
 		padding-inline: 2px;
 		user-select: none;
-		text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+		text-shadow: 2px 2px 10px var(--dark-shadow-color);
 	}
 
 	.pin-select-icon {

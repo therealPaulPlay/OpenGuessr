@@ -261,9 +261,18 @@
 					<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />
 				</button>
 			{/if}
+			{#if $profileData?.dailyCompetitionStreak >= 1}
+				<div class="name-box-icon white-soft" {@attach tooltip({ text: "Daily Comp. streak" })}>
+					<p>{$profileData.dailyCompetitionStreak.toLocaleString()}</p>
+					<img class="profile-name-icon" alt="streak icon" src="/img/streak_icon.png" />
+				</div>
+			{/if}
 			{#if $profileData?.supporterLevel >= 1}
-				<div id="supporter-tag" class="white-soft" {@attach tooltip({ text: "Tier " + $profileData?.supporterLevel })}>
-					<img id="supporter-icon" alt="supporter tag" src="/img/supporter_icon.png" />
+				<div
+					class="name-box-icon white-soft"
+					{@attach tooltip({ text: "Supporter tier " + $profileData?.supporterLevel })}
+				>
+					<img class="profile-name-icon" alt="supporter icon" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
 			{#if $profileId != localStorage.getItem("id")}
@@ -571,7 +580,7 @@
 		pointer-events: none;
 	}
 
-	#supporter-tag {
+	.name-box-icon {
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
 		display: flex;
@@ -579,6 +588,10 @@
 		align-items: center;
 		height: 40px;
 		padding-inline: var(--panel-margin);
+	}
+
+	.name-box-icon p {
+		padding-inline: var(--content-margin);
 	}
 
 	.profile-pin-area {
@@ -602,10 +615,10 @@
 		height: 30px;
 	}
 
-	#supporter-icon {
+	.profile-name-icon {
 		width: 30px;
 		height: 30px;
-		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
+		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
 		user-select: none;
 		pointer-events: none;
 	}

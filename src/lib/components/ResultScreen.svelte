@@ -29,7 +29,7 @@
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { finalizeTutorial } from "./TutorialOverlay.svelte";
+	import { finalizeTutorial } from "./Tutorial.svelte";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { countryGuessr } from "$lib/stores/modeStore";
 
@@ -162,6 +162,7 @@
 	}}
 />
 
+<!-- Display: none to ensure ads are not rendered, but kept mounted to avoid constant re-registration -->
 <div class="end-bottom-area" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="end-bottom-bar">
 		<!-- No transition since it would awkwardly trigger on the first result-open -->
@@ -385,13 +386,6 @@
 		flex-grow: 1;
 	}
 
-	.mobile-result-ad {
-		overflow: hidden;
-		text-align: center;
-		width: 320px;
-		height: 50px;
-	}
-
 	.result-ad-area {
 		width: 728px;
 		height: 90px;
@@ -407,9 +401,21 @@
 	}
 
 	.result-ad {
+		/* Overflow hidden and contain paint to stop basic misconfigured ads */
+		overflow: hidden;
+		contain: layout paint;
 		width: 728px;
 		height: 90px;
 		text-align: center;
+	}
+
+	.mobile-result-ad {
+		/* Overflow hidden and contain paint to stop basic misconfigured ads */
+		overflow: hidden;
+		contain: layout paint;
+		text-align: center;
+		width: 320px;
+		height: 50px;
 	}
 
 	#experience-area {

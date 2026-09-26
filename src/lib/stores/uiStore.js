@@ -1,9 +1,17 @@
-import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { page } from '$app/stores';
+import { derived, writable } from 'svelte/store';
+import { tutorialStep } from '$lib/stores/context-specific/tutorialStore';
 
-// Misc UI Parts
-export const navigationMenu = writable(false);
+// Main menu, fades and loading
+export const mainMenu = writable(true); // Default to true, but tutorial might set it to false
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignetteVisible = writable(false);
+export const inMenu = derived([mainMenu, tutorialStep, ...(browser ? [page] : [])], ([mainMenu, tutorialStep, page], set) => {
+    if (mainMenu || tutorialStep > 0) set(true);
+    else if (!browser || !page.url || page.url.pathname !== "/") set(true); // If page isn't available yet, default to true
+    else set(false);
+});
 
 // Popup Visibility
 export const settingsPopup = writable(false);

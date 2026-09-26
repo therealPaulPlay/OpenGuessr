@@ -9,12 +9,13 @@
 	import { onMount } from "svelte";
 	import { MediaQuery } from "svelte/reactivity";
 	import { countryGuessr } from "$lib/stores/modeStore";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	let mapElement = $state();
 	let mapResizeObserver;
 	let mapResizeTimeout;
 	let lastPointerType = $state("mouse");
-	let mapOpen = $derived($mapExpanded && (!$countryGuessr || $resultScreenEnabled));
+	let mapOpen = $derived($mapExpanded && (!$countryGuessr || $resultScreenEnabled) && !$inMenu);
 
 	const mobilePortrait = new MediaQuery("(orientation: portrait) and (max-width: 800px)");
 

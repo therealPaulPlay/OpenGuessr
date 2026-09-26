@@ -7,12 +7,12 @@ import { setRestriction } from "$lib/utils/setRestriction";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
-import { leaveFunction } from "$lib/stores/modeStore.js";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-import { navigationMenu } from "$lib/stores/uiStore";
+import { mainMenu } from "$lib/stores/uiStore";
 import { openCompetitionLeaderboard } from "$lib/utils/openCompetitionLeaderboard";
+import { loadStreakDays } from "$lib/utils/getCompetitions";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 let competitionCombinedScore = 0;
@@ -22,10 +22,9 @@ let competitionTimer;
 export function loadCompetition() {
     if (!get(competitionData)) return errorPopup("Failed to start competition", "No competition data was provided!");
     competition.set(true); // Activate Competition mode
-    navigationMenu.set(false);
+    mainMenu.set(false);
     competitionRound.set(0); // Reset round index
     competitionCombinedScore = 0; // Reset combined score
-    leaveFunction.set(() => leaveCompetition(true)); // Set leave function for mapModeIndicator
     disableResultScreen(); // In case result screen is enabled
     setRestriction(get(competitionData)?.restriction);
 
@@ -54,13 +53,16 @@ export function addResultToCompetitionScore(scoreToAdd) {
 export async function leaveCompetition(showResult) {
     if (get(competition)) {
         competition.set(false);
-        leaveFunction.set();
         competitionTimer?.stopTimer();
         checkGenerationTypeAndGenerate(); // Also resets restriction
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
+        if (get(competitionData).isDaily) loadStreakDays(); // The daily comp was played, refresh streak days so widget in main menu reflects it
         if (showResult) openCompetitionLeaderboard(get(competitionData).id, true);
+
+        // Bring player to main menu
+        mainMenu.set(true);
     }
 }
 

@@ -1,6 +1,6 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { chatMobilePopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, inMenu, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
@@ -37,9 +37,22 @@
 	});
 
 	// Gameplay ad registration ----------------------------------------------------------------
+
+	// Register the gameplay ad once it has been visible (not in menu) at least once, afterwards only hide it
+	let gameplayShownOnceSinceAdsEnabled = $state(false);
+	let showGameplayAd = $derived(!$adsDisabled && gameplayShownOnceSinceAdsEnabled);
+
+	$effect(() => {
+		if (!$inMenu && !$adsDisabled) gameplayShownOnceSinceAdsEnabled = true;
+	});
+
+	adsDisabled.subscribe((value) => {
+		// Reset when ads get (re-)enabled, so that the re-registration happens when the ad is visible
+		if (!value) gameplayShownOnceSinceAdsEnabled = false;
+	});
+
 	$effect(async () => {
-		// Whenever the gameplay ad gets (re-)mounted, (re-)register
-		if (!$adsDisabled) {
+		if (showGameplayAd) {
 			await tick();
 			registerGameplayAd();
 		}
@@ -56,9 +69,9 @@
 	);
 </script>
 
-<div id="bottom-bar" class="bottom-bar">
-	<div class="bottom-left-menu">
-		<div class="bar-menu">
+{#if !$inMenu}
+	<div id="bottom-bar" class="bottom-bar">
+		<div class="bottom-left-menu bar-menu" transition:blur={{ duration: 250 }}>
 			<button
 				class="standard-button white"
 				{@attach tooltip({
@@ -96,35 +109,36 @@
 				</button>
 			{/if}
 		</div>
+		{#if !$countryGuessr}
+			<div class="bottom-right-menu bar-menu" transition:blur|global={{ duration: 250 }}>
+				<button
+					class="standard-button confirm-button white"
+					id="confirm-button"
+					class:confirm-active={$confirmButtonActive}
+					style:opacity={$mapInteractive || !$mapExpanded ? "" : "0.5"}
+					onclick={() => {
+						playSound("basic_button");
+						if (!$mapExpanded) return ($mapExpanded = true);
+						if ($confirmButtonActive) confirmButtonClicks();
+						else if ($mapInteractive) showNotification("Place your pin first.");
+					}}
+				>
+					{#if $mapExpanded && $mapInteractive}
+						Guess
+					{:else if !$mapExpanded}
+						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
+					{:else if !$mapInteractive}
+						Locked in
+					{/if}
+				</button>
+			</div>
+		{/if}
 	</div>
-	{#if !$countryGuessr}
-		<div class="bar-menu bottom-right-menu" transition:blur={{ duration: 150 }}>
-			<button
-				class="standard-button confirm-button white"
-				id="confirm-button"
-				class:confirm-active={$confirmButtonActive}
-				style:opacity={$mapInteractive || !$mapExpanded ? "" : "0.5"}
-				onclick={() => {
-					playSound("basic_button");
-					if (!$mapExpanded) return ($mapExpanded = true);
-					if ($confirmButtonActive) confirmButtonClicks();
-					else if ($mapInteractive) showNotification("Place your pin first.");
-				}}
-			>
-				{#if $mapExpanded && $mapInteractive}
-					Guess
-				{:else if !$mapExpanded}
-					Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
-				{:else if !$mapInteractive}
-					Locked in
-				{/if}
-			</button>
-		</div>
-	{/if}
-</div>
+{/if}
 
-{#if !$adsDisabled}
-	<div class="gameplay-ad-area bar-menu" transition:blur={{ duration: 150 }}>
+<!-- Display: none to ensure ads are kept mounted when hidden to avoid re-registration -->
+{#if showGameplayAd}
+	<div class="gameplay-ad-area bar-menu" class:display-hidden={$inMenu}>
 		<div class="gameplay-ad" id="gameplay-ad" data-fuse="Game_incontent_1"></div>
 		<p class="no-adverts-text">Ads keep OpenGuessr free.</p>
 	</div>
@@ -145,7 +159,9 @@
 		justify-content: space-between;
 		margin: auto;
 		z-index: 10;
-		transition: background-color 250ms ease;
+		transition:
+			background-color 250ms ease,
+			opacity 400ms ease;
 		pointer-events: none;
 	}
 
@@ -180,6 +196,23 @@
 		margin-inline: auto;
 		z-index: 8;
 		text-align: center !important;
+		transition:
+			opacity 250ms ease,
+			filter 250ms ease,
+			display 250ms allow-discrete;
+	}
+
+	.gameplay-ad-area.display-hidden {
+		display: none;
+		opacity: 0;
+		filter: blur(var(--weak-blur));
+	}
+
+	@starting-style {
+		.gameplay-ad-area {
+			opacity: 0;
+			filter: blur(var(--weak-blur));
+		}
 	}
 
 	.gameplay-ad-area,
@@ -189,7 +222,9 @@
 	}
 
 	.gameplay-ad {
+		/* Overflow hidden and contain to stop basic misconfigured ads */
 		overflow: hidden;
+		contain: layout paint;
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
