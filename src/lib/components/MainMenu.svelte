@@ -42,8 +42,8 @@
 	let nameTextWidth = $state(0);
 	let scrollNameText = $derived(nameAreaWidth > 0 && nameTextWidth > nameAreaWidth);
 
-	// Logo glint ------------------------------------------------------------
-	function logoGlint(element) {
+	// Icon glint ------------------------------------------------------------
+	function iconGlint(element) {
 		element.animate([{ left: "-50%" }, { left: "150%" }], {
 			duration: 1000,
 			delay: 250,
@@ -86,9 +86,9 @@
 						transition:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
 					/>
 					<div
-						class="logo-icon logo-glint"
+						class="logo-icon icon-glint"
 						transition:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
-						{@attach logoGlint}
+						{@attach iconGlint}
 					></div>
 					<img
 						class="red-smoke-background"
@@ -647,19 +647,22 @@
 		color: transparent;
 	}
 
-	.logo-glint {
+	.icon-glint {
 		filter: none;
 		mask: url("/img/icon_3d.png") center / contain no-repeat;
+		container-type: size;
+		width: min(50cqw, 50cqh);
+		height: min(50cqw, 50cqh);
 	}
 
-	.logo-glint::before {
+	.icon-glint::before {
 		content: "";
 		position: absolute;
 		inset: -50% auto;
 		left: -50%;
 		width: 25%;
 		background: white;
-		filter: blur(var(--strong-blur));
+		filter: blur(min(40px, 18cqmin));
 		transform: rotate(25deg);
 	}
 
@@ -688,6 +691,7 @@
 
 	.logo-visualization-area {
 		position: relative;
+		container-type: size;
 		height: 100%;
 		width: 100%;
 		user-select: none;
