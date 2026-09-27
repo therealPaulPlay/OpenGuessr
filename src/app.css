@@ -280,6 +280,13 @@ input[type="checkbox"]:focus {
 
 .popup-title {
     margin-bottom: var(--layout-margin);
+    padding-right: var(--layout-spacer);
+    text-wrap: nowrap;
+}
+
+.popup-title h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .slider {

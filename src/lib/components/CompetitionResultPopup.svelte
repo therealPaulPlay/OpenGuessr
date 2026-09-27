@@ -248,9 +248,6 @@
 <style>
 	.text-header-left {
 		text-align: left;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		text-wrap: nowrap;
 	}
 
 	.error-text {

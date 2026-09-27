@@ -23,9 +23,7 @@
 </script>
 
 <div class="daily-competition-days-container" class:compact-container={compact}>
-	<div
-		class="days-scroll of-left of-right"
-	>
+	<div class="days-scroll of-left of-right">
 		{#each lastFiveDays as day}
 			<div class="streak-day-item" style:opacity={day.played ? "" : 0.5}>
 				<div style:height={compact ? "calc(var(--layout-margin) + var(--content-margin))" : ""}>
@@ -70,8 +68,6 @@
 		display: flex;
 		justify-content: safe center;
 		gap: var(--box-margin);
-		padding: calc(var(--layout-margin) + var(--box-margin));
-		margin: calc((var(--layout-margin) + var(--box-margin)) * -1);
 	}
 
 	.compact-container .days-scroll {

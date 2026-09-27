@@ -444,10 +444,6 @@
 </Popup>
 
 <style>
-	.popup-title {
-		margin-bottom: var(--layout-margin);
-	}
-
 	.layout {
 		display: flex;
 		gap: var(--layout-margin);
