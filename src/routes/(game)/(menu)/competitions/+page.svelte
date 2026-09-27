@@ -399,15 +399,23 @@
 						true,
 					)}
 					<div class="daily-competition-streak-display competition-fade-in-item">
-						<img
-							alt="daily competition streak flame"
-							src="/img/daily_competition_streak_flame.png"
-							class="streak-flame"
-						/>
-						<h2 class="streak-count">
-							{streakNumber > 0 ? "Streak of " + streakNumber.toLocaleString() : "No streak"}
-						</h2>
+						<div class="desktop-streak-display">
+							<img
+								alt="daily competition streak flame"
+								src="/img/daily_competition_streak_flame.png"
+								class="streak-flame"
+							/>
+							<h2 class="streak-count">
+								{streakNumber > 0 ? "Streak of " + streakNumber.toLocaleString() : "No streak"}
+							</h2>
+						</div>
 						<CompetitionStreakCalendar streakDays={$dailyStreakDays} />
+						<div class="mobile-streak-display">
+							<div class="inner-mobile-streak-display">
+								<p style:opacity={streakNumber <= 0 ? "0.5" : ""}>{streakNumber > 0 ? streakNumber.toLocaleString() : "-"}</p>
+								<img alt="daily competition streak flame" src="/img/streak_icon.png" class="streak-flame-small" />
+							</div>
+						</div>
 					</div>
 				{:else}
 					<Drawer
@@ -804,19 +812,55 @@
 		background-color: var(--box-color);
 		box-shadow: var(--panel-shadow);
 		padding: var(--layout-margin);
+		gap: var(--box-margin);
 		display: flex;
+		position: relative;
+		overflow: hidden;
+		box-sizing: border-box;
+		min-height: 100%;
+	}
+
+	.desktop-streak-display {
+		display: none;
 		flex-direction: column;
 		position: relative;
 		overflow: hidden;
 		box-sizing: border-box;
-		min-height: 420px;
+		flex-grow: 1;
+	}
+
+	.mobile-streak-display {
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		border-radius: var(--box-margin);
+		padding: var(--box-margin);
+		flex-shrink: 0;
+	}
+
+	.inner-mobile-streak-display {
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		border-radius: var(--content-margin);
+		gap: var(--content-margin);
+		display: flex;
+		box-sizing: border-box;
+		align-items: center;
+		height: 100%;
+		padding: var(--content-margin);
+		padding-left: var(--box-margin);
+	}
+
+	.streak-flame-small {
+		width: 30px;
+		height: 30px;
+		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
 	}
 
 	.streak-flame {
 		position: absolute;
-		top: calc(var(--layout-margin) + var(--content-margin));
 		left: 50%;
-		translate: -50%;
+		top: calc(50% - var(--box-margin));
+		translate: -50% -50%;
 		width: 285px;
 		pointer-events: none;
 		user-select: none;
@@ -824,7 +868,7 @@
 
 	.streak-count {
 		flex-shrink: 0;
-		margin-bottom: calc(var(--box-margin) + var(--layout-margin));
+		margin-bottom: var(--layout-margin);
 		text-align: center;
 		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
 		text-wrap: nowrap;
@@ -851,6 +895,18 @@
 	@container daily-competition (min-width: 650px) {
 		.competition-area-daily {
 			grid-template-columns: minmax(0, 1fr) minmax(0, min(350px, 40%));
+		}
+
+		.daily-competition-streak-display {
+			flex-direction: column;
+		}
+
+		.desktop-streak-display {
+			display: flex;
+		}
+
+		.mobile-streak-display {
+			display: none;
 		}
 	}
 
