@@ -85,6 +85,22 @@
 					exitIntent: {
 						enabled: false,
 					},
+					widget: {
+						externalGames: [
+							{
+								name: "Bluelife",
+								domain: "paulplay.studio/bluelife",
+								description:
+									"Dive into the world of Bluelife, an action-packed ocean adventure! Experience challenging levels with unique obstacles to overcome.",
+								cover_image_url:
+									"https://paulplay-storage-1.fra1.digitaloceanspaces.com/openguessr-media/bluelife-cover.jpg",
+								cover_video_url:
+									"https://paulplay-storage-1.fra1.digitaloceanspaces.com/openguessr-media/bluelife-cover-video.mp4",
+								badge: "By PaulPlay",
+								square: true,
+							},
+						],
+					},
 				});
 			} catch (error) {
 				console.error("Error loading the Playlight SDK:", error);
