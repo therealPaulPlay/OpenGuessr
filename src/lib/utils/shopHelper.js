@@ -37,6 +37,8 @@ export async function handleShopFreeTokens() {
         const data = await response.json();
         tokens.set(get(tokens) + data.count);
         freeDailyTokensClaimed.set(true);
+
+        // Purchase celebration for free tokens
         shopAnimationImages.set(["/img/token_stack_free_icon.png"]);
         shopPurchaseAnimationTitle.set("Cool!");
         shopPurchaseAnimation.set(true);
@@ -65,7 +67,7 @@ export async function handleShopYouTubePin() {
         if (!response.ok) throw new Error(response.status);
         const data = await response.json();
         purchasedPins.set([...get(purchasedPins), data.pinId]); // Add pin to locally-stored purchased pins
-        showPurchaseCelebration([data.pinId], "Thank you!");
+        showPinPurchaseCelebration([data.pinId], "Thank you!");
 
     } catch (error) {
         console.error("Error claiming pin:", error);
@@ -135,7 +137,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
 
             tokens.set(get(tokens) - price);
             purchasedPins.set([...get(purchasedPins), pinId]);
-            showPurchaseCelebration([pinId]);
+            showPinPurchaseCelebration([pinId]);
             fetchSpecialOffer(); // Re-fetch in case price was updated
 
         } catch (error) {
@@ -171,7 +173,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
             const data = await response.json();
             tokens.set(get(tokens) - price);
             purchasedPins.set([...get(purchasedPins), ...(data.pinsAdded || [])]);
-            showPurchaseCelebration(data.pinsAdded);
+            showPinPurchaseCelebration(data.pinsAdded);
             fetchSpecialOffer(); // Re-fetch to set status to owned
 
         } catch (error) {
@@ -181,7 +183,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
     }
 }
 
-function showPurchaseCelebration(pinIds, title = "Great choice!") {
+function showPinPurchaseCelebration(pinIds, title = "Great choice!") {
     const imageSrcArray = [];
     pinIds?.forEach((id) => {
         imageSrcArray.push(`/img/pins/player_pin${id}.png`);

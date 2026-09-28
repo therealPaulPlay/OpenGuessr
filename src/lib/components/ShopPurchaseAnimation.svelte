@@ -5,6 +5,7 @@
 		shopPurchaseAnimationTitle,
 	} from "$lib/stores/context-specific/shopStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
 
@@ -23,9 +24,14 @@
 			}
 		} catch {}
 	});
+
+	// Play shop purchase sound
+	$effect(() => {
+		if ($shopPurchaseAnimation) playSound("shop_purchase");
+	});
 </script>
 
-<!-- Purchase animation -->
+<!-- Purchase animation for instantly redeemable items -->
 {#if $shopPurchaseAnimation}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -67,7 +73,8 @@
 	.animation-rays {
 		width: 200lvmax;
 		height: 200lvmax;
-		background: repeating-conic-gradient(rgba(229, 80, 80, 0.1) 0deg 15deg, rgba(229, 80, 80, 0) 0deg 30deg),
+		background:
+			repeating-conic-gradient(rgba(229, 80, 80, 0.1) 0deg 15deg, rgba(229, 80, 80, 0) 0deg 30deg),
 			radial-gradient(25% 25% at 50% 50%, rgba(229, 80, 80, 0.6) 0, rgba(229, 80, 80, 0) 150%);
 		animation: 10s rotate infinite linear;
 		overflow: visible;
