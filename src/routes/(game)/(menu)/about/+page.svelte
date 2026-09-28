@@ -168,8 +168,8 @@
 	<h2>More</h2>
 	<p>
 		Learn more about OpenGuessr on the
-		<a href="https://paulplay.studio/openguessr" target="_blank">studio website</a>, or get started with OpenGuessr in
-		your language: <br /><a href="/get-started/en">English</a>,
+		<a href="https://paulplay.studio/openguessr" target="_blank">PaulPlay Studio website</a>, or get started with
+		OpenGuessr in your language: <br /><a href="/get-started/en">English</a>,
 		<a href="/get-started/de">German</a>, <a href="/get-started/es">Spanish</a>, <a href="/get-started/fr">French</a>,
 		<a href="/get-started/id">Indonesian</a>, <a href="/get-started/pt">Portuguese</a> or
 		<a href="/get-started/jp">Japanese</a>.

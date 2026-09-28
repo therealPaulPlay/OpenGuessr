@@ -88,7 +88,7 @@
 				>
 					{#if !unlocked}
 						<img class="token-icon" alt="token" src="/img/token_icon_white.png" />
-						{price}
+						{price?.toLocaleString()}
 					{:else}
 						Owned <Check
 							size={18}
