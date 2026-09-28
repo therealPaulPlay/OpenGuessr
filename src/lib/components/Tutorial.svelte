@@ -4,7 +4,10 @@
 		if (localStorage.getItem("tutorialCompleted") !== null) return tutorialStep.set(0); // Tutorial alr completed
 		mainMenu.set(false);
 		tutorialStep.set(1);
-		new Image().src = "/img/icon_3d.png"; // Preload menu icon to avoid pop-in
+
+		// Preload menu icon and bg to avoid pop-in
+		new Image().src = "/img/icon_3d.png";
+		new Image().src = "/img/red_smoke.png";
 	}
 
 	// Completion ----------------------------------------------------------
