@@ -99,6 +99,17 @@
 								badge: "By PaulPlay",
 								square: true,
 							},
+							{
+								name: "Worldle",
+								domain: "worldle.teuteuf.fr",
+								description:
+									"Guess today's country based on its shape and distance clues. Discover a wide range of additional geography quizzes and modes!",
+								cover_image_url:
+									"https://paulplay-storage-1.fra1.digitaloceanspaces.com/openguessr-media/worldle-cover.jpg",
+								cover_video_url:
+									"https://paulplay-storage-1.fra1.digitaloceanspaces.com/openguessr-media/worldle-cover-video.mp4",
+								badge: "Partner",
+							},
 						],
 					},
 				});
