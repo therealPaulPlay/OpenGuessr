@@ -117,10 +117,7 @@
 									/>
 								</p>
 							</div>
-							<div
-								class="navigation-box-scroll map-select-scroll of-left of-right of-length-2"
-								style:--map-count={Math.max($baseMaps.length, 1)}
-							>
+							<div class="navigation-box-scroll map-select-scroll of-left of-right of-length-2">
 								{#if $baseMaps.every((e) => !isMapSelected(e.map)) && browser}
 									{const imgUrl = $specialMaps.find((e) => e.map === localStorage.getItem("selectedMap"))?.imgUrl}
 									{#snippet cover()}
@@ -510,12 +507,12 @@
 	}
 
 	.map-select-scroll {
-		flex: var(--map-count) 1
-			calc((var(--map-count) - 1) * var(--panel-margin) + var(--map-count) * 2 * var(--content-margin));
+		--map-cnt: 3;
+		flex: var(--map-cnt) 1 calc((var(--map-cnt) - 1) * var(--panel-margin) + var(--map-cnt) * 2 * var(--content-margin));
 	}
 
 	.map-select-scroll > :global(.map-item) {
-		flex: 0 0 calc((100% - (var(--map-count) - 1) * var(--panel-margin)) / var(--map-count));
+		flex: 0 0 calc((100% - (var(--map-cnt) - 1) * var(--panel-margin)) / var(--map-cnt));
 	}
 
 	.custom-map-separator {

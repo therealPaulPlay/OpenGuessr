@@ -27,7 +27,7 @@
 	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { registerResultAds } from "$lib/utils/ads";
-	import { roundLogPopup } from "$lib/stores/uiStore";
+	import { inMenu, roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { finalizeTutorial } from "./Tutorial.svelte";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
@@ -93,6 +93,19 @@
 		if ($tutorial && $resultScreenEnabled && isFirstTutorialRound) nextRoundTutorialNote.visible = true;
 		if (!$resultScreenEnabled) nextRoundTutorialNote.visible = false;
 	});
+
+	// Only play ruler animation once on result open, not on menu closes -----------------------------
+	let distanceIconAnimated = $state(false);
+
+	$effect(() => {
+		if ($resultScreenEnabled) distanceIconAnimated = true;
+	});
+
+	// Only transition the result area when coming from or entering the menu --------------------------
+	let fadeBottomArea = $state(false);
+
+	inMenu.subscribe(() => (fadeBottomArea = true));
+	resultScreenEnabled.subscribe(() => (fadeBottomArea = false));
 
 	// Ads ------------------------------------------------------------------------------------------
 
@@ -163,7 +176,7 @@
 />
 
 <!-- Display: none to ensure ads are not rendered, but kept mounted to avoid constant re-registration -->
-<div class="end-bottom-area" style:display={$resultScreenEnabled ? "" : "none"}>
+<div class="end-bottom-area" class:display-hidden={!$resultScreenEnabled || $inMenu} class:bottom-area-fade={fadeBottomArea}>
 	<div class="end-bottom-bar">
 		<!-- No transition since it would awkwardly trigger on the first result-open -->
 		{#if showResultAd}
@@ -183,7 +196,11 @@
 				</div>
 			{/if}
 			{#if $resultScreenEnabled}
-				<div class="result-field">
+				<div
+					class="result-field"
+					class:distance-icon-animated={distanceIconAnimated}
+					onanimationend={() => (distanceIconAnimated = false)}
+				>
 					<!-- Distance is usually number + unit, but Country Guessr just has Correct/Wrong -->
 					{#if $countryGuessr}
 						<MapPinned class="distance-icon" style="margin-right: var(--panel-margin)" size={22} strokeWidth={2.25} />
@@ -361,7 +378,6 @@
 
 	.end-bottom-area {
 		position: fixed;
-		height: fit-content;
 		display: flex;
 		bottom: 0;
 		left: 0;
@@ -371,6 +387,32 @@
 		overflow: hidden;
 		z-index: 13;
 		pointer-events: none;
+	}
+
+	.bottom-area-fade {
+		transition: display 250ms allow-discrete;
+	}
+
+	.bottom-area-fade .bar-menu {
+		transition:
+			opacity 250ms cubic-bezier(0.65, 0, 0.35, 1),
+			filter 250ms cubic-bezier(0.65, 0, 0.35, 1);
+	}
+
+	.display-hidden {
+		display: none;
+	}
+
+	.display-hidden .bar-menu {
+		opacity: 0;
+		filter: blur(var(--weak-blur));
+	}
+
+	@starting-style {
+		.bottom-area-fade .bar-menu {
+			opacity: 0;
+			filter: blur(var(--weak-blur));
+		}
 	}
 
 	#motivation-text {
@@ -600,7 +642,7 @@
 		}
 	}
 
-	:global(.distance-icon) {
+	.distance-icon-animated :global(.distance-icon) {
 		animation: distanceIconJelly 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 	}
 

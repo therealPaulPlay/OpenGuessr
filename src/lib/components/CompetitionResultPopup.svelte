@@ -126,7 +126,7 @@
 		{const friendsPlayed = $derived(friendsEntries?.some((entry) => entry.id != localStorage.getItem("id")))}
 		{#if friendsEntries?.length > 0}
 			<div class="ranking-display" style:margin-bottom="var(--box-margin)">
-				<div class="ranking-display-scroll of-top of-bottom">
+				<div class="ranking-display-scroll ranking-display-scroll-short of-top of-bottom">
 					{#each friendsEntries as entry}
 						<div class="rank-item" transition:blur class:rank-you={entry.id == localStorage.getItem("id")}>
 							<p>#{entry.position}</p>
@@ -284,6 +284,10 @@
 		max-height: 400px;
 		justify-content: safe center;
 		flex-direction: column;
+	}
+
+	.ranking-display-scroll-short {
+		max-height: 210px;
 	}
 
 	.rank-item {

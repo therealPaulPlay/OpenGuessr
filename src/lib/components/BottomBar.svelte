@@ -197,12 +197,12 @@
 		z-index: 8;
 		text-align: center !important;
 		transition:
-			opacity 250ms ease,
-			filter 250ms ease,
+			opacity 250ms cubic-bezier(0.65, 0, 0.35, 1),
+			filter 250ms cubic-bezier(0.65, 0, 0.35, 1),
 			display 250ms allow-discrete;
 	}
 
-	.gameplay-ad-area.display-hidden {
+	.display-hidden {
 		display: none;
 		opacity: 0;
 		filter: blur(var(--weak-blur));
