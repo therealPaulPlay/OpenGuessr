@@ -586,7 +586,7 @@
 			onclick={async () => {
 				playSound("basic_button");
 				submitDisabled = true;
-				descriptionStatus = "Saving...";
+				descriptionStatus = "Updating...";
 				descriptionStatus = "Status: " + (await updateDescription(map?.name));
 				submitDisabled = false;
 			}}>Update</button
