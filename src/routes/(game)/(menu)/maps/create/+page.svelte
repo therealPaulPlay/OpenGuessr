@@ -230,7 +230,7 @@
 					playSound("basic_button");
 					showConfirmPopup(
 						"Submit?",
-						"Some map details cannot be edited later! Violating the rules can result in a ban.",
+						"Your map will be live immediately. Violating the submission rules can result in a ban.",
 						() => ($isAuthenticated ? uploadMap() : signupPrompt(uploadMap)),
 					);
 				}}>Submit</button
