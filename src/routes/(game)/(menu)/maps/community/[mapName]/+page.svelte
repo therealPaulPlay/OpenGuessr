@@ -17,6 +17,7 @@
 		FileDown,
 		Bookmark,
 		BookmarkOff,
+		Pencil,
 	} from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
@@ -204,12 +205,11 @@
 		}
 	}
 
-	// Map Update ---------------------------------------------------------------------------------------------------------
+	// Map update ---------------------------------------------------------------------------------------------------------
 	let updatePopup = $state(false);
 	let filePicker = $state();
 	let fileName = $state("Pick file");
-	let showStatus = $state(false);
-	let statusText = $state("Default...");
+	let updateStatus = $state("");
 	let textareaValue = $state();
 	let addInsteadOfOverwrite = $state(false);
 
@@ -234,7 +234,7 @@
 	async function updateMap(mapName) {
 		try {
 			const newLocations = await combineUpdateData();
-			if (newLocations.length === 0) return "Please provide locations either as text or upload a file.";
+			if (newLocations.length === 0) return "Please provide locations either as text or upload a file";
 
 			let finalLocations = newLocations;
 
@@ -261,7 +261,7 @@
 			if (response.ok) {
 				// Update local copy so subsequent adds use the latest locations
 				map = { ...map, map_data: { locations: finalLocations } };
-				return `Map updated successfully.`;
+				return `Map updated successfully`;
 			} else {
 				let error = response.status;
 
@@ -277,6 +277,37 @@
 		} catch (error) {
 			console.error("Error updating map:", error);
 			return "A network error occurred while updating the map: " + error;
+		}
+	}
+
+	// Description edit ---------------------------------------------------------------------------------------------------
+	let descriptionPopup = $state(false);
+	let descriptionValue = $state("");
+	let descriptionUpdateStatus = $state("");
+
+	async function updateDescription(mapName) {
+		try {
+			const response = await fetch($apiUrl + "/maps/description", {
+				method: "PUT",
+				headers: {
+					Authorization: `Bearer ` + localStorage.getItem("bearer"),
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ id: localStorage.getItem("id"), name: mapName, description: descriptionValue }),
+			});
+
+			const data = await response.json().catch(() => ({}));
+			if (!response.ok) {
+				const error = data.error || data.errors?.[0]?.msg || response.status;
+				console.error("Error updating map description: " + error);
+				return "Failed to update description: " + error;
+			}
+
+			map = { ...map, description: data.description };
+			return "Description updated successfully";
+		} catch (error) {
+			console.error("Error updating map description:", error);
+			return "A network error occurred while updating the map description: " + error;
 		}
 	}
 
@@ -399,7 +430,7 @@
 							});
 					}}
 				>
-					<Link strokeWidth={2.5} size={20} style="margin-top: 1px;" />
+					<Link strokeWidth={2.25} size={22} style="margin-top: 1px;" />
 				</button>
 				{#if map && map.authorId == playerId && playerId != null}
 					<button
@@ -409,7 +440,7 @@
 						onclick={() => {
 							playSound("basic_button");
 							deleteMapScreen(map?.name);
-						}}><Trash2 size={18} strokeWidth={2.75} /></button
+						}}><Trash2 size={22} strokeWidth={2.25} /></button
 					>
 					<button
 						id="manage-update"
@@ -417,10 +448,10 @@
 						class="standard-button white map-button large-button"
 						onclick={() => {
 							playSound("basic_button");
-							fileName = "Pick file"; // Reset file name input
+							fileName = "Pick file"; // Reset file name input and status
+							updateStatus = "";
 							updatePopup = true;
-							showStatus = false;
-						}}><Replace size={18} strokeWidth={2.75} /></button
+						}}><Replace size={22} strokeWidth={2.25} /></button
 					>
 					<a
 						id="manage-download"
@@ -428,7 +459,7 @@
 						class="standard-button white map-button large-button"
 						href={mapDownloadHref}
 						download={`${map?.name}.json`}
-						onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
+						onclick={() => playSound("basic_button")}><FileDown size={22} strokeWidth={2.25} /></a
 					>
 				{/if}
 				<button
@@ -462,6 +493,18 @@
 					{map?.description || "..."}
 				</p>
 			</div>
+			{#if map && map.authorId == playerId && playerId != null}
+				<button
+					{@attach tooltip({ text: "Edit" })}
+					class="standard-button white description-edit"
+					onclick={() => {
+						playSound("basic_button");
+						descriptionValue = map?.description ?? "";
+						descriptionUpdateStatus = "";
+						descriptionPopup = true;
+					}}><Pencil size={22} strokeWidth={2.25} style="margin-bottom: -2px;" /></button
+				>
+			{/if}
 		</div>
 	</div>
 </div>
@@ -506,18 +549,46 @@
 		/>
 		<p id="file-name-update">{fileName}</p>
 	</button>
-	{#if showStatus}
-		<p class="margin-top" id="update-map-status">{statusText}</p>
+	{#if updateStatus}
+		<p class="margin-top" id="update-map-status">{updateStatus}</p>
 	{/if}
 	<div class="button-box-gap">
+		{let submitDisabled = $state(false)}
 		<button
-			id="update-proceed"
 			class="standard-button bottom-button large-button"
+			disabled={submitDisabled}
 			onclick={async () => {
 				playSound("basic_button");
-				showStatus = true;
-				statusText = "Updating...";
-				statusText = "Status: " + (await updateMap(map?.name));
+				submitDisabled = true;
+				updateStatus = "Updating...";
+				updateStatus = "Status: " + (await updateMap(map?.name));
+				submitDisabled = false;
+			}}>Update</button
+		>
+	</div>
+</Popup>
+
+<Popup bind:open={descriptionPopup} verySlim={true}>
+	<div class="popup-title">
+		<h1>Edit about</h1>
+	</div>
+	<div class="textarea-container">
+		<textarea class="of-top of-bottom" rows="6" maxlength="300" bind:value={descriptionValue}></textarea>
+	</div>
+	{#if descriptionUpdateStatus}
+		<p class="status-text">{descriptionUpdateStatus}</p>
+	{/if}
+	<div class="button-box-gap">
+		{let submitDisabled = $state(false)}
+		<button
+			class="standard-button bottom-button large-button"
+			disabled={submitDisabled}
+			onclick={async () => {
+				playSound("basic_button");
+				submitDisabled = true;
+				descriptionUpdateStatus = "Updating...";
+				descriptionUpdateStatus = "Status: " + (await updateDescription(map?.name));
+				submitDisabled = false;
 			}}>Update</button
 		>
 	</div>
@@ -600,12 +671,22 @@
 		margin-bottom: var(--box-margin);
 	}
 
-	#update-map-status {
+	.description-edit {
+		position: absolute;
+		top: var(--panel-margin);
+		right: var(--panel-margin);
+		border-radius: var(--box-margin);
+	}
+
+	#update-map-status,
+	.status-text {
 		background-color: var(--box-color);
-		padding: var(--content-margin);
+		box-shadow: var(--box-shadow);
+		padding: var(--box-margin);
 		border-radius: var(--box-margin);
 		padding-inline: var(--layout-margin);
-		width: calc(100% - 30px);
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.info-element {
@@ -655,6 +736,7 @@
 
 	.description-info {
 		flex-grow: 4;
+		position: relative;
 	}
 
 	#json-update {
