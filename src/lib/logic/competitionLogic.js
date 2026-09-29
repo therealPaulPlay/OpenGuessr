@@ -56,13 +56,13 @@ export async function leaveCompetition(showResult) {
         competitionTimer?.stopTimer();
         checkGenerationTypeAndGenerate(); // Also resets restriction
 
+        // Bring player to main menu (before the asynchronous submission! ...to avoid race conditions with other things that open/close the main menu)
+        mainMenu.set(true);
+
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
         if (get(competitionData).isDaily) loadStreakDays(); // The daily comp was played, refresh streak days so widget in main menu reflects it
         if (showResult) openCompetitionLeaderboard(get(competitionData).id, true);
-
-        // Bring player to main menu
-        mainMenu.set(true);
     }
 }
 
