@@ -209,7 +209,7 @@
 	let updatePopup = $state(false);
 	let filePicker = $state();
 	let fileName = $state("Pick file");
-	let statusText = $state("");
+	let updateStatus = $state("");
 	let textareaValue = $state();
 	let addInsteadOfOverwrite = $state(false);
 
@@ -234,7 +234,7 @@
 	async function updateMap(mapName) {
 		try {
 			const newLocations = await combineUpdateData();
-			if (newLocations.length === 0) return "Please provide locations either as text or upload a file.";
+			if (newLocations.length === 0) return "Please provide locations either as text or upload a file";
 
 			let finalLocations = newLocations;
 
@@ -283,7 +283,7 @@
 	// Description edit ---------------------------------------------------------------------------------------------------
 	let descriptionPopup = $state(false);
 	let descriptionValue = $state("");
-	let descriptionStatus = $state("");
+	let descriptionUpdateStatus = $state("");
 
 	async function updateDescription(mapName) {
 		try {
@@ -449,7 +449,7 @@
 						onclick={() => {
 							playSound("basic_button");
 							fileName = "Pick file"; // Reset file name input and status
-							statusText = "";
+							updateStatus = "";
 							updatePopup = true;
 						}}><Replace size={22} strokeWidth={2.25} /></button
 					>
@@ -500,7 +500,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						descriptionValue = map?.description ?? "";
-						descriptionStatus = "";
+						descriptionUpdateStatus = "";
 						descriptionPopup = true;
 					}}><Pencil size={22} strokeWidth={2.25} style="margin-bottom: -2px;" /></button
 				>
@@ -549,8 +549,8 @@
 		/>
 		<p id="file-name-update">{fileName}</p>
 	</button>
-	{#if statusText}
-		<p class="margin-top" id="update-map-status">{statusText}</p>
+	{#if updateStatus}
+		<p class="margin-top" id="update-map-status">{updateStatus}</p>
 	{/if}
 	<div class="button-box-gap">
 		{let submitDisabled = $state(false)}
@@ -560,8 +560,8 @@
 			onclick={async () => {
 				playSound("basic_button");
 				submitDisabled = true;
-				statusText = "Updating...";
-				statusText = "Status: " + (await updateMap(map?.name));
+				updateStatus = "Updating...";
+				updateStatus = "Status: " + (await updateMap(map?.name));
 				submitDisabled = false;
 			}}>Update</button
 		>
@@ -575,8 +575,8 @@
 	<div class="textarea-container">
 		<textarea class="of-top of-bottom" rows="6" maxlength="300" bind:value={descriptionValue}></textarea>
 	</div>
-	{#if descriptionStatus}
-		<p class="status-text">{descriptionStatus}</p>
+	{#if descriptionUpdateStatus}
+		<p class="status-text">{descriptionUpdateStatus}</p>
 	{/if}
 	<div class="button-box-gap">
 		{let submitDisabled = $state(false)}
@@ -586,8 +586,8 @@
 			onclick={async () => {
 				playSound("basic_button");
 				submitDisabled = true;
-				descriptionStatus = "Updating...";
-				descriptionStatus = "Status: " + (await updateDescription(map?.name));
+				descriptionUpdateStatus = "Updating...";
+				descriptionUpdateStatus = "Status: " + (await updateDescription(map?.name));
 				submitDisabled = false;
 			}}>Update</button
 		>
