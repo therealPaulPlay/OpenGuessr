@@ -62,7 +62,6 @@
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
 	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "55dvh" : "max(18dvh, 150px)") : "0"}
-	style:margin-top={mapOpen ? undefined : "calc(var(--box-margin) * -1)"}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
 ></div>
 
@@ -82,7 +81,6 @@
 		transition:
 			opacity 250ms ease,
 			border-radius 150ms ease,
-			margin-top 150ms ease,
 			top 150ms ease,
 			height 150ms ease;
 		overflow: hidden;
