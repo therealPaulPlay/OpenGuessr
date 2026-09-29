@@ -238,11 +238,11 @@
 									</div>
 								{:else}
 									<button
-										class="standard-button navigation-button large-button account-button"
+										class="standard-button white navigation-button large-button account-button"
 										onclick={() => {
 											playSound("basic_button");
 											signupPrompt();
-										}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
+										}}>Log in<UserRoundPlus strokeWidth={2.25} size={20} style="margin-inline: 2px;" /></button
 									>
 								{/if}
 							</div>
