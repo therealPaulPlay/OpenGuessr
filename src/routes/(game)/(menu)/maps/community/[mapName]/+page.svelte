@@ -209,8 +209,7 @@
 	let updatePopup = $state(false);
 	let filePicker = $state();
 	let fileName = $state("Pick file");
-	let showStatus = $state(false);
-	let statusText = $state("Default...");
+	let statusText = $state("");
 	let textareaValue = $state();
 	let addInsteadOfOverwrite = $state(false);
 
@@ -449,9 +448,9 @@
 						class="standard-button white map-button large-button"
 						onclick={() => {
 							playSound("basic_button");
-							fileName = "Pick file"; // Reset file name input
+							fileName = "Pick file"; // Reset file name input and status
+							statusText = "";
 							updatePopup = true;
-							showStatus = false;
 						}}><Replace size={22} strokeWidth={2.25} /></button
 					>
 					<a
@@ -550,7 +549,7 @@
 		/>
 		<p id="file-name-update">{fileName}</p>
 	</button>
-	{#if showStatus}
+	{#if statusText}
 		<p class="margin-top" id="update-map-status">{statusText}</p>
 	{/if}
 	<div class="button-box-gap">
@@ -561,7 +560,6 @@
 			onclick={async () => {
 				playSound("basic_button");
 				submitDisabled = true;
-				showStatus = true;
 				statusText = "Updating...";
 				statusText = "Status: " + (await updateMap(map?.name));
 				submitDisabled = false;
