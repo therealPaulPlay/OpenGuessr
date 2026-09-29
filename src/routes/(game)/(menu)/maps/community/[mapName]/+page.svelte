@@ -554,14 +554,17 @@
 		<p class="margin-top" id="update-map-status">{statusText}</p>
 	{/if}
 	<div class="button-box-gap">
+		{let submitDisabled = $state(false)}
 		<button
-			id="update-proceed"
 			class="standard-button bottom-button large-button"
+			disabled={submitDisabled}
 			onclick={async () => {
 				playSound("basic_button");
+				submitDisabled = true;
 				showStatus = true;
 				statusText = "Updating...";
 				statusText = "Status: " + (await updateMap(map?.name));
+				submitDisabled = false;
 			}}>Update</button
 		>
 	</div>
@@ -578,12 +581,16 @@
 		<p class="status-text">{descriptionStatus}</p>
 	{/if}
 	<div class="button-box-gap">
+		{let submitDisabled = $state(false)}
 		<button
 			class="standard-button bottom-button large-button"
+			disabled={submitDisabled}
 			onclick={async () => {
 				playSound("basic_button");
+				submitDisabled = true;
 				descriptionStatus = "Saving...";
 				descriptionStatus = "Status: " + (await updateDescription(map?.name));
+				submitDisabled = false;
 			}}>Update</button
 		>
 	</div>
@@ -680,7 +687,8 @@
 		padding: var(--box-margin);
 		border-radius: var(--box-margin);
 		padding-inline: var(--layout-margin);
-		width: calc(100% - 30px);
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.info-element {
