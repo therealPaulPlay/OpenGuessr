@@ -1,9 +1,10 @@
 <script>
 	import { onMount } from "svelte";
-	import { roomCode, socket } from "$lib/stores/context-specific/multiplayerStore";
+	import { roomCode, roomLocked, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { joinFromAnywhere, createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+	import { joinFromAnywhere, createMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
+	import { leaveCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { goto } from "$app/navigation";
@@ -38,11 +39,20 @@
 					const code = window.CrazyGames.SDK.game.getInviteParam("join");
 					if (code) joinFromAnywhere(code);
 
-					if (window.CrazyGames.SDK.game.isInstantJoin) {
+					if (window.CrazyGames.SDK.game.isInstantMultiplayer) {
 						goto("/multiplayer/host");
 						createMultiplayerRoom();
 					}
 				}, 150);
+
+				// Join friends from everywhere
+				window.CrazyGames.SDK.game.addJoinRoomListener((inviteParams) => {
+					const code = inviteParams?.join;
+					if (!code || code === get(roomCode)) return;
+					leaveMultiplayer();
+					leaveCompetition(false);
+					joinFromAnywhere(code);
+				});
 
 				// Automatic signup / login (if user is not authenticated)
 				authenticateWithCrazyGames();
@@ -53,13 +63,25 @@
 					else window.CrazyGames.SDK.game.gameplayStart();
 				});
 
-				roomCode.subscribe((value) => {
-					if (value && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom) {
-						window.CrazyGames.SDK.game.showInviteButton({
-							join: value,
+				// Share multiplayer status with CrazyGames
+				const updateCrazyGamesRoom = () => {
+					try {
+						const code = get(roomCode);
+						if (!code) return window.CrazyGames.SDK.game.leftRoom();
+
+						const isJoinable =
+							!get(roomLocked) && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom;
+						window.CrazyGames.SDK.game.updateRoom({
+							roomId: code,
+							isJoinable,
+							...(isJoinable && { inviteParams: { join: code } }),
 						});
-					} else window.CrazyGames.SDK.game.hideInviteButton();
-				});
+					} catch (error) {
+						console.error("Failed to update CrazyGames room data:", error);
+					}
+				};
+				roomCode.subscribe(updateCrazyGamesRoom);
+				roomLocked.subscribe(updateCrazyGamesRoom);
 			}
 		} catch (error) {
 			console.error("Error loading and starting CrazyGames SDK:", error);
