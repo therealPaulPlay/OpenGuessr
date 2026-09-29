@@ -378,11 +378,8 @@
 			scale 250ms ease;
 		align-items: center;
 		justify-content: space-between;
-		border: none;
 		padding: var(--panel-margin);
 		gap: var(--content-margin);
-		flex-grow: 1;
-		max-width: 25%;
 		overflow: hidden;
 		text-wrap: nowrap;
 		cursor: pointer;
@@ -611,9 +608,9 @@
 	}
 
 	.inner-friend-box {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
+		display: grid;
+		/* auto-fill keeps empty columns, while auto-fit collapses them */
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 		gap: var(--box-margin);
 	}
 </style>
