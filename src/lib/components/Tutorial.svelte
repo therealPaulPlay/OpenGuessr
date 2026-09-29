@@ -88,7 +88,7 @@
 		{#if $tutorialStep == 1}
 			<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
 			<div class="subtitle-container">
-				<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a quick intro to OpenGuessr?</p>
+				<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a quick introduction to OpenGuessr?</p>
 			</div>
 			<div class="action-container">
 				<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
@@ -142,9 +142,9 @@
 				</div>
 			</div>
 		{:else if $tutorialStep == 3}
-			<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tutorial complete!</h1>
+			<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>You're a natural!</h1>
 			<div class="subtitle-container">
-				<p class="subtitle" in:blur|global={{ duration: 500 }}>Now, explore at your own pace.</p>
+				<p class="subtitle" in:blur|global={{ duration: 500 }}>You've completed the tutorial.</p>
 			</div>
 			<div class="action-container">
 				<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
@@ -155,7 +155,7 @@
 							leaveTutorial();
 						}}
 					>
-						Let's go
+						To menu
 						<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
 					</button>
 				</div>
