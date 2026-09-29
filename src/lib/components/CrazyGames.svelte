@@ -6,11 +6,11 @@
 	import { joinFromAnywhere, createMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { leaveCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	onMount(async () => {
 		try {
@@ -33,17 +33,35 @@
 				await window.CrazyGames.SDK.init();
 				window.CrazyGames.SDK.game.loadingStart();
 
+				// Mark loading as completed, check for link join and instant multiplayer start
 				setTimeout(() => {
-					window.CrazyGames.SDK.game.loadingStop();
-					window.CrazyGames.SDK.game.gameplayStart();
-					const code = window.CrazyGames.SDK.game.getInviteParam("join");
-					if (code) joinFromAnywhere(code);
+					try {
+						window.CrazyGames.SDK.game.loadingStop();
 
-					if (window.CrazyGames.SDK.game.isInstantMultiplayer) {
-						goto("/multiplayer/host");
-						createMultiplayerRoom();
+						const code = window.CrazyGames.SDK.game.getInviteParam("join");
+						if (code) joinFromAnywhere(code);
+
+						if (window.CrazyGames.SDK.game.isInstantMultiplayer) {
+							goto("/multiplayer/host");
+							createMultiplayerRoom();
+						}
+					} catch (error) {
+						console.error("Error in CrazyGames after-load timeout:", error);
 					}
 				}, 150);
+
+				// Emit gameplay start and stop events
+				let gameplayStarted = false;
+				inMenu.subscribe((value) => {
+					try {
+						if (!value) {
+							window.CrazyGames.SDK.game.gameplayStart();
+							gameplayStarted = true;
+						} else if (gameplayStarted) window.CrazyGames.SDK.game.gameplayStop();
+					} catch (error) {
+						console.error("Failed to emit CrazyGames gameplay events:", error);
+					}
+				});
 
 				// Join friends from everywhere
 				window.CrazyGames.SDK.game.addJoinRoomListener((inviteParams) => {
@@ -52,15 +70,6 @@
 					leaveMultiplayer();
 					leaveCompetition(false);
 					joinFromAnywhere(code);
-				});
-
-				// Automatic signup / login (if user is not authenticated)
-				authenticateWithCrazyGames();
-				window.CrazyGames.SDK.user.addAuthListener(authenticateWithCrazyGames); // Attach auth listener for if the user signs up mid play
-
-				resultScreenEnabled.subscribe((value) => {
-					if (value) window.CrazyGames.SDK.game.gameplayStop();
-					else window.CrazyGames.SDK.game.gameplayStart();
 				});
 
 				// Share multiplayer status with CrazyGames
@@ -82,6 +91,10 @@
 				};
 				roomCode.subscribe(updateCrazyGamesRoom);
 				roomLocked.subscribe(updateCrazyGamesRoom);
+
+				// Automatic signup / login (if user is not authenticated)
+				authenticateWithCrazyGames();
+				window.CrazyGames.SDK.user.addAuthListener(authenticateWithCrazyGames); // Attach auth listener for if the user signs up mid play
 			}
 		} catch (error) {
 			console.error("Error loading and starting CrazyGames SDK:", error);
