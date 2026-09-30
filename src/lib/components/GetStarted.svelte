@@ -6,7 +6,7 @@
 	import { ArrowRight } from "@lucide/svelte";
 	import { onMount } from "svelte";
 
-	let { imgName, ctaTitle = "It's time to get started.", ctaButton = "Play now", content = [], maps = [] } = $props();
+	let { imgName, ctaTitle = "It's time to get started", ctaButton = "Play now", content = [], maps = [] } = $props();
 
 	let loadedMaps = $state([]);
 	let loadingText = $state("Loading...");
