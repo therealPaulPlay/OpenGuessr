@@ -31,6 +31,7 @@
 	import { tutorialStep } from "$lib/stores/context-specific/tutorialStore";
 	import Tutorial, { checkTutorialStart } from "./Tutorial.svelte";
 	import GuessyBotInvite from "./DiscordBotInvite.svelte";
+	import { innerWidth } from "svelte/reactivity/window";
 
 	// Check for tutorial -----------------------------------
 	onMount(checkTutorialStart);
@@ -117,6 +118,17 @@
 									/>
 								</p>
 							</div>
+							{#snippet moreMaps()}
+								<MapItem
+									name="More maps"
+									compact={true}
+									onclick={() => {
+										goto("/maps");
+										playSound("basic_button");
+									}}
+									cover={MoreMapsVisualization}
+								/>
+							{/snippet}
 							<div class="navigation-box-scroll map-select-scroll of-left of-right of-length-2">
 								{#if $baseMaps.every((e) => !isMapSelected(e.map)) && browser}
 									{const imgUrl = $specialMaps.find((e) => e.map === localStorage.getItem("selectedMap"))?.imgUrl}
@@ -152,16 +164,13 @@
 										}}
 									/>
 								{/each}
+								{#if innerWidth.current <= 550}
+									{@render moreMaps()}
+								{/if}
 							</div>
-							<MapItem
-								name="More maps"
-								compact={true}
-								onclick={() => {
-									goto("/maps");
-									playSound("basic_button");
-								}}
-								cover={MoreMapsVisualization}
-							/>
+							{#if innerWidth.current > 550}
+								{@render moreMaps()}
+							{/if}
 						</div>
 						<div class="navigation-row" transition:scale|global={{ duration: 150, start: 0.85, delay: 75 }}>
 							<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
@@ -410,6 +419,7 @@
 		bottom: 100%;
 		padding: calc(var(--layout-margin) - var(--panel-margin));
 		padding-inline: var(--box-margin);
+		text-wrap: nowrap;
 	}
 
 	.generic-map-cover {
@@ -584,6 +594,8 @@
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		aspect-ratio: 1/1;
+		min-width: 38px;
+		padding-inline: 0;
 	}
 
 	.navigation-button:not(.navigation-button-small) {
