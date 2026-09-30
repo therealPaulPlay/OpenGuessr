@@ -254,8 +254,8 @@
 					/>
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
-				<div class="shop-info-section">
-					<p>{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
+				<div class="shop-info-section" style:min-width="fit-content">
+					<p style:font-variant-numeric="tabular-nums">{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
 					<img class="token-icon" alt="token" src="/img/token_icon_white.png" />
 				</div>
 			</div>
@@ -488,7 +488,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		gap: var(--content-margin);
+		gap: var(--box-margin);
 		padding-inline: var(--layout-margin);
 		box-sizing: border-box;
 	}
@@ -497,7 +497,6 @@
 		display: flex;
 		align-items: center;
 		gap: var(--content-margin);
-		max-width: 50%;
 		text-wrap: nowrap;
 		overflow: hidden;
 	}
