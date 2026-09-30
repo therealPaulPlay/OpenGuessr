@@ -476,10 +476,6 @@
 </main>
 
 <style>
-	p {
-		color: white;
-	}
-
 	main {
 		position: fixed;
 		top: 0;
@@ -488,13 +484,9 @@
 		right: 0;
 		margin: 0;
 		padding: 0;
-		font-family: Barlow, Futura, Arial, sans-serif;
-		font-weight: 400;
-		background-color: #07071e;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		overflow: hidden;
 	}
 
 	.captcha-header {
@@ -531,7 +523,7 @@
 		top: 0;
 		bottom: 0;
 		backdrop-filter: blur(var(--normal-blur));
-		background-color: rgba(0, 0, 0, 0.5);
+		background-color: var(--dark-background);
 		z-index: 10;
 		display: flex;
 		justify-content: center;
@@ -649,7 +641,6 @@
 		padding: 3px;
 		height: auto;
 		opacity: 0.5;
-		color: white;
 		display: flex;
 		align-content: center;
 	}
