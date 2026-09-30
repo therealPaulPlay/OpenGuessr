@@ -167,9 +167,7 @@
 		justify-content: space-between;
 		align-items: center;
 		gap: var(--box-margin);
-		overflow: hidden;
-		margin: calc(-1 * var(--layout-margin));
-		padding: var(--layout-margin);
+		max-width: 100%;
 	}
 
 	:global(.status-chip) {

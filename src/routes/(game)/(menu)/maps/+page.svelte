@@ -423,7 +423,7 @@
 	<div class="header-container">
 		<h2 class="header">Continents</h2>
 	</div>
-	<div class="map-container">
+	<div class="map-container map-container-grid map-container-grid-dense">
 		{#each $continentMaps as map}
 			<MapItem
 				name={map}
@@ -632,6 +632,10 @@
 
 	.map-container-grid-slim {
 		grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+	}
+
+	.map-container-grid-dense {
+		grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
 	}
 
 	.map-container-grid .nothing-found {
