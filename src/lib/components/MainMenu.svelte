@@ -43,6 +43,16 @@
 	let nameTextWidth = $state(0);
 	let scrollNameText = $derived(nameAreaWidth > 0 && nameTextWidth > nameAreaWidth);
 
+	// Daily competition streak widget -------------------------------------------
+	$effect(() => {
+		if ($isAuthenticated) loadStreakDays();
+	});
+
+	// New HC messages or invites -----------------------------------------------
+	$effect(() => {
+		if ($mainMenu && page.url.pathname === "/" && $hcClient) loadInitialHasNew();
+	});
+
 	// Icon glint ------------------------------------------------------------
 	function iconGlint(element) {
 		element.animate([{ left: "-50%" }, { left: "150%" }], {
@@ -54,7 +64,7 @@
 		});
 	}
 
-	// Row scale -----------------------------------------------------------------
+	// Row scale transition (patch on top of Svelte's scale transition) ------------
 	function rowScale(node, params) {
 		const row = node.parentElement.getBoundingClientRect();
 		const box = node.getBoundingClientRect();
@@ -62,16 +72,6 @@
 		const config = scale(node, params);
 		return { ...config, css: (t, u) => `${config.css(t, u)}; transform-origin: ${origin}` };
 	}
-
-	// Daily competition streak widget -------------------------------------------
-	$effect(() => {
-		if ($isAuthenticated) loadStreakDays();
-	});
-
-	// New HC messages or invites -----------------------------------------------
-	$effect(() => {
-		if ($mainMenu && page.url.pathname === "/" && $hcClient) loadInitialHasNew();
-	});
 </script>
 
 {#if $mainMenu || $tutorialStep > 0}
