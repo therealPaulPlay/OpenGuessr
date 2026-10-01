@@ -54,6 +54,15 @@
 		});
 	}
 
+	// Row scale -----------------------------------------------------------------
+	function rowScale(node, params) {
+		const row = node.parentElement.getBoundingClientRect();
+		const box = node.getBoundingClientRect();
+		const origin = `${row.left + row.width / 2 - box.left}px ${row.top + row.height / 2 - box.top}px`;
+		const config = scale(node, params);
+		return { ...config, css: (t, u) => `${config.css(t, u)}; transform-origin: ${origin}` };
+	}
+
 	// Daily competition streak widget -------------------------------------------
 	$effect(() => {
 		if ($isAuthenticated) loadStreakDays();
@@ -84,29 +93,29 @@
 						class="logo-icon"
 						src="/img/icon_3d.png"
 						alt="OpenGuessr icon"
-						transition:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
+						in:scale|global={{ duration: 250, start: 0.7, delay: 50 }}
 					/>
 					<div
 						class="logo-icon icon-glint"
-						transition:scale|global={{ duration: 150, start: 0.7, delay: 50 }}
+						in:scale|global={{ duration: 250, start: 0.7, delay: 50 }}
 						{@attach iconGlint}
 					></div>
 					<img
 						class="red-smoke-background"
 						src="/img/red_smoke.png"
 						alt="Red smoke"
-						transition:fade|global={{ duration: 150 }}
+						in:fade|global={{ duration: 250 }}
 					/>
 				</div>
 			</div>
 			<div class="navigation-menu-container">
 				<!-- Dark-ish panel color fade from bottom up to make the controls more legible -->
-				<div class="panel-fade" transition:fade|global={{ duration: 150 }}></div>
+				<div class="panel-fade" in:fade|global={{ duration: 150 }}></div>
 				<div class="navigation-menu">
 					<div class="navigation-menu-top">
 						<div
 							class="navigation-box bar-menu"
-							transition:scale|global={{ duration: 150, start: 0.9, delay: 50 }}
+							in:scale|global={{ duration: 250, start: 0.9, delay: 50 }}
 							style:overflow="visible"
 						>
 							<div class="bar-menu singleplayer-label">
@@ -172,8 +181,11 @@
 								{@render moreMaps()}
 							{/if}
 						</div>
-						<div class="navigation-row" transition:scale|global={{ duration: 150, start: 0.85, delay: 75 }}>
-							<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
+						<div class="navigation-row">
+							<div
+								class="navigation-box navigation-box-half bar-menu navigation-box-stack"
+								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
+							>
 								<button
 									class="standard-button white navigation-button large-button navigation-button-wide"
 									onclick={() => {
@@ -202,7 +214,10 @@
 									</div>
 								</div>
 							</div>
-							<div class="navigation-box navigation-box-half bar-menu navigation-box-stack">
+							<div
+								class="navigation-box navigation-box-half bar-menu navigation-box-stack"
+								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
+							>
 								<button
 									class="standard-button white large-button navigation-button navigation-button-wide"
 									onclick={() => {
@@ -218,11 +233,11 @@
 								</div>
 							</div>
 						</div>
-						<div
-							class="navigation-row navigation-row-mobile-column"
-							transition:scale|global={{ duration: 150, start: 0.8, delay: 100 }}
-						>
-							<div class="navigation-box navigation-box-half bar-menu">
+						<div class="navigation-row navigation-row-mobile-column">
+							<div
+								class="navigation-box navigation-box-half bar-menu"
+								in:rowScale|global={{ duration: 250, start: 0.8, delay: 100 }}
+							>
 								<!-- svelte-ignore a11y_no_static_element_interactions -->
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
 								{#if $isAuthenticated}
@@ -255,7 +270,10 @@
 									>
 								{/if}
 							</div>
-							<div class="navigation-box navigation-box-half bar-menu">
+							<div
+								class="navigation-box navigation-box-half bar-menu"
+								in:rowScale|global={{ duration: 250, start: 0.8, delay: 100 }}
+							>
 								<button
 									class="standard-button white navigation-button navigation-button-small large-button"
 									{@attach tooltip({ text: "Leaderboard" })}
@@ -308,7 +326,7 @@
 						</div>
 					</div>
 					<!-- Link section -->
-					<div class="navigation-box bar-menu link-box" in:fade|global={{ duration: 150 }}>
+					<div class="navigation-box bar-menu link-box" in:blur|global={{ duration: 250 }}>
 						<div class="navigation-box-scroll of-left of-right of-length-2">
 							<button
 								class="standard-button white link-button large-button"
@@ -505,6 +523,7 @@
 		max-width: 100%;
 		box-sizing: border-box;
 		align-items: stretch;
+		position: relative;
 	}
 
 	.navigation-box-scroll {
