@@ -106,6 +106,10 @@ Unless an extreme outlier is needed, stick to the provided CSS variables `--weak
 
 Apply `pointer-events: none` as well as `user-select: none` to ensure that they aren't dragable and integrate nicely into the interface. It's not universally applied since some images need to be interactive (e.g. pin image on the map).
 
+### Animation and transition durations
+
+Use 100ms, 150ms, 250ms, 500ms or 1000ms.
+
 ## Text formatting guidelines
 
 - Body text and headings should be written as plain sentences, also known as sentence case, as opposed to title case (for example, “Game overview” rather than “Game Overview”). The only exception that OpenGuessr makes is for content that needs a clear title or branding such as modes (e.g. Country Guessr), maps (e.g. Capital Cities), competitions, and tournaments.

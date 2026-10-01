@@ -5,6 +5,7 @@
 	import { blur } from "svelte/transition";
 
 	let show = $state(false);
+	let playOutAnimation = $state(false);
 
 	onMount(() => {
 		if (localStorage.getItem("discordBotPromotion") == null) show = true;
@@ -12,7 +13,12 @@
 </script>
 
 {#if show}
-	<div class="invite-box bar-menu" transition:blur|global={{ duration: 150 }}>
+	<div
+		class="invite-box bar-menu"
+		in:blur|global={{ duration: 250 }}
+		out:blur|global={{ duration: playOutAnimation ? 250 : 0 }}
+		onoutroend={() => (playOutAnimation = false)}
+	>
 		<img alt="Mascot sitting" src="/img/mascot_wave.png" class="mascot" />
 		<p>Play with Guessy</p>
 		<p style:opacity="0.5 !important">
@@ -22,6 +28,7 @@
 			class="tooltip-close"
 			onclick={() => {
 				localStorage.setItem("discordBotPromotion", true);
+				playOutAnimation = true;
 				show = false;
 			}}><X size={22} strokeWidth={2.25} /></button
 		>
