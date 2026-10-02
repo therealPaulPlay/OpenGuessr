@@ -67,6 +67,7 @@
 
 <style>
 	#map {
+		font-family: inherit;
 		cursor: crosshair;
 		pointer-events: auto;
 		width: 100%;
