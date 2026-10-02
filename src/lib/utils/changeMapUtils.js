@@ -13,12 +13,12 @@ export async function changeMap(mapName, regenerate = false, goBackAfterNav = fa
     if (goBackAfterNav) goto("/multiplayer/host");
 }
 
-export function selectMap(name, { community = false, returnToMultiplayer = false } = {}) {
+export function selectMap(name, { community = false, returnToMultiplayer = false, neverRegenerate = false } = {}) {
     const newMap = (community ? "community_" : "") + name;
     const currentMap = localStorage.getItem("selectedMap") ?? get(defaultMap); // No map stored means default is selected
 
     // Only regenerate if the new map differs from the current selection
-    changeMap(newMap, currentMap !== newMap, returnToMultiplayer);
+    changeMap(newMap, !neverRegenerate && currentMap !== newMap, returnToMultiplayer);
     if (returnToMultiplayer) return;
 
     // Mark tutorial as completed (map was selected via e.g. straight visit to /maps, let player play the map instead of tutorial)

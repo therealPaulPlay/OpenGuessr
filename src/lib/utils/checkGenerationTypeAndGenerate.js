@@ -4,7 +4,7 @@ import { generateNewLocation } from "$lib/utils/generateLocation";
 import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { baseMaps, countryMaps, continentMaps, defaultMap, tutorialMap, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
-import { changeMap } from "$lib/utils/changeMapUtils";
+import { changeMap, selectMap } from "$lib/utils/changeMapUtils";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
@@ -20,7 +20,7 @@ function checkLinkMap() {
     let mapFromLink = urlParams.get("play-map").replaceAll("-", " ").replaceAll("_", " ");
 
     if (mapFromLink) {
-      if ([...get(baseMaps), ...get(countryMaps), ...get(specialMaps), ...get(continentMaps)].includes(mapFromLink)) changeMap(mapFromLink);
+      if ([...get(baseMaps).map((e) => e.map), ...get(specialMaps).map((e) => e.map), ...get(countryMaps), ...get(continentMaps)].includes(mapFromLink)) selectMap(mapFromLink, { neverRegenerate: true });
       else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!");
     }
   } catch { }
