@@ -1,6 +1,8 @@
 <script>
 	import { ArrowLeft } from "@lucide/svelte";
 	import { page } from "$app/state";
+	import { playSound } from "$lib/utils/soundManager";
+	import { goto } from "$app/navigation";
 </script>
 
 <svelte:head>
@@ -10,19 +12,27 @@
 <div class="page-content">
 	<h1>{page.status} - {page.error.message}</h1>
 	<p>The page you requested does not exist or experienced an error.</p>
-	<a class="return-button standard-button" href="/">
-		<ArrowLeft style="min-width: 22px; margin-bottom: -3px;" strokeWidth={2.5} />
-		Return to OpenGuessr</a
+	<button
+		class="return-button standard-button"
+		onclick={() => {
+			playSound("basic_button");
+			goto("/");
+		}}
+	>
+		<ArrowLeft style="min-width: 22px; margin-bottom: -3px; margin-right: var(--content-margin);" strokeWidth={2.5} />
+		Return to OpenGuessr</button
 	>
 </div>
 
 <style>
 	.page-content {
-		height: 100vh;
+		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		align-items: center;
+		justify-content: safe center;
+		align-items: safe center;
+		padding: var(--layout-margin);
+		box-sizing: border-box;
 	}
 
 	h1 {
@@ -30,31 +40,25 @@
 		word-wrap: break-word;
 		text-wrap: wrap;
 		text-align: center;
-		padding-inline: 20px;
 	}
 
 	p {
 		text-align: center;
-		margin-top: 40px;
+		margin-top: calc(var(--layout-margin) * 2);
 		max-width: 400px;
 		font-size: 30px;
-		padding-inline: 20px;
-	}
-
-	a,
-	a:hover,
-	a:visited {
-		text-decoration: none;
-		color: white;
 	}
 
 	.return-button {
 		font-size: 25px;
-		padding: var(--layout-margin) 20px;
+		padding: var(--layout-margin) calc(var(--layout-margin) + var(--content-margin));
 		border-radius: var(--box-margin);
-		margin-top: 100px;
+		margin-top: calc(var(--layout-spacer) * 2);
 		text-decoration: none;
 		height: unset;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100%;
 	}
 
 	@media (max-width: 800px) {
