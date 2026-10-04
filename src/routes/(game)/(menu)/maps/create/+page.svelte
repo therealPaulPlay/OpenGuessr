@@ -61,6 +61,7 @@
 				const result = await response.json();
 
 				if (response.ok) {
+					mapName = result.name; // Update mapName with the one that actually made it in (since the server sanitizes it)
 					return "Map submitted successfully!"; // Must include "success"
 				} else {
 					let resultErrors = "";
