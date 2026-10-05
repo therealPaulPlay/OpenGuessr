@@ -200,6 +200,38 @@
 	let leaderboardMenu = $state(false);
 	let eloActiveSelection = $state("All");
 	let eloShowActiveOnly = $derived(eloActiveSelection == "Only active");
+
+	// Dynamic podium scale -----------------------------------------------
+	let podiumContainerEl = $state();
+	let podiumEl = $state();
+	let scale = $state(1);
+	let podiumHeight = $state(0);
+	let initialScaleSet = $state(false);
+
+	onMount(() => {
+		const observer = new ResizeObserver(calculatePodiumScale);
+		observer.observe(podiumContainerEl);
+		observer.observe(podiumEl);
+
+		return () => {
+			observer.disconnect();
+		};
+	});
+
+	function calculatePodiumScale() {
+		if (!podiumContainerEl || !podiumEl) return;
+		const width = podiumContainerEl.getBoundingClientRect().width;
+		const newScale = Math.min(1, (width / 800) * 1.2);
+		scale = newScale;
+		podiumHeight = podiumEl.offsetHeight;
+		if (!initialScaleSet) initialScaleSet = true;
+	}
+
+	function formatPodiumValue(number) {
+		if (number == null || number === false) return null;
+		if (number < 10_000) return number.toLocaleString();
+		return new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(number);
+	}
 </script>
 
 <svelte:head>
@@ -241,7 +273,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboard-container">
-	<div class="podium-container">
+	<div class="podium-container" bind:this={podiumContainerEl}>
 		<div class="option-bar-container">
 			<div class="option-bar-item bar-menu">
 				<button
@@ -267,52 +299,65 @@
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
-			<div class="podium-item" id="second-place">
-				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<h3
-					class="name"
-					onclick={() => {
-						showProfile(mainSectionEntries?.[1]?.id);
-					}}
-				>
-					{mainSectionEntries?.[1]?.user_name || "Guest"}
-				</h3>
-				<div class="podium-pedestal silver">
-					<h3 class="podium-value">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</h3>
-					<h3 class="rank">#2</h3>
-				</div>
-			</div>
-			<div class="podium-item" id="first-place">
-				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<h3
-					class="name"
-					onclick={() => {
-						showProfile(mainSectionEntries?.[0]?.id);
-					}}
-				>
-					{mainSectionEntries?.[0]?.user_name || "Guest"}
-				</h3>
-				<div class="podium-pedestal gold">
-					<span class="podium-value">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</span
+		<div
+			id="podium"
+			class="podium"
+			class:podium-loaded={Boolean(mainSectionEntries)}
+			bind:this={podiumEl}
+			style:scale
+			style:--podium-scale={scale}
+			style:--podium-height="{podiumHeight}px"
+			style:opacity={initialScaleSet ? "" : 0}
+		>
+			<img alt="podium illustration" src="/img/podium_illustration.png" class="podium-image" />
+			<div class="podium-item-container">
+				<div class="podium-item" id="second-place-item">
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<h3
+						class="name"
+						onclick={() => {
+							showProfile(mainSectionEntries?.[1]?.id);
+						}}
 					>
-					<h3 class="rank">#1</h3>
+						{mainSectionEntries?.[1]?.user_name || "Guest"}
+					</h3>
+					<div class="podium-pedestal" id="second-place">
+						<h3 class="podium-value">
+							{(formatPodiumValue(mainSectionEntries?.[1]?.[valueKey]) || "...") + unitName}
+						</h3>
+					</div>
 				</div>
-			</div>
-			<div class="podium-item" id="third-place">
-				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<h3
-					class="name"
-					onclick={() => {
-						showProfile(mainSectionEntries?.[2]?.id);
-					}}
-				>
-					{mainSectionEntries?.[2]?.user_name || "Guest"}
-				</h3>
-				<div class="podium-pedestal bronze">
-					<span class="podium-value">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</span
+				<div class="podium-item" id="first-place-item">
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<h3
+						class="name"
+						onclick={() => {
+							showProfile(mainSectionEntries?.[0]?.id);
+						}}
 					>
-					<h3 class="rank">#3</h3>
+						{mainSectionEntries?.[0]?.user_name || "Guest"}
+					</h3>
+					<div class="podium-pedestal" id="first-place">
+						<span class="podium-value"
+							>{(formatPodiumValue(mainSectionEntries?.[0]?.[valueKey]) || "...") + unitName}</span
+						>
+					</div>
+				</div>
+				<div class="podium-item" id="third-place-item">
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<h3
+						class="name"
+						onclick={() => {
+							showProfile(mainSectionEntries?.[2]?.id);
+						}}
+					>
+						{mainSectionEntries?.[2]?.user_name || "Guest"}
+					</h3>
+					<div class="podium-pedestal" id="third-place">
+						<span class="podium-value"
+							>{(formatPodiumValue(mainSectionEntries?.[2]?.[valueKey]) || "...") + unitName}</span
+						>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -323,7 +368,12 @@
 				<InfoBanner text="Inactive players are hidden." inPage={true} center={true} />
 			{/if}
 			{#each mainSectionEntries.slice(3) as entry}
-				<div class="ranked-item white-soft" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
+				<div
+					class="ranked-item white-soft"
+					role="button"
+					tabindex="0"
+					class:your-item={entry.id == userId && $isAuthenticated}
+				>
 					<p class="maxlength ranked-item-left">#{entry.position}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
@@ -355,7 +405,12 @@
 				<InfoBanner text="You're inactive. Play a duel to see your actual rank." inPage={true} center={true} />
 			{/if}
 			{#each userSectionEntries as entry}
-				<div class="ranked-item white-soft" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
+				<div
+					class="ranked-item white-soft"
+					role="button"
+					tabindex="0"
+					class:your-item={entry.id == userId && $isAuthenticated}
+				>
 					<p class="maxlength ranked-item-left">#~{entry.position?.toLocaleString()}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
@@ -449,18 +504,6 @@
 		opacity: 0.5;
 	}
 
-	.gold {
-		background-color: rgba(255, 200, 37, 0.85);
-	}
-
-	.silver {
-		background-color: rgba(223, 227, 238, 0.5);
-	}
-
-	.bronze {
-		background-color: rgba(189, 87, 87, 0.5);
-	}
-
 	.your-item {
 		box-shadow: var(--bulb-shadow);
 		background-color: rgba(255, 255, 255, 0.25);
@@ -499,13 +542,12 @@
 		border-radius: calc(var(--layout-margin) * 2);
 		background: linear-gradient(var(--box-color), transparent 50%);
 		padding: var(--layout-margin);
-		padding-bottom: 35px;
 		gap: 50px;
 		position: relative;
 		flex-wrap: wrap;
 		box-shadow: var(--box-shadow-top);
 		width: 100%;
-		overflow: hidden;
+		box-sizing: border-box;
 	}
 
 	.option-bar-container {
@@ -518,19 +560,36 @@
 	}
 
 	.podium {
-		display: flex;
-		align-items: flex-end;
-		justify-content: center;
-		height: 250px;
-		width: 100%;
-		max-width: 600px;
-		gap: var(--layout-margin);
+		--podium-shrink: calc(var(--podium-height, 0px) * (1 - var(--podium-scale, 1)) / 2);
+		width: 800px;
+		min-width: 800px;
 		position: relative;
 		transform: scale(0.9);
 		opacity: 0.3;
+		margin-top: calc(-90px * var(--podium-scale, 1) - var(--podium-shrink));
+		margin-bottom: calc(-70px * var(--podium-scale, 1) - var(--podium-shrink));
+		pointer-events: none;
 		transition:
 			opacity 250ms ease,
 			transform 250ms ease;
+	}
+
+	.podium-item-container {
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		gap: calc(var(--layout-margin) + var(--box-margin));
+		max-width: 100%;
+		position: absolute;
+		inset: 0;
+		padding: 128px;
+	}
+
+	.podium-image {
+		width: 800px;
+		height: 448px;
+		user-select: none;
+		pointer-events: none;
 	}
 
 	.podium-loaded {
@@ -540,82 +599,90 @@
 
 	.podium-item {
 		flex-grow: 1;
-		margin-inline: var(--box-margin);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		flex-basis: 33%;
+		flex-basis: 0;
 		position: relative;
-		overflow: hidden;
+		min-width: 0;
 	}
 
 	.podium-pedestal {
-		padding: var(--layout-margin);
 		flex-grow: 1;
 		width: 100%;
-		border-radius: var(--layout-margin);
 		display: flex;
 		box-sizing: border-box;
 		flex-direction: column;
 		align-items: center;
-		box-shadow: var(--panel-shadow);
-		overflow: hidden;
-		transition:
-			filter 250ms ease,
-			height 250ms ease,
-			width 250ms ease;
 	}
 
-	#first-place {
-		height: 260px;
+	#first-place-item {
+		height: 225px;
 	}
 
-	#second-place {
-		height: 220px;
-		margin-left: 0;
+	#first-place .podium-value {
+		margin-bottom: -16px;
 	}
 
-	#third-place {
-		height: 190px;
-		margin-right: 0;
+	#second-place-item {
+		height: 167px;
+		margin-left: -5px;
+	}
+
+	#second-place .podium-value {
+		margin-bottom: -26px;
+	}
+
+	#second-place-item .name {
+		padding-left: calc(var(--content-margin) * 2);
+	}
+
+	#second-place-item .podium-value {
+		padding-left: var(--content-margin);
+	}
+
+	#third-place-item {
+		height: 141px;
+	}
+
+	#third-place-item .name {
+		padding-left: calc(var(--content-margin) * 2);
+	}
+
+	#third-place-item .podium-value {
+		padding-left: var(--content-margin);
+	}
+
+	#third-place .podium-value {
+		margin-bottom: -30px;
 	}
 
 	.podium-item .name {
 		padding: var(--content-margin);
 		text-align: center;
-		color: white;
-		margin-top: auto;
 		word-break: break-word;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-		max-width: 100%;
 		cursor: pointer;
 		transition: opacity 250ms ease;
-		margin-bottom: var(--box-margin);
+		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
+		pointer-events: auto;
+		max-width: 75%;
 	}
 
 	.podium-item .name:hover {
 		opacity: 0.5;
 	}
 
-	.podium-item .rank {
-		color: white;
-		margin-bottom: var(--content-margin);
-	}
-
 	.podium-item .podium-value {
 		font-size: 25px;
-		color: white;
-		margin: auto 0;
+		margin-top: auto;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-		border-radius: var(--content-margin);
-		opacity: 0.75;
 		max-width: 100%;
-		background-color: var(--box-color-dark-soft);
-		padding-inline: var(--content-margin);
+		pointer-events: auto;
 	}
 
 	#your-league-container {
@@ -646,37 +713,17 @@
 	}
 
 	@media (max-width: 800px) {
-		.podium-item {
-			border-radius: var(--box-margin);
-		}
-
-		.podium-item .rank {
-			font-size: 20px;
-		}
-
-		.podium-item .podium-value {
-			font-size: 20px;
-		}
-
-		#first-place {
-			height: 200px;
-		}
-
-		#second-place {
-			height: 165px;
-		}
-
-		#third-place {
-			height: 150px;
-		}
-
-		.podium {
-			height: 180px;
-			gap: var(--content-margin);
-		}
-
 		.maxlength {
 			flex-basis: unset;
+		}
+
+		.podium-item .name {
+			font-size: calc(22px / var(--podium-scale, 1));
+			margin-top: calc(1lh * (25 * var(--podium-scale, 1) / 22 - 1));
+		}
+
+		.podium-container {
+			margin-bottom: var(--content-margin);
 		}
 	}
 </style>
