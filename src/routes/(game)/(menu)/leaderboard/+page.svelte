@@ -668,7 +668,7 @@
 		transition: opacity 250ms ease;
 		filter: drop-shadow(0 0 5px var(--dark-shadow-color));
 		pointer-events: auto;
-		max-width: 75%;
+		max-width: 85%;
 	}
 
 	.podium-item .name:hover {

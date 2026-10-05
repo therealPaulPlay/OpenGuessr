@@ -69,9 +69,6 @@
 <svelte:head>
 	<!-- Ad script -->
 	<script src="https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js" async></script>
-
-	<!-- Leaflet CSS -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 </svelte:head>
 
 <!-- Prevent automatic "last button press" on space bar or enter key press -->
