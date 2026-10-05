@@ -33,7 +33,7 @@
 	}
 
 	onMount(async () => {
-		await import("leaflet");
+		await Promise.all([import("leaflet"), import("leaflet/dist/leaflet.css")]);
 		initMap();
 		mapResizeObserver = new ResizeObserver(() => get(map)?.invalidateSize());
 		mapResizeObserver.observe(mapElement);
@@ -118,9 +118,9 @@
 	}
 
 	:global(.leaflet-tooltip) {
-		padding: 1px;
-		padding-inline: 6px;
-		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+		padding: 1px !important;
+		padding-inline: 6px !important;
+		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4) !important;
 		margin-top: -18px;
 	}
 
@@ -203,7 +203,7 @@
 
 	:global(.leaflet-touch .leaflet-control-layers) {
 		border: none !important;
-		margin: var(--box-margin);
+		margin: var(--box-margin) !important;
 	}
 
 	:global(.leaflet-control-layers) {
