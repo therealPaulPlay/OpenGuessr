@@ -605,6 +605,7 @@
 		max-height: 215px;
 		width: 100%;
 		scrollbar-width: none;
+		border-radius: var(--content-margin);
 	}
 
 	.inner-friend-box {

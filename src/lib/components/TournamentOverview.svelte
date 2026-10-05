@@ -118,6 +118,8 @@
 		box-sizing: border-box;
 		scrollbar-width: none;
 		width: 100%;
+		border-bottom-left-radius: var(--content-margin);
+		border-bottom-right-radius: var(--content-margin);
 	}
 
 	.inner-tournaments-container {
