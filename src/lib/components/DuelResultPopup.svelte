@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 	import { divisionMatchHistoryPopup, duelResultPopup } from "$lib/stores/uiStore";
 	import { eloChange, duelResultTitle, tokenGain } from "$lib/stores/context-specific/duelResultStore";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
@@ -63,11 +63,11 @@
 	<DuelDivisionDisplay />
 	<div class="info-box">
 		<div class="info-box-inner">
-			<Info strokeWidth={2.25} size={22} color="white" style="opacity: 50%; flex-shrink: 0;" />
+			<Info strokeWidth={2.25} size={22} color="white" style="opacity: 50%; flex-shrink: 0; margin-bottom: -1px;" />
 			<p>To report a player, open their profile and click on <i>Report</i>.</p>
 		</div>
 		<button
-			class="standard-button white grow-search"
+			class="standard-button bright grow-search"
 			onclick={() => {
 				playSound("basic_button");
 				$historyForUserId = localStorage.getItem("id");
@@ -78,7 +78,7 @@
 		>
 	</div>
 	<button
-		class="standard-button bottom-button large-button"
+		class="standard-button popup-bottom-button large"
 		onclick={() => {
 			playSound("basic_button");
 			$duelResultPopup = false;
@@ -106,7 +106,7 @@
 	.result-box {
 		flex-grow: 1;
 		flex-basis: 0%;
-		height: 38px;
+		height: 58px;
 		flex-wrap: wrap;
 		display: flex;
 		border-radius: var(--box-margin);

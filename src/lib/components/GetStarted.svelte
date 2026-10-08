@@ -71,7 +71,7 @@
 
 		<div class="bar-menu cta-button-box">
 			<button
-				class="standard-button large-button"
+				class="standard-button large"
 				onclick={() => {
 					playSound("basic_button");
 					goto("/");

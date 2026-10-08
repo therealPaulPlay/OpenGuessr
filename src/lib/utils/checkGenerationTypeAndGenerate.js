@@ -2,7 +2,7 @@ import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr, metaGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 import { baseMaps, countryMaps, continentMaps, defaultMap, tutorialMap, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { changeMap, selectMap } from "$lib/utils/changeMapUtils";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
@@ -21,7 +21,7 @@ function checkLinkMap() {
 
     if (mapFromLink) {
       if ([...get(baseMaps).map((e) => e.map), ...get(specialMaps).map((e) => e.map), ...get(countryMaps), ...get(continentMaps)].includes(mapFromLink)) selectMap(mapFromLink, { neverRegenerate: true });
-      else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!");
+      else showErrorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!");
     }
   } catch { }
 }

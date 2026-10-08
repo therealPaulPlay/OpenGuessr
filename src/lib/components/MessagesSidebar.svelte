@@ -11,13 +11,9 @@
 		aliasCache,
 	} from "$lib/stores/context-specific/headlessChatStore";
 	import { loadAliases } from "$lib/logic/headlessChatLogic";
-	import { errorPopup } from "$lib/utils/errorHandling";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { showErrorPopup, showConfirmPopup, tooltip, Chip, TitleSeparator } from "openguessr-ui";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import Chip from "./ui/Chip.svelte";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	let userId = $derived(localStorage.getItem("id"));
 	let myInvites = $derived($invites.filter((i) => i.toParticipantId === userId));
@@ -87,14 +83,14 @@
 					</p>
 					<div class="invite-buttons">
 						<button
-							class="standard-button white"
+							class="standard-button bright"
 							onclick={async () => {
 								playSound("basic_button");
 								try {
 									await get(hcClient).acceptInvite(invite.conversation.conversationId);
 									$activeConversationId = invite.conversation.conversationId;
 								} catch (error) {
-									errorPopup(
+									showErrorPopup(
 										"Failed to accept invite",
 										"An error occured trying to accept an invite.",
 										"From headless-chat: " + error.message,
@@ -103,13 +99,13 @@
 							}}><Check size={20} strokeWidth={2.5} style="vertical-align: -2px;" /></button
 						>
 						<button
-							class="standard-button white"
+							class="standard-button bright"
 							onclick={async () => {
 								playSound("basic_button");
 								try {
 									await get(hcClient).declineInvite(invite.conversation.conversationId);
 								} catch (error) {
-									errorPopup(
+									showErrorPopup(
 										"Failed to decline invite",
 										"An error occured trying to decline a conversation invite.",
 										"From headless-chat: " + error.message,
@@ -172,7 +168,7 @@
 										await get(hcClient).leaveConversation(c.conversationId);
 										if ($activeConversationId === c.conversationId) activeConversationId.set(null);
 									} catch (error) {
-										errorPopup(
+										showErrorPopup(
 											"Failed to leave conversation",
 											"An error occured trying to leave this conversation.",
 											"From headless-chat: " + error.message,
@@ -202,7 +198,6 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
-		box-sizing: border-box;
 	}
 
 	.sidebar-inner {
@@ -214,7 +209,6 @@
 		padding: var(--box-margin);
 		overflow-y: auto;
 		scrollbar-width: none;
-		box-sizing: border-box;
 	}
 
 	.conversation-item {

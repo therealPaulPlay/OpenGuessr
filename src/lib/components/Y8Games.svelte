@@ -4,7 +4,7 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showErrorPopup } from "openguessr-ui";
 
 	onMount(async () => {
 		try {
@@ -104,7 +104,7 @@
 			checkAuthentication();
 		} catch (error) {
 			console.error("Error occured authenticating with Y8:", error);
-			errorPopup("Error authenticating", "An error occured trying to authenticate with Y8.", error.message);
+			showErrorPopup("Error authenticating", "An error occured trying to authenticate with Y8.", error.message);
 		}
 	}
 </script>

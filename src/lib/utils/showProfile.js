@@ -1,7 +1,7 @@
 import { profilePopup } from "$lib/stores/uiStore";
 import { profileData, profileId } from "$lib/stores/context-specific/profileStore";
 import { getProfileData } from "$lib/utils/getProfileData";
-import { showConfirmPopup } from "./confirmPopup";
+import { showConfirmPopup } from "openguessr-ui";
 import { signOut } from "$lib/logic/accountLogic";
 import { signupPrompt } from "./signupPrompt";
 import { get } from "svelte/store";

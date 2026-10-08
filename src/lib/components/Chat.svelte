@@ -4,7 +4,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
 	import { MessageSquareWarning, SendHorizonal } from "@lucide/svelte";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { tooltip } from "openguessr-ui";
 	import { moderationPopup } from "$lib/stores/uiStore";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 	import { get } from "svelte/store";
@@ -65,7 +65,7 @@
 	<button
 		{@attach tooltip({ text: "Send message" })}
 		id="multiplayer-send-button"
-		class="standard-button white"
+		class="standard-button bright"
 		onclick={() => {
 			playSound("basic_button");
 			sendChat(inputValue, isTeamChat ? getTeamFromClientId(get(socket)?.id) : null);
@@ -75,7 +75,7 @@
 		<SendHorizonal strokeWidth={2} size={22} style="margin-right: -2px; margin-top: 3px" />
 	</button>
 	<button
-		class="standard-button white"
+		class="standard-button bright"
 		{@attach tooltip({ text: "Moderation" })}
 		onclick={() => {
 			playSound("basic_button");
@@ -96,7 +96,6 @@
 
 	.chat-button-area-in-popup {
 		padding: var(--box-margin);
-		box-sizing: border-box;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
@@ -104,7 +103,7 @@
 	}
 
 	.multiplayer-chat-messages {
-		width: calc(100% - 6px);
+		width: 100%;
 		line-height: 1.6;
 		display: flex;
 		overflow-y: scroll;
@@ -125,7 +124,7 @@
 
 	#multiplayer-message-input {
 		padding: var(--box-margin);
-		height: 20px;
+		height: 40px;
 		flex-grow: 1;
 		width: 0;
 		overflow-x: auto;

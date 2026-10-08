@@ -10,7 +10,7 @@
 	import { get } from "svelte/store";
 	import Chat from "./Chat.svelte";
 	import ChatTabSwitcher from "./ChatTabSwitcher.svelte";
-	import Popup from "./ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 
 	let isTeamChat = $state(false);
 

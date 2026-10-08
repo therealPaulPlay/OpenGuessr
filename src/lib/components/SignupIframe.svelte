@@ -1,8 +1,8 @@
 <script>
 	import { signupPopup } from "$lib/stores/uiStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
-	import IframePopup from "./ui/IframePopup.svelte";
-	import { showNotification } from "$lib/utils/notifications";
+	import IframePopup from "./IframePopup.svelte";
+	import { showNotification } from "openguessr-ui";
 	import { browser } from "$app/environment";
 	import { postSignupAction } from "$lib/stores/context-specific/signupStore";
 
@@ -24,4 +24,4 @@
 </script>
 
 <!-- Clearing the signup action only triggers when the user closed the popup, when it auto-closes due to signin it does not -->
-<IframePopup src="/signup" bind:open={$signupPopup} onUserClose={() => postSignupAction.set()} />
+<IframePopup src="/signup" bind:open={$signupPopup} onuserclose={() => postSignupAction.set()} />

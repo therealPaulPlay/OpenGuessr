@@ -45,7 +45,7 @@
 			</div>
 			<div class="bar-menu button-container" in:fly={{ y: 20, duration: 1000 }}>
 				<button
-					class="standard-button large-button"
+					class="standard-button large"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/");
@@ -74,7 +74,7 @@
 		padding-bottom: calc(var(--layout-margin) + var(--content-margin));
 		text-align: center;
 		font-size: 25px;
-		max-width: 400px;
+		max-width: 500px;
 	}
 
 	.button-container {

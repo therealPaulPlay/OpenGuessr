@@ -2,7 +2,7 @@ import { startTimer } from "$lib/utils/timer";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 import { playSound } from "$lib/utils/soundManager";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { competition } from "$lib/stores/modeStore";
@@ -20,7 +20,7 @@ let competitionTimer;
 
 // Called on the competition page when entering
 export function loadCompetition() {
-    if (!get(competitionData)) return errorPopup("Failed to start competition", "No competition data was provided!");
+    if (!get(competitionData)) return showErrorPopup("Failed to start competition", "No competition data was provided!");
     competition.set(true); // Activate Competition mode
     mainMenu.set(false);
     competitionRound.set(0); // Reset round index
@@ -90,7 +90,7 @@ async function submitCompetitionResult(compId, score) {
         }
     } catch (error) {
         console.error("Error submitting competition result: " + error);
-        errorPopup("Competition submission failed", "Failed to submit the competition result.", error.message);
+        showErrorPopup("Competition submission failed", "Failed to submit the competition result.", error.message);
     }
 }
 

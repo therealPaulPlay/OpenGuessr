@@ -1,5 +1,5 @@
 <script>
-	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { tooltip } from "openguessr-ui";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { getCountryName } from "$lib/utils/getCountryName";
 

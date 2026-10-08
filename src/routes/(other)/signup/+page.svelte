@@ -6,8 +6,7 @@
 	import { blur, fade, scale, slide } from "svelte/transition";
 	import { apiUrl, googleOauthClientId } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
-	import Notification from "$lib/components/Notification.svelte";
-	import { showNotification } from "$lib/utils/notifications";
+	import { Notification, showNotification } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 
 	let actionButtonBusy = $state(false);
@@ -351,7 +350,7 @@
 	}}
 />
 
-<Notification />
+<Notification onaccept={() => playSound("basic_button")} ondismiss={() => playSound("basic_button")} />
 
 {#snippet backToLogin()}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -438,7 +437,7 @@
 			<div class="container" transition:slide={{ axis: "y", duration: 150 }}>
 				<div transition:blur={{ duration: 150 }} class="signup-options-container">
 					<button
-						class="standard-button white signup-button large-button"
+						class="standard-button bright signup-button large"
 						onclick={() => {
 							playSound("basic_button");
 							startGoogleLogin();
@@ -446,13 +445,13 @@
 					>
 						<img
 							src="/img/google_logo.png"
-							style="width: 22px; height: 22px; background-color: white; border-radius: 100%; border: 2px solid white; user-select: none; pointer-events: none;"
+							style="width: 26px; height: 26px; background-color: white; border-radius: 100%; border: 2px solid white; user-select: none; pointer-events: none;"
 							alt="Google logo"
 						/>
 						Continue with Google
 					</button>
 					<button
-						class="standard-button white signup-button large-button"
+						class="standard-button bright signup-button large"
 						onclick={() => {
 							playSound("basic_button");
 							formType = "signup";
@@ -523,7 +522,7 @@
 		top: 0;
 		bottom: 0;
 		backdrop-filter: blur(var(--normal-blur));
-		background-color: var(--dark-background);
+		background-color: var(--overlay-color);
 		z-index: 10;
 		display: flex;
 		justify-content: center;
@@ -535,7 +534,7 @@
 		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		padding: var(--layout-margin);
-		width: 280px;
+		width: 310px;
 		text-align: center;
 		backdrop-filter: blur(100px);
 	}
@@ -603,7 +602,6 @@
 		padding: var(--box-margin);
 		padding-inline: var(--layout-margin);
 		border-radius: var(--box-margin);
-		box-sizing: border-box;
 	}
 
 	.password-container {

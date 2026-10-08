@@ -5,11 +5,9 @@ import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { get } from "svelte/store";
 import { supportedAmount } from "$lib/stores/accountStore.js";
-import { showNotification } from "$lib/utils/notifications";
+import { showNotification, showConfirmPopup, showErrorPopup } from "openguessr-ui";
 import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { showConfirmPopup } from "$lib/utils/confirmPopup";
-import { errorPopup } from "$lib/utils/errorHandling";
 import { y8Games } from "$lib/stores/context-specific/platformSettingsStore";
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
@@ -126,7 +124,7 @@ async function loadUserInfo() {
         window.location.reload();
       });
     } else {
-      errorPopup("Error getting user data", "An error occured trying to fetch user info.", error.message);
+      showErrorPopup("Error getting user data", "An error occured trying to fetch user info.", error.message);
     }
   }
 }

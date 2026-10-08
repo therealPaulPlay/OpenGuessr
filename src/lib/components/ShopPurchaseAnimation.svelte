@@ -4,7 +4,7 @@
 		shopAnimationImages,
 		shopPurchaseAnimationTitle,
 	} from "$lib/stores/context-specific/shopStore";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { showConfirmPopup } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";

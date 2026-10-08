@@ -2,7 +2,7 @@ import { username } from "$lib/stores/accountStore";
 import { profileData } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { errorPopup } from "./errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 
 export async function updateProfileUsername(newUsername) {
     if (newUsername) {
@@ -50,7 +50,7 @@ async function updateUsername(requestedUsername) {
 
     } catch (error) {
         console.error('Failed to update username:', error);
-        errorPopup("Failed to update username", "An error occured trying to update the username.", error.message);
+        showErrorPopup("Failed to update username", "An error occured trying to update the username.", error.message);
         return false;
     }
 }

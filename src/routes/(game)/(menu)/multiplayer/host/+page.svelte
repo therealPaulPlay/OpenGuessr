@@ -13,17 +13,14 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
-	import Ticker from "$lib/components/ui/Ticker.svelte";
-	import Tabs from "$lib/components/ui/Tabs.svelte";
+	import { Ticker, Tabs, showNotification, showErrorPopup } from "openguessr-ui";
 	import { goto } from "$app/navigation";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import { multiplayer } from "$lib/stores/modeStore";
-	import { showNotification } from "$lib/utils/notifications";
 	import { browser } from "$app/environment";
-	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let isCreatingRoom = $state(false);
 	let isCurrentlyStarting = $state(false);
@@ -40,16 +37,34 @@
 		{#if !$multiplayer && !isCreatingRoom}
 			<div class="multiplayer-host-settings">
 				<p>Rounds</p>
-				<Ticker maximum={10} minimum={1} initialValue={3} bind:value={$roundAmount} />
+				<Ticker
+					maximum={10}
+					minimum={1}
+					initialValue={3}
+					minValueWidth="40px"
+					bind:value={$roundAmount}
+					onchange={() => playSound("change_value")}
+				/>
 			</div>
 			<div class="multiplayer-host-settings">
 				<p>Round length</p>
-				<Ticker maximum={310} step={10} minimum={10} maximumValue={Infinity} maximumText="∞" note="sec" initialValue={60} bind:value={$roundLength} />
+				<Ticker
+					maximum={310}
+					step={10}
+					minimum={10}
+					maximumValue={Infinity}
+					maximumText="∞"
+					note="sec"
+					initialValue={60}
+					minValueWidth="50px"
+					bind:value={$roundLength}
+					onchange={() => playSound("change_value")}
+				/>
 			</div>
 			<div id="room-creation-modes" class="multiplayer-host-settings">
 				<p>Restriction</p>
 				<select
-					class="standard-button white"
+					class="standard-button bright"
 					bind:value={$multiplayerRestriction}
 					onchange={() => {
 						playSound("basic_button");
@@ -62,9 +77,15 @@
 			</div>
 			<div id="room-creation-teams" class="multiplayer-host-settings">
 				<p>Teams</p>
-				<div class="ticker">
-					<Ticker maximum={5} minimumText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
-				</div>
+				<Ticker
+					maximum={5}
+					minimumText="No"
+					note="teams"
+					initialValue={1}
+					minValueWidth="45px"
+					bind:value={$teamAmount}
+					onchange={() => playSound("change_value")}
+				/>
 			</div>
 			<div id="room-creation-modes" class="multiplayer-host-settings">
 				<p>Style</p>
@@ -79,7 +100,7 @@
 			</div>
 			<div id="room-creation-map" class="multiplayer-host-settings">
 				<p>Map</p>
-				<div class="selected-map-field white-soft">
+				<div class="selected-map-field bright-soft">
 					<p id="multiplayer-map-display">
 						{(() => {
 							if (browser) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
@@ -87,7 +108,7 @@
 						})()}
 					</p>
 					<button
-						class="standard-button white"
+						class="standard-button bright"
 						onclick={() => {
 							playSound("basic_button");
 							goto("/maps?return-to-multiplayer=true");
@@ -99,7 +120,7 @@
 			<div class="multiplayer-host-submit-area bar-menu">
 				<button
 					id="multiplayer-host"
-					class="standard-button large-button"
+					class="standard-button large"
 					onclick={async () => {
 						isCreatingRoom = true;
 						playSound("basic_button");
@@ -126,7 +147,7 @@
 					try {
 						await get(socket)?.sendRequest("startRoom");
 					} catch (error) {
-						if (get(multiplayer)) errorPopup("Failed to start room", "Error occured starting the room.", error.message);
+						if (get(multiplayer)) showErrorPopup("Failed to start room", "Error occured starting the room.", error.message);
 						console.error("Error starting room:", error);
 					}
 					isCurrentlyStarting = false;
@@ -165,7 +186,6 @@
 		padding-left: var(--layout-margin);
 		box-shadow: var(--panel-shadow);
 		width: 100%;
-		box-sizing: border-box;
 	}
 
 	.multiplayer-host-settings p {

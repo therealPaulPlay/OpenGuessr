@@ -20,7 +20,7 @@
 </h2>
 <div class="try-button-container bar-menu">
 	<button
-		class="standard-button try-button large-button"
+		class="standard-button try-button large"
 		disabled={($matchmakingActive && !$matchmakingSubmitted) || $cancellingMatchmaking}
 		onclick={async () => {
 			if (!$matchmakingActive) {

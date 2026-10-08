@@ -24,12 +24,12 @@
 <style>
 	.token-reward-display {
 		display: flex;
-		min-width: 100px;
+		min-width: 120px;
 		justify-content: center;
 		flex-direction: column;
 		flex-grow: 1;
 		flex-basis: 0%;
-		height: 38px;
+		height: 58px;
 		align-items: center;
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);

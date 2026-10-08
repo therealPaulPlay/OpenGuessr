@@ -2,8 +2,7 @@
 	import { selectedTournament, tournamentMatchResultsIndex } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentMatchResultsPopup } from "$lib/stores/uiStore";
 	import { showProfile } from "$lib/utils/showProfile";
-	import Popup from "./ui/Popup.svelte";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { Popup, TitleSeparator } from "openguessr-ui";
 </script>
 
 <Popup verySlim={true} bind:open={$tournamentMatchResultsPopup}>
@@ -47,7 +46,6 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
-		box-sizing: border-box;
 		padding: var(--content-margin);
 		margin-bottom: var(--box-margin);
 	}

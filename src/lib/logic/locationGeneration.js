@@ -3,7 +3,7 @@ import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { savedMapBounds } from "$lib/stores/locationStore";
-import { showConfirmPopup } from "$lib/utils/confirmPopup";
+import { showConfirmPopup } from "openguessr-ui";
 import { changeMap } from "$lib/utils/changeMapUtils";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 

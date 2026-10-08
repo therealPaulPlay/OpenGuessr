@@ -176,7 +176,7 @@
 	}
 
 	#custom-panorama {
-		background-color: var(--panorama-background);
+		background-color: var(--background-color);
 		position: absolute;
 		inset: 0;
 	}

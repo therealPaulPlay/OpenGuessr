@@ -26,7 +26,7 @@
 		{#if $countryGuessrCountriesArray?.length}
 			{#each $countryGuessrCountriesArray as country, index}
 				<button
-					class="country-guessr-holder standard-button white"
+					class="country-guessr-holder standard-button bright"
 					onclick={() => {
 						selectCountry(index);
 					}}
@@ -111,7 +111,7 @@
 
 		.country-guessr-selector {
 			bottom: 76px;
-			max-width: calc(100% - 32px);
+			max-width: calc(100% - var(--box-margin) * 2);
 		}
 	}
 
@@ -120,7 +120,7 @@
 			bottom: 136px; /* Shift up to fit ad */
 		}
 		.country-guessr-selector {
-			width: calc(100% - 32px);
+			width: calc(100% - var(--box-margin) * 2);
 			margin-inline: var(--box-margin);
 		}
 	}

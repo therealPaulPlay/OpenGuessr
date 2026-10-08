@@ -1,5 +1,5 @@
 import { profilePopup } from "$lib/stores/uiStore";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 import { signOut } from "$lib/logic/accountLogic";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { get } from "svelte/store";
@@ -12,7 +12,7 @@ export async function submitAccountDeletion(password) {
 
         setTimeout(() => {
             profilePopup.set(false); // Close profile popup
-            errorPopup("Account deleted", "You have deleted your OpenGuessr account.", "Successfully deleted.", false, true);
+            showErrorPopup("Account deleted", "You have deleted your OpenGuessr account.", "Successfully deleted.", false, true);
         }, 250);
     }
 }
@@ -47,7 +47,7 @@ async function deleteUser(password) {
 
     } catch (error) {
         console.error("Faled to delete account:", error);
-        errorPopup("Failed to delete account", "An error occured trying to delete the account.", error.message);
+        showErrorPopup("Failed to delete account", "An error occured trying to delete the account.", error.message);
         return false;
     }
 }

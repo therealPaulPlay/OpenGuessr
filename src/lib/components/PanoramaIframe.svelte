@@ -21,7 +21,7 @@
 
 <style>
 	#panorama-iframe {
-		background-color: var(--panorama-background);
+		background-color: var(--background-color);
 		user-select: none;
 		position: fixed;
 		top: -75px; /* Cut off the name display area in the SV */

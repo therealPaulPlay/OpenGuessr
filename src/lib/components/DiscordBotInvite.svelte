@@ -43,7 +43,7 @@
 		flex-direction: column;
 		align-items: start;
 		text-align: start;
-		max-width: 300px;
+		max-width: 330px;
 		gap: var(--content-margin);
 		padding: var(--layout-margin);
 	}

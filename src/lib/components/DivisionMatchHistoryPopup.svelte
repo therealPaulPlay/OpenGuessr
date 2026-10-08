@@ -1,13 +1,11 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup, showErrorPopup, Chip } from "openguessr-ui";
 	import { divisionMatchHistoryPopup, matchOverviewPopup } from "$lib/stores/uiStore";
 	import { historyForUserId, matchData } from "$lib/stores/context-specific/divisionMatchHistoryStore";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { ArrowLeft, ArrowRight, Info } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import Chip from "./ui/Chip.svelte";
 	import { get } from "svelte/store";
 	import { untrack } from "svelte";
 
@@ -48,7 +46,7 @@
 				}
 			} else {
 				console.error("Error loading history: " + response.status);
-				errorPopup(
+				showErrorPopup(
 					"Error loading history",
 					"An error occurred loading matches in the division history popup.",
 					response.status,
@@ -56,7 +54,7 @@
 			}
 		} catch (error) {
 			console.error("Fetch/Network error occurred while loading match results: ", error);
-			errorPopup(
+			showErrorPopup(
 				"Error loading history (Network)",
 				"A network error occurred loading matches in the duel history popup.",
 				error,
@@ -89,7 +87,7 @@
 		} catch (error) {
 			$matchOverviewPopup = false;
 			console.error("Error loading match:", error);
-			errorPopup("Error loading match", "An error occurred loading the match overview.", error.message);
+			showErrorPopup("Error loading match", "An error occurred loading the match overview.", error.message);
 		}
 	}
 </script>
@@ -180,7 +178,7 @@
 
 	<div class="pagination-controls">
 		<button
-			class="standard-button white"
+			class="standard-button bright"
 			onclick={() => {
 				playSound("basic_button");
 				currentPage -= 1;
@@ -192,7 +190,7 @@
 		</button>
 		<span class="page-counter">{currentPage}</span>
 		<button
-			class="standard-button white"
+			class="standard-button bright"
 			onclick={() => {
 				playSound("basic_button");
 				currentPage += 1;
@@ -232,7 +230,6 @@
 		background-color: var(--box-color);
 		text-wrap: nowrap;
 		gap: var(--box-margin);
-		box-sizing: border-box;
 	}
 
 	.elo-info p {
@@ -241,7 +238,7 @@
 
 	.filter-input {
 		border-radius: var(--content-margin);
-		max-width: 65px;
+		max-width: 85px;
 		padding-inline: var(--box-margin);
 	}
 
@@ -271,7 +268,7 @@
 	.history-box {
 		position: relative;
 		box-shadow: var(--box-shadow);
-		width: calc(100% - 20px);
+		width: 100%;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		margin-top: var(--layout-margin);
@@ -296,7 +293,7 @@
 		user-select: none;
 		padding-inline: var(--box-margin);
 		border-radius: var(--content-margin);
-		min-width: 50px;
+		min-width: 70px;
 		text-align: center;
 		background-color: var(--box-color);
 		font-size: 22px;

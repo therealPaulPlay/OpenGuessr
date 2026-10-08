@@ -1,6 +1,6 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 import { get } from "svelte/store";
 
 export async function getProfileData(id) {
@@ -20,6 +20,6 @@ export async function getProfileData(id) {
         
     } catch (error) {
         console.error('Error loading profile:', error);
-        errorPopup("Error loading profile", "Couldn't load the user's profile.", error.message);
+        showErrorPopup("Error loading profile", "Couldn't load the user's profile.", error.message);
     }
 }

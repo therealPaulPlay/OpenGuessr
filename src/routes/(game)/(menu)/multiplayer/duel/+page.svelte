@@ -2,7 +2,7 @@
 	import MultiplayerMatchmakingDisplay from "$lib/components/MultiplayerMatchmakingDisplay.svelte";
 	import { findDuel, safeCancel } from "$lib/logic/matchmakingLogic";
 	import { skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
-	import InfoBanner from "$lib/components/InfoBanner.svelte";
+	import { InfoBanner } from "openguessr-ui";
 </script>
 
 <svelte:head>

@@ -2,13 +2,11 @@
 	import { selectedTournamentId, tournamentData } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { tooltip, Chip, Collapsible } from "openguessr-ui";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
 	import { CalendarCheck2, Clock, Info, Medal, Ticket } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
-	import Chip from "./ui/Chip.svelte";
-	import Drawer from "./ui/Drawer.svelte";
 
 	let errorText = $state("No tournaments scheduled.");
 	let showOlder = $state(false);
@@ -58,7 +56,7 @@
 				</div>
 			</div>
 			<button
-				class="tournament-field-button standard-button {tournament.status == 'starting' ? '' : 'white'}"
+				class="tournament-field-button standard-button {tournament.status == 'starting' ? '' : 'bright'}"
 				{@attach tooltip({ text: "Details" })}
 				onclick={() => {
 					playSound("basic_button");
@@ -88,18 +86,18 @@
 	{/if}
 </div>
 
-<Drawer title="Recently finished" bind:isOpen={showOlder} hasBottomLayoutMargin={false}>
+<Collapsible title="Recently finished" bind:isOpen={showOlder} ontoggle={() => playSound("toggle_button")}>
 	<div class="tournament-scroll-container of-top of-bottom">
 		{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
 			{@render tournamentItem(tournament)}
 		{/each}
 	</div>
-</Drawer>
+</Collapsible>
 
 <style>
 	.tournaments-container {
 		position: relative;
-		width: calc(100% - 20px);
+		width: 100%;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		margin-bottom: var(--layout-margin);
@@ -115,7 +113,6 @@
 		justify-content: safe center;
 		align-items: safe center;
 		flex-direction: column;
-		box-sizing: border-box;
 		scrollbar-width: none;
 		width: 100%;
 		border-bottom-left-radius: var(--content-margin);
@@ -130,7 +127,7 @@
 	}
 
 	.container-min-height {
-		min-height: 63px;
+		min-height: 83px;
 	}
 
 	.tournament-name-title {
@@ -151,7 +148,6 @@
 		gap: var(--box-margin);
 		align-items: center;
 		flex-wrap: wrap;
-		box-sizing: border-box;
 		width: 100%;
 	}
 
@@ -187,7 +183,6 @@
 		padding-inline: var(--box-margin);
 		text-wrap: nowrap;
 		max-width: 100%;
-		box-sizing: border-box;
 	}
 
 	.tournament-field p {

@@ -17,9 +17,8 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
 	import { fade, slide } from "svelte/transition";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showErrorPopup, showConfirmPopup } from "openguessr-ui";
 	import { Info } from "@lucide/svelte";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { multiplayer } from "$lib/stores/modeStore";
 </script>
 
@@ -139,7 +138,7 @@
 					<div class="host-button-container bar-menu">
 						<button
 							disabled={currentlyStartingRematch}
-							class="standard-button white large-button round-end-button"
+							class="standard-button bright large round-end-button"
 							onclick={async () => {
 								playSound("basic_button");
 								currentlyStartingRematch = true;
@@ -147,7 +146,7 @@
 									await get(socket)?.sendRequest("rematch");
 								} catch (error) {
 									if (get(multiplayer)) {
-										errorPopup("Failed to rematch", "An error occured trying to rematch.", error.message);
+										showErrorPopup("Failed to rematch", "An error occured trying to rematch.", error.message);
 									}
 									console.error("Error processing rematch:", error);
 								}
@@ -159,7 +158,7 @@
 				{#if $leaveMatchButtonVisible}
 					<div class="host-button-container bar-menu">
 						<button
-							class="standard-button large-button round-end-button"
+							class="standard-button large round-end-button"
 							onclick={() => {
 								playSound("basic_button");
 								leaveMultiplayer();
@@ -209,7 +208,6 @@
 		flex-direction: column;
 		width: 100%;
 		box-shadow: var(--panel-shadow);
-		box-sizing: border-box;
 	}
 
 	.team-score-info {
@@ -252,7 +250,6 @@
 		color: white;
 		text-wrap: nowrap;
 		padding-inline: 12px;
-		box-sizing: border-box;
 		user-select: none;
 		background-color: rgba(255, 255, 255, 0.15);
 	}
@@ -306,10 +303,10 @@
 		display: flex;
 		justify-content: safe center;
 		align-items: safe flex-start;
-		width: 75%;
-		min-width: 350px;
-		max-width: 750px;
-		max-height: calc(55dvh - 150px);
+		width: calc(75% + 50px);
+		min-width: 400px;
+		max-width: 800px;
+		max-height: calc(55dvh - 100px);
 		overflow-x: hidden;
 		scrollbar-width: none;
 		overflow-y: auto;

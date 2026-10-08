@@ -21,7 +21,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-	class="map-item standard-button white-soft"
+	class="map-item standard-button bright-soft"
 	class:map-item-slim={slim}
 	class:map-item-animate={animate}
 	class:map-item-compact={compact}
@@ -76,7 +76,6 @@
 		align-items: center;
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
-		box-sizing: border-box;
 		text-align: start;
 		min-width: 300px;
 		flex-grow: 1;

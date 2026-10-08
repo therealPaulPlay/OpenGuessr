@@ -27,7 +27,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-	class="pin-holder white-soft"
+	class="pin-holder bright-soft"
 	role="button"
 	tabindex={0}
 	bind:this={pinHolderElement}
@@ -79,7 +79,7 @@
 		{#if shop && isHovered}
 			<div class="shop-button-box" transition:slide={{ axis: "y", duration: 250 }}>
 				<button
-					class="standard-button white center-button"
+					class="standard-button bright center-button"
 					disabled={unlocked}
 					onclick={() => {
 						playSound("basic_button");
@@ -105,7 +105,6 @@
 <style>
 	.pin-holder {
 		position: relative;
-		box-sizing: border-box;
 		overflow: hidden;
 		min-height: 80px;
 		min-width: 80px;
@@ -181,7 +180,6 @@
 		bottom: 0;
 		width: 100%;
 		z-index: 2;
-		box-sizing: border-box;
 		padding: var(--box-margin);
 	}
 

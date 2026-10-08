@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup, Tabs, TitleSeparator, InfoBanner, showNotification, tooltip } from "openguessr-ui";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -8,8 +8,6 @@
 	import { formatDateTime } from "$lib/utils/formatJoinedDate";
 	import { updateProfileUsername } from "$lib/utils/updateUsername";
 	import { submitAccountDeletion } from "$lib/utils/deleteAccount";
-	import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { signOut } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup, divisionMatchHistoryPopup } from "$lib/stores/uiStore";
@@ -45,11 +43,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { page } from "$app/state";
 	import { showProfile } from "$lib/utils/showProfile";
-	import Tabs from "./ui/Tabs.svelte";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import Flag from "./Flag.svelte";
 	import { blur, slide } from "svelte/transition";
@@ -57,6 +51,7 @@
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
+	let nameChangeOrDeletePopup = $state({ open: false, type: "username", value: "" });
 
 	let filteredAbout = $state("");
 
@@ -166,7 +161,7 @@
 <Popup
 	slim={true}
 	bind:open={$profilePopup}
-	onUserClose={() => {
+	onuserclose={() => {
 		if ($profileId == localStorage.getItem("id")) saveProfileAboutIfChanges(textarea?.value?.trim());
 	}}
 >
@@ -223,7 +218,7 @@
 			{/if}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div
-				class="profile-pin-area standard-button white"
+				class="profile-pin-area standard-button bright"
 				class:pin-display-only={$profileId != localStorage.getItem("id")}
 				role="button"
 				tabindex="0"
@@ -244,7 +239,7 @@
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					{@attach tooltip({ text: "Share link" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -262,14 +257,14 @@
 				</button>
 			{/if}
 			{#if $profileData?.dailyCompetitionStreak >= 1}
-				<div class="name-box-icon white-soft" {@attach tooltip({ text: "Daily Comp. streak" })}>
+				<div class="name-box-icon bright-soft" {@attach tooltip({ text: "Daily Comp. streak" })}>
 					<p>{$profileData.dailyCompetitionStreak.toLocaleString()}</p>
 					<img class="profile-name-icon" alt="streak icon" src="/img/streak_icon.png" />
 				</div>
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
 				<div
-					class="name-box-icon white-soft"
+					class="name-box-icon bright-soft"
 					{@attach tooltip({ text: "Supporter tier " + $profileData?.supporterLevel })}
 				>
 					<img class="profile-name-icon" alt="supporter icon" src="/img/supporter_icon.png" />
@@ -277,7 +272,7 @@
 			{/if}
 			{#if $profileId != localStorage.getItem("id")}
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					onclick={() => {
 						playSound("basic_button");
 						reportPopup.set(true);
@@ -288,7 +283,7 @@
 			{/if}
 			{#if $profileId != localStorage.getItem("id")}
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					{@attach tooltip({ text: "Send message" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -299,7 +294,7 @@
 					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
 				</button>
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					disabled={$profileData?.areFriends}
 					{@attach tooltip({ text: "Send friend request" })}
 					onclick={() => {
@@ -359,7 +354,7 @@
 		{#snippet statCards(cards, animate)}
 			{#each cards as card (card.title)}
 				<div class="stat-card" in:blur={{ duration: animate ? 250 : 0 }}>
-					<div class="card-icon white-soft">
+					<div class="card-icon bright-soft">
 						<card.icon size={24} strokeWidth={2} />
 					</div>
 					<div class="card-content">
@@ -383,7 +378,7 @@
 				<div class="duel-history-box" transition:blur|global={{ duration: 250 }}>
 					<p style:padding-inline="var(--content-margin)" style:flex-grow="100">View player's duel history</p>
 					<button
-						class="standard-button white"
+						class="standard-button bright"
 						style:flex-grow="1"
 						onclick={() => {
 							playSound("basic_button");
@@ -403,19 +398,11 @@
 			<div class="management-box-content of-left of-right">
 				<div class="edit-name-section">
 					<button
-						class="standard-button white"
+						class="standard-button bright"
 						disabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
-							showConfirmPopup(
-								"Update username",
-								"Please input your new username. You can only change your username once per week.",
-								() => {
-									updateProfileUsername($confirmUsernameValue);
-								},
-								false,
-								true,
-							);
+							nameChangeOrDeletePopup = { open: true, type: "username", value: "" };
 						}}
 					>
 						<Edit size={20} style="margin-bottom: -2px;" />
@@ -423,25 +410,18 @@
 					</button>
 				</div>
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					disabled={!$singleplayer || $crazyGames || $y8Games || $playgama}
 					onclick={() => {
 						playSound("basic_button");
-						showConfirmPopup(
-							"Delete account",
-							"Please input your password to confirm the account deletion.",
-							() => {
-								submitAccountDeletion($confirmPasswordValue);
-							},
-							true,
-						);
+						nameChangeOrDeletePopup = { open: true, type: "delete", value: "" };
 					}}
 				>
 					<Trash2 size={20} style="margin-bottom: -1px;" />
 					Account</button
 				>
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					disabled={!$singleplayer || $crazyGames || $playgama}
 					onclick={() => {
 						playSound("basic_button");
@@ -457,6 +437,42 @@
 	{/if}
 </Popup>
 
+<Popup verySlim={true} bind:open={nameChangeOrDeletePopup.open}>
+	<div class="popup-title">
+		<h1>{nameChangeOrDeletePopup.type === "delete" ? "Delete account" : "Update username"}</h1>
+	</div>
+	{#if nameChangeOrDeletePopup.type === "delete"}
+		<p>Please input your password to confirm the account deletion.</p>
+		<InfoBanner style="margin-block: var(--layout-margin);">
+			For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
+		</InfoBanner>
+		<input class="account-prompt-input" type="password" placeholder="Password" bind:value={nameChangeOrDeletePopup.value} />
+	{:else}
+		<p class="account-prompt-description">
+			Please input your new username. You can only change your username once per week.
+		</p>
+		<input
+			class="account-prompt-input account-prompt-input-margin"
+			type="text"
+			placeholder="New name"
+			maxlength="50"
+			bind:value={nameChangeOrDeletePopup.value}
+		/>
+	{/if}
+	<div class="account-prompt-button-area">
+		<button
+			class="standard-button popup-bottom-button large"
+			disabled={!nameChangeOrDeletePopup.value}
+			onclick={() => {
+				playSound("basic_button");
+				nameChangeOrDeletePopup.open = false;
+				if (nameChangeOrDeletePopup.type === "delete") submitAccountDeletion(nameChangeOrDeletePopup.value);
+				else updateProfileUsername(nameChangeOrDeletePopup.value);
+			}}>Confirm</button
+		>
+	</div>
+</Popup>
+
 <div style="display: none;">
 	<!-- Ensure the component is always mounted, for the URL load to work -->
 </div>
@@ -469,7 +485,7 @@
 		flex-wrap: wrap;
 		overflow: hidden;
 		padding: var(--layout-margin);
-		width: calc(100% + 20px);
+		width: calc(100% + 50px);
 		margin-left: -25px;
 		margin-top: -20px;
 		gap: var(--box-margin);
@@ -487,7 +503,6 @@
 	.duel-history-box {
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
-		box-sizing: border-box;
 		width: 100%;
 		background-color: var(--box-color);
 		padding: var(--box-margin);
@@ -500,7 +515,6 @@
 
 	.duel-history-box-container {
 		width: 100%;
-		box-sizing: border-box;
 		margin-top: var(--layout-margin);
 	}
 
@@ -537,7 +551,6 @@
 		padding-top: 0px;
 		padding-bottom: 0px;
 		font-size: 20px;
-		box-sizing: border-box;
 	}
 
 	.profile-view-name {
@@ -631,7 +644,6 @@
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		box-sizing: border-box;
 		overflow: hidden;
 	}
 
@@ -649,7 +661,6 @@
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		max-width: 100%;
-		box-sizing: border-box;
 		background-color: var(--box-color);
 		padding: var(--box-margin);
 		display: flex;
@@ -662,7 +673,6 @@
 	.stat-container {
 		margin-top: var(--layout-margin);
 		min-width: 100%;
-		box-sizing: border-box;
 		display: grid;
 	}
 
@@ -734,7 +744,6 @@
 		width: fit-content;
 		max-width: 100%;
 		padding: var(--box-margin);
-		box-sizing: border-box;
 	}
 
 	.management-box-content {
@@ -753,6 +762,20 @@
 		gap: var(--content-margin);
 	}
 
+	.account-prompt-input {
+		padding: var(--content-margin) var(--box-margin);
+		width: 40%;
+	}
+
+	.account-prompt-input-margin,
+	.account-prompt-button-area {
+		margin-top: var(--layout-margin);
+	}
+
+	.account-prompt-description {
+		max-width: calc(100% - 150px);
+	}
+
 	@media all and (max-width: 800px) {
 		.about-section {
 			max-height: 85px;
@@ -760,6 +783,12 @@
 
 		.flag-container {
 			width: 18px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.account-prompt-description {
+			max-width: none;
 		}
 	}
 </style>

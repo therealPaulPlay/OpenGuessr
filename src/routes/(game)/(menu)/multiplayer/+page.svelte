@@ -19,7 +19,7 @@
 	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { showConfirmPopup, showNotification, tooltip, Collapsible, Chip, InfoBanner } from "openguessr-ui";
 	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
@@ -28,15 +28,10 @@
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
-	import { showNotification } from "$lib/utils/notifications";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
-	import Drawer from "$lib/components/ui/Drawer.svelte";
-	import Chip from "$lib/components/ui/Chip.svelte";
 	import { hasNewMessageOrInvite, hcClient } from "$lib/stores/context-specific/headlessChatStore";
 	import { loadInitialHasNew } from "$lib/logic/headlessChatLogic";
 	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
-	import InfoBanner from "$lib/components/InfoBanner.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let friendsRefreshInterval;
@@ -100,9 +95,9 @@
 			</p>
 		</div>
 	{/if}
-	<Drawer title="Divisions">
+	<Collapsible title="Divisions" class="divisions-collapsible" ontoggle={() => playSound("toggle_button")}>
 		<DuelDivisionDisplay />
-	</Drawer>
+	</Collapsible>
 	<div class="play-box">
 		<div class="group-party-buttons">
 			<img
@@ -114,7 +109,7 @@
 				<div class="group-party-content bar-menu">
 					<button
 						id="multiplayer-select-join"
-						class="standard-button multiplayer-select white large-button"
+						class="standard-button multiplayer-select bright large"
 						onclick={() => {
 							playSound("basic_button");
 							goto("/multiplayer/join");
@@ -124,7 +119,7 @@
 					>
 					<button
 						id="multiplayer-select-host"
-						class="standard-button multiplayer-select white large-button"
+						class="standard-button multiplayer-select bright large"
 						onclick={() => {
 							playSound("basic_button");
 							goto("/multiplayer/host");
@@ -149,7 +144,7 @@
 						id="multiplayer-select-duels"
 						role="button"
 						tabindex="0"
-						class="standard-button multiplayer-select large-button"
+						class="standard-button multiplayer-select large"
 						onclick={() => {
 							playSound("basic_button");
 							findDuel();
@@ -187,7 +182,7 @@
 						</span>
 					</div>
 					<button
-						class="standard-button multiplayer-select large-button white"
+						class="standard-button multiplayer-select large bright"
 						onclick={() => {
 							playSound("basic_button");
 							createTeamDuelRoom();
@@ -217,7 +212,7 @@
 		<!-- Inbox, friend request and messages buttons-->
 		<div class="friend-button-container bar-menu">
 			<button
-				class="standard-button white large-button"
+				class="standard-button bright large"
 				style:position="relative"
 				{@attach tooltip({ text: "Messages" })}
 				onclick={() => {
@@ -232,7 +227,7 @@
 				<MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
 			>
 			<button
-				class="standard-button white large-button friend-add-button"
+				class="standard-button bright large friend-add-button"
 				style:position="relative"
 				{@attach tooltip({ text: "Add friend" })}
 				onclick={() => {
@@ -266,7 +261,7 @@
 					{#each $loadedFriendsData as entry (entry.id)}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
-							class="friend-item large-button white-soft"
+							class="friend-item large bright-soft"
 							role="menu"
 							tabindex="0"
 							onclick={() => {
@@ -306,12 +301,15 @@
 		padding: var(--box-margin);
 		box-shadow: var(--panel-shadow);
 		width: 100%;
-		box-sizing: border-box;
 		border-radius: var(--layout-margin);
 		align-items: center;
 		background-color: var(--box-color);
 		margin-bottom: var(--layout-margin);
 		gap: var(--content-margin);
+	}
+
+	:global(.divisions-collapsible) {
+		margin-bottom: var(--layout-margin);
 	}
 
 	:global(.skill-based-toggle) {
@@ -428,7 +426,7 @@
 		padding: var(--layout-margin);
 		box-shadow: var(--box-shadow-top);
 		border-radius: var(--layout-margin);
-		max-width: calc(100% - 20px);
+		max-width: 100%;
 		position: relative;
 		margin-bottom: calc(-1 * var(--content-margin));
 	}
@@ -443,7 +441,6 @@
 	.group-party-content {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-sizing: border-box;
 		flex-grow: 1;
 		min-width: 0;
 	}
@@ -589,7 +586,7 @@
 	}
 
 	.friend-box {
-		width: calc(100% - 20px);
+		width: 100%;
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
 		box-shadow: var(--panel-shadow);

@@ -25,7 +25,7 @@
 		flex-direction: column;
 		z-index: 9;
 		pointer-events: none;
-		width: max(20%, 216px);
+		width: max(20%, calc(200px + var(--panel-margin) * 2));
 		transition:
 			width 150ms ease,
 			bottom 150ms ease,

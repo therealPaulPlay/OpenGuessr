@@ -1,6 +1,6 @@
 <script>
 	import { goto } from "$app/navigation";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { showConfirmPopup } from "openguessr-ui";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur } from "svelte/transition";
@@ -58,7 +58,6 @@
 		cursor: pointer;
 		flex-basis: 30%;
 		flex-grow: 1;
-		box-sizing: border-box;
 	}
 
 	.map-item h3 {

@@ -93,7 +93,7 @@
 			<div class="action-container">
 				<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
 					<button
-						class="standard-button large-button"
+						class="standard-button large"
 						onclick={() => {
 							playSound("basic_button");
 							$tutorial = true;
@@ -126,7 +126,7 @@
 			<div class="action-container">
 				<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
 					<button
-						class="standard-button large-button"
+						class="standard-button large"
 						onclick={() => {
 							playSound("basic_button");
 							if (howToImage < howToSlides.length - 1) howToImage++;
@@ -149,7 +149,7 @@
 			<div class="action-container">
 				<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
 					<button
-						class="standard-button large-button"
+						class="standard-button large"
 						onclick={() => {
 							playSound("basic_button");
 							leaveTutorial();
@@ -168,7 +168,6 @@
 	.tutorial-scroll {
 		width: 100%;
 		height: 100%;
-		box-sizing: border-box;
 		align-content: center;
 		display: block;
 		padding: var(--layout-margin);
@@ -216,7 +215,7 @@
 		text-align: center;
 		margin-inline: auto;
 		font-size: 25px;
-		max-width: 400px;
+		max-width: 450px;
 		text-shadow: 0 0 20px var(--dark-shadow-color);
 		text-wrap: balance;
 	}
@@ -288,7 +287,6 @@
 		max-width: 375px;
 		padding-inline: calc(var(--layout-margin) * 2);
 		width: 100%;
-		box-sizing: border-box;
 		text-shadow: 0 0 var(--layout-margin) var(--dark-shadow-color);
 	}
 
@@ -298,7 +296,7 @@
 		}
 
 		.subtitle {
-			max-width: 300px;
+			max-width: 350px;
 		}
 	}
 </style>

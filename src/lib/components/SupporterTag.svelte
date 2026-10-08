@@ -3,7 +3,7 @@
 <style>
 	.supporter-span {
 		border-radius: var(--content-margin);
-		background: var(--supporter-green);
+		background: var(--bright-green-color);
 		padding-inline: var(--content-margin);
 		font-size: 20px;
 		margin-left: 3px;

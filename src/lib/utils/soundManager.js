@@ -1,4 +1,5 @@
 import { browser } from "$app/environment";
+import { sounds as uiSounds } from "openguessr-ui";
 
 let Howl;
 
@@ -34,7 +35,7 @@ export function playSound(fileName, tag) {
     if (!Howl) return;
     try {
         const sound = new Howl({
-            src: [`/sounds/${fileName}.ogg`],
+            src: [uiSounds[fileName] ?? `/sounds/${fileName}.ogg`],
             volume: sfxVolume
         });
 

@@ -1,13 +1,10 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
-	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
+	import { Popup, TitleSeparator, showErrorPopup, showNotification } from "openguessr-ui";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { competitionResultPopup } from "$lib/stores/uiStore";
 	import { competitionResultId, competitionResultRating } from "$lib/stores/context-specific/competitionStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { errorPopup } from "$lib/utils/errorHandling";
-	import { showNotification } from "$lib/utils/notifications";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Frown, Link, Smile, TriangleAlert } from "@lucide/svelte";
@@ -61,9 +58,9 @@
 				} catch {}
 
 				if (responseData?.error) {
-					errorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", responseData.error);
+					showErrorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", responseData.error);
 				} else {
-					errorPopup(
+					showErrorPopup(
 						"Unknown error loading a leaderboard",
 						"An unknown erorr occured loading a leaderboard.",
 						"Request failed with status " + response.status + ".",
@@ -156,7 +153,7 @@
 						: "None of your friends entered yet, consider inviting them."}
 			</p>
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -210,7 +207,7 @@
 			{#if ratingsButtonBox}
 				<div class="rating-button-box" id="rating-button-box">
 					<button
-						class="standard-button white rate-button"
+						class="standard-button bright rate-button"
 						id="rate-good"
 						onclick={() => {
 							playSound("basic_button");
@@ -220,7 +217,7 @@
 						<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 					</button>
 					<button
-						class="standard-button white rate-button"
+						class="standard-button bright rate-button"
 						id="rate-bad"
 						onclick={() => {
 							playSound("basic_button");
@@ -230,7 +227,7 @@
 						<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 					</button>
 					<button
-						class="standard-button white rate-button"
+						class="standard-button bright rate-button"
 						id="rate-broken"
 						onclick={() => {
 							playSound("basic_button");
@@ -265,7 +262,6 @@
 	}
 
 	.ranking-display {
-		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
 		width: 100%; /* Fix for Safari */
@@ -284,6 +280,7 @@
 		max-height: 400px;
 		justify-content: safe center;
 		flex-direction: column;
+		border-radius: var(--content-margin);
 	}
 
 	.ranking-display-scroll-short {
@@ -295,7 +292,6 @@
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
 		width: 100%;
-		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -361,7 +357,6 @@
 		padding: var(--box-margin);
 		gap: var(--box-margin);
 		width: 100%;
-		box-sizing: border-box;
 	}
 
 	#rating-box p {

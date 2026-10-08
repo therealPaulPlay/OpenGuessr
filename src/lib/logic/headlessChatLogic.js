@@ -12,8 +12,7 @@ import {
     initialHasNew,
 } from "$lib/stores/context-specific/headlessChatStore";
 import { messagesPopup } from "$lib/stores/uiStore";
-import { errorPopup } from "$lib/utils/errorHandling";
-import { showNotification } from "$lib/utils/notifications";
+import { showErrorPopup, showNotification } from "openguessr-ui";
 import { showProfile } from "$lib/utils/showProfile";
 
 async function dispatch(data) {
@@ -46,7 +45,7 @@ export async function initHeadlessChatClient() {
             { kind: "participantActivity", handlers: [handleParticipantActivityEvent] },
         ]);
     } catch (error) {
-        errorPopup("Headless-chat init failed", "Failed to initialize headless-chat and subscribe to events.", error.message);
+        showErrorPopup("Headless-chat init failed", "Failed to initialize headless-chat and subscribe to events.", error.message);
     }
 }
 
@@ -87,7 +86,7 @@ export async function headlessChatInitialLoad() {
 
     // Exit if not initialized / connected to SSE yet
     const client = get(hcClient);
-    if (!client) return errorPopup("Failed to laod conversations", "Headless-chat client instance is not defined.");
+    if (!client) return showErrorPopup("Failed to laod conversations", "Headless-chat client instance is not defined.");
 
     initialLoadPromise = (async () => {
         try {
@@ -102,7 +101,7 @@ export async function headlessChatInitialLoad() {
             // Set only after populating conversations + activities + invites
             initialDataLoaded.set(true);
         } catch (error) {
-            errorPopup(
+            showErrorPopup(
                 "Failed to load messages",
                 "An error occured trying to load conversations, participant activities and invites.",
                 error.message,
@@ -185,14 +184,14 @@ async function handleInviteEvent({ conversationId, toParticipantId, data }) {
                 activeConversationId.set(data.conversation.conversationId);
                 messagesPopup.set(true);
             } catch (error) {
-                errorPopup("Failed to accept invite", "An error occured trying to accept an invite.", "From headless-chat: " + error.message);
+                showErrorPopup("Failed to accept invite", "An error occured trying to accept an invite.", "From headless-chat: " + error.message);
             }
         },
         async () => {
             try {
                 await get(hcClient).declineInvite(data.conversation.conversationId);
             } catch (error) {
-                errorPopup("Failed to decline invite", "An error occured trying to decline a conversation invite.", "From headless-chat: " + error.message);
+                showErrorPopup("Failed to decline invite", "An error occured trying to decline a conversation invite.", "From headless-chat: " + error.message);
             }
         },
         false,
@@ -272,7 +271,7 @@ export async function openDirectMessageWith(participantId) {
         activeConversationId.set(conversationId);
         messagesPopup.set(true);
     } catch (error) {
-        errorPopup(
+        showErrorPopup(
             "Failed to start conversation",
             "An error occured trying to open a conversation with this user.",
             error.message,

@@ -20,7 +20,7 @@
 		position: fixed;
 		inset: 0;
 		z-index: 17;
-		background-color: var(--dark-background);
+		background-color: var(--overlay-color);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -28,7 +28,7 @@
 
 	.animate-title {
 		color: white;
-		filter: drop-shadow(0 0 50px rgba(0, 0, 0, 0.5));
+		filter: drop-shadow(0 0 50px var(--dark-shadow-color));
 		display: flex;
 		gap: var(--box-margin);
 	}

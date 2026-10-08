@@ -15,11 +15,9 @@
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { tooltip } from "$lib/utils/tooltip.svelte.js";
+	import { tooltip, Chip, showConfirmPopup } from "openguessr-ui";
 	import { page } from "$app/state";
-	import Chip from "$lib/components/ui/Chip.svelte";
 	import MapItem from "$lib/components/MapItem.svelte";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { get } from "svelte/store";
 
 	const snapshotStore = getContext("snapshotStore");
@@ -186,7 +184,7 @@
 	}
 
 	function playMap(name, community = false) {
-		playSound("button_juicy");
+		playSound("juicy_button");
 		selectMap(name, { community, returnToMultiplayer: returnAfterChange });
 	}
 
@@ -367,7 +365,7 @@
 			slim={true}
 			link={true}
 			onclick={() => {
-				playSound("button_juicy");
+				playSound("juicy_button");
 				window.open("https://education.openguessr.com/quiz", "_blank").focus();
 			}}
 		>
@@ -405,9 +403,9 @@
 	</div>
 	<div class="bar-menu show-all-button-container" style:margin-top={countrySectionExpanded ? "" : "-35px"}>
 		<button
-			class="standard-button white expand-button large-button"
+			class="standard-button bright expand-button large"
 			onclick={() => {
-				playSound("floating_button");
+				playSound("toggle_button");
 				countrySectionExpanded = !countrySectionExpanded;
 			}}
 			>{countrySectionExpanded ? "Show less" : "Show all"}
@@ -494,7 +492,7 @@
 	<div class="categories-search-area">
 		<div class="categories-bar">
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) goto("/maps/create");
@@ -505,7 +503,7 @@
 				{#each categoriesArray as category, index}
 					{#if index !== 1 || $isAuthenticated}
 						<button
-							class="category-button standard-button white-soft"
+							class="category-button standard-button bright-soft"
 							class:selected={selectedCategoryIndex == index}
 							onclick={() => handleCategoryButtonClick(index)}
 						>
@@ -528,7 +526,7 @@
 					/>
 				</p>
 				<select
-					class="standard-button filter-button white"
+					class="standard-button filter-button bright"
 					bind:value={sortBy}
 					onchange={() => {
 						playSound("basic_button");
@@ -554,7 +552,7 @@
 			/>
 			<button
 				id="start-search"
-				class="standard-button white"
+				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					startSearch();
@@ -723,7 +721,7 @@
 		padding-inline: var(--box-margin);
 		text-overflow: ellipsis;
 		width: 0;
-		min-width: min(200px, max(15dvw, 75px));
+		min-width: calc(min(200px, max(15dvw, 75px)) + var(--box-margin) * 2);
 	}
 
 	.search-container {
@@ -786,8 +784,8 @@
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--bulb-shadow);
-		width: calc(100% - var(--box-margin) * 2);
-		min-width: 280px;
+		width: 100%;
+		min-width: 300px;
 		gap: var(--box-margin);
 		align-items: center;
 		border-radius: var(--layout-margin);

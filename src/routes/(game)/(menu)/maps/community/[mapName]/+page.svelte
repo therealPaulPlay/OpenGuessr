@@ -1,10 +1,8 @@
 <script>
 	import { showProfile } from "$lib/utils/showProfile.js";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showConfirmPopup, showErrorPopup, showNotification, Popup, Tabs, tooltip } from "openguessr-ui";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { showNotification } from "$lib/utils/notifications";
 	import { selectMap } from "$lib/utils/changeMapUtils.js";
 	import {
 		Link,
@@ -20,15 +18,12 @@
 		Pencil,
 	} from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import { onMount, untrack } from "svelte";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore.js";
 	import SvgMap from "$lib/components/SvgMap.svelte";
-	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
 	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl.js";
 
@@ -80,7 +75,7 @@
 			map = mapData;
 		} catch (error) {
 			console.error("Error fetching map:", error);
-			errorPopup("Map failed to load", "An error occured trying to load the map.", error.message);
+			showErrorPopup("Map failed to load", "An error occured trying to load the map.", error.message);
 		}
 	});
 
@@ -197,11 +192,11 @@
 				return "Map deleted successfully.";
 			} else {
 				console.error("Error deleting map: " + response.status);
-				errorPopup("Failed to delete map", "Failed to delete the map " + mapName + ".", response.status);
+				showErrorPopup("Failed to delete map", "Failed to delete the map " + mapName + ".", response.status);
 			}
 		} catch (error) {
 			console.error("Error deleting map:", error);
-			errorPopup("Failed to delete map (Network)", "Failed to delete the map " + mapName + ".", error);
+			showErrorPopup("Failed to delete map (Network)", "Failed to delete the map " + mapName + ".", error);
 		}
 	}
 
@@ -375,7 +370,7 @@
 				<button
 					id="like-map"
 					{@attach tooltip({ text: "Like" })}
-					class="standard-button white map-button large-button"
+					class="standard-button bright map-button large"
 					disabled={typeof likesCount !== "number"}
 					onclick={() => {
 						playSound("basic_button");
@@ -391,7 +386,7 @@
 				</button>
 				<button
 					{@attach tooltip({ text: "Save" })}
-					class="standard-button white map-button large-button"
+					class="standard-button bright map-button large"
 					onclick={() => {
 						playSound("basic_button");
 
@@ -416,7 +411,7 @@
 				<button
 					id="map-link"
 					{@attach tooltip({ text: "Copy link" })}
-					class="standard-button white map-button large-button"
+					class="standard-button bright map-button large"
 					onclick={() => {
 						playSound("basic_button");
 						navigator.clipboard
@@ -436,7 +431,7 @@
 					<button
 						id="manage-delete"
 						{@attach tooltip({ text: "Delete" })}
-						class="standard-button white map-button large-button"
+						class="standard-button bright map-button large"
 						onclick={() => {
 							playSound("basic_button");
 							deleteMapScreen(map?.name);
@@ -445,7 +440,7 @@
 					<button
 						id="manage-update"
 						{@attach tooltip({ text: "Update" })}
-						class="standard-button white map-button large-button"
+						class="standard-button bright map-button large"
 						onclick={() => {
 							playSound("basic_button");
 							fileName = "Pick file"; // Reset file name input and status
@@ -456,14 +451,14 @@
 					<a
 						id="manage-download"
 						{@attach tooltip({ text: "Download" })}
-						class="standard-button white map-button large-button"
+						class="standard-button bright map-button large"
 						href={mapDownloadHref}
 						download={`${map?.name}.json`}
 						onclick={() => playSound("basic_button")}><FileDown size={22} strokeWidth={2.25} /></a
 					>
 				{/if}
 				<button
-					class="standard-button map-button large-button"
+					class="standard-button map-button large"
 					onclick={() => {
 						playSound("basic_button");
 						if (!map) return showNotification("Map not loaded yet, please try again.");
@@ -496,7 +491,7 @@
 			{#if map && map.authorId == playerId && playerId != null}
 				<button
 					{@attach tooltip({ text: "Edit" })}
-					class="standard-button white description-edit"
+					class="standard-button bright description-edit"
 					onclick={() => {
 						playSound("basic_button");
 						descriptionValue = map?.description ?? "";
@@ -532,7 +527,7 @@
 	</div>
 	<p class="margin-bottom">Locations (JSON)</p>
 	<button
-		class="standard-button white"
+		class="standard-button bright"
 		onclick={() => {
 			playSound("basic_button");
 			filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
@@ -555,7 +550,7 @@
 	<div class="button-box-gap">
 		{let submitDisabled = $state(false)}
 		<button
-			class="standard-button bottom-button large-button"
+			class="standard-button popup-bottom-button large"
 			disabled={submitDisabled}
 			onclick={async () => {
 				playSound("basic_button");
@@ -581,7 +576,7 @@
 	<div class="button-box-gap">
 		{let submitDisabled = $state(false)}
 		<button
-			class="standard-button bottom-button large-button"
+			class="standard-button popup-bottom-button large"
 			disabled={submitDisabled}
 			onclick={async () => {
 				playSound("basic_button");
@@ -596,7 +591,7 @@
 
 <style>
 	.main-container {
-		width: calc(100% - 20px);
+		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
@@ -627,7 +622,7 @@
 		box-shadow: var(--box-shadow);
 		bottom: var(--box-margin);
 		left: var(--box-margin);
-		max-width: calc(100% - 40px);
+		max-width: calc(100% - var(--box-margin) * 2);
 		border-radius: var(--content-margin);
 		background-color: var(--box-color-dark-soft);
 		backdrop-filter: blur(var(--normal-blur));
@@ -686,7 +681,6 @@
 		border-radius: var(--box-margin);
 		padding-inline: var(--layout-margin);
 		width: 100%;
-		box-sizing: border-box;
 	}
 
 	.info-element {
@@ -696,8 +690,8 @@
 		display: flex;
 		padding: var(--box-margin);
 		flex-grow: 1;
-		height: 200px;
-		min-width: 25%;
+		height: 225px;
+		flex-basis: 25%;
 		color: white;
 	}
 
@@ -719,7 +713,6 @@
 	.textarea-container {
 		border-radius: var(--box-margin);
 		width: 100%;
-		box-sizing: border-box;
 		margin-bottom: var(--layout-margin);
 		margin-top: var(--layout-margin);
 		box-shadow: var(--box-shadow);
@@ -732,10 +725,11 @@
 		align-items: center;
 		flex-direction: column;
 		gap: var(--layout-margin);
+		min-width: 200px;
 	}
 
 	.description-info {
-		flex-grow: 4;
+		flex-basis: 75%;
 		position: relative;
 	}
 

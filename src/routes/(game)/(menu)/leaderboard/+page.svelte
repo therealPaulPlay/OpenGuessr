@@ -4,13 +4,10 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { blur, fade } from "svelte/transition";
-	import Tabs from "$lib/components/ui/Tabs.svelte";
+	import { Tabs, Popup, TitleSeparator, InfoBanner } from "openguessr-ui";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { EllipsisVertical } from "@lucide/svelte";
-	import Popup from "$lib/components/ui/Popup.svelte";
-	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
-	import InfoBanner from "$lib/components/InfoBanner.svelte";
 
 	let loadingText = $state("Loading...");
 
@@ -277,7 +274,7 @@
 		<div class="option-bar-container">
 			<div class="option-bar-item bar-menu">
 				<button
-					class="standard-button white large-button"
+					class="standard-button bright large"
 					onclick={() => {
 						playSound("basic_button");
 						leaderboardMenu = true;
@@ -369,7 +366,7 @@
 			{/if}
 			{#each mainSectionEntries.slice(3) as entry}
 				<div
-					class="ranked-item white-soft"
+					class="ranked-item bright-soft"
 					role="button"
 					tabindex="0"
 					class:your-item={entry.id == userId && $isAuthenticated}
@@ -396,9 +393,9 @@
 	{/if}
 	{#if userSectionEntries}
 		<div id="three-dots-container" class="three-dots-container" transition:blur>
-			<div class="circle-dot white-soft"></div>
-			<div class="circle-dot white-soft"></div>
-			<div class="circle-dot white-soft"></div>
+			<div class="circle-dot bright-soft"></div>
+			<div class="circle-dot bright-soft"></div>
+			<div class="circle-dot bright-soft"></div>
 		</div>
 		<div id="your-league-container" class="item-container" transition:blur>
 			{#if !userSectionEntries.find((u) => u.id == localStorage.getItem("id"))?.isActive && userLeaderboardType === "elo-active"}
@@ -406,7 +403,7 @@
 			{/if}
 			{#each userSectionEntries as entry}
 				<div
-					class="ranked-item white-soft"
+					class="ranked-item bright-soft"
 					role="button"
 					tabindex="0"
 					class:your-item={entry.id == userId && $isAuthenticated}
@@ -482,7 +479,6 @@
 		width: 100%;
 		height: 50px;
 		box-shadow: var(--panel-shadow);
-		box-sizing: border-box;
 		border-radius: var(--layout-margin);
 		display: flex;
 		justify-content: space-between;
@@ -547,7 +543,6 @@
 		flex-wrap: wrap;
 		box-shadow: var(--box-shadow-top);
 		width: 100%;
-		box-sizing: border-box;
 	}
 
 	.option-bar-container {
@@ -611,7 +606,6 @@
 		flex-grow: 1;
 		width: 100%;
 		display: flex;
-		box-sizing: border-box;
 		flex-direction: column;
 		align-items: center;
 	}
