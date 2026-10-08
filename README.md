@@ -2,7 +2,7 @@
 
 # OpenGuessr
 
-The free location guessing game.
+The free geography-guessing game.
 
 ## Framework
 
