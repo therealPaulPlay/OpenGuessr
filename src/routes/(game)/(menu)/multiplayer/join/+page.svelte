@@ -8,9 +8,7 @@
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import Chip from "$lib/components/ui/Chip.svelte";
-	import RoomCodeInput from "$lib/components/RoomCodeInput.svelte";
+	import { tooltip, Chip, RoomCodeInput } from "openguessr-ui";
 
 	let roomCodeInput = $derived(segments.slice(0, 3).join("") + segments.slice(3, 6).join(""));
 	let openRooms = $state([]);
@@ -46,7 +44,7 @@
 		<div class="bar-menu join-button-container">
 			<button
 				id="multiplayer-join"
-				class="standard-button large-button"
+				class="standard-button large"
 				disabled={roomCodeInput.length !== 6}
 				onclick={() => {
 					playSound("start_button");
@@ -61,7 +59,7 @@
 	<p class="open-room-title" transition:blur>Public rooms</p>
 	<div class="open-room-box of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
-			<div class="open-room-item white-soft" transition:blur>
+			<div class="open-room-item bright-soft" transition:blur>
 				<div class="room-item-info-container of-left of-right">
 					<Chip mutedOpacity={false}>
 						<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />
@@ -73,7 +71,7 @@
 					</Chip>
 				</div>
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					{@attach tooltip({ text: "Join" })}
 					onclick={() => {
 						playSound("basic_button");

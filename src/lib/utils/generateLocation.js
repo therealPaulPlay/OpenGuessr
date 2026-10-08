@@ -7,7 +7,7 @@ import { setImageGuessrImage } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
 import { resetMap } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
-import { errorPopup } from './errorHandling';
+import { showErrorPopup } from "openguessr-ui";
 import { setMetaGuessrMeta } from './metaGuessrFunctions';
 
 // Load new location for a new panorama (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ export async function generateNewLocation(type) {
 
     } catch (error) {
         console.error("Failed to generate new location, the coordinates are not defined:", error);
-        errorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
+        showErrorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
     }
 
     if (!get(resultScreenEnabled)) resetMap(); // Reset minimap & re-adjust to potentially new map (only if result screen isn't enabled, since that'd clear it)

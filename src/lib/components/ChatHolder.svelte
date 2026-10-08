@@ -74,7 +74,6 @@
 		width: 100%;
 		overflow: hidden;
 		flex-direction: column;
-		box-sizing: border-box;
 		transition: none;
 	}
 

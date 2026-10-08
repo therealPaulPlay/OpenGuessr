@@ -1,19 +1,19 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
-	let { open = $bindable(false), src, wide = false, onClose, onUserClose } = $props();
+	import { Popup, LoadingSpinner } from "openguessr-ui";
+	let { open = $bindable(false), src, wide = false, onclose, onuserclose } = $props();
 
 	// Upwards reactivity via callback for ReportIframePopup.svelte to avoid a two-way bind Svelte issue #18404
 	let wasOpen = false;
 
 	$effect(() => {
-		if (wasOpen && !open) onClose?.();
+		if (wasOpen && !open) onclose?.();
 		wasOpen = open;
 	});
 </script>
 
-<Popup frameless={true} {onUserClose} bind:open verySlim={!wide}>
+<Popup frameless={true} {onuserclose} bind:open verySlim={!wide}>
 	<div class="absolute-center">
-		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="page-browser-loading" />
+		<LoadingSpinner style="opacity: 0.25;" />
 	</div>
 	<!-- svelte-ignore a11y_missing_attribute -->
 	<iframe
@@ -26,12 +26,8 @@
 </Popup>
 
 <style>
-	#page-browser-loading {
-		margin: 0;
-		opacity: 0.25;
-	}
-
 	.absolute-center {
+		display: flex;
 		position: absolute;
 		top: 50%;
 		left: 50%;

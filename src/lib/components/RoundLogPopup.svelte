@@ -1,12 +1,11 @@
 <script>
 	import { roundLogPopup } from "$lib/stores/uiStore";
-	import Popup from "./ui/Popup.svelte";
+	import { Popup, TitleSeparator } from "openguessr-ui";
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { formatDistance } from "$lib/utils/distanceFunctions";
 	import { openLocationOnMaps } from "$lib/utils/streetViewUrl";
 	import { playSound } from "$lib/utils/soundManager";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { ExternalLink } from "@lucide/svelte";
 
 	onMount(() => {
@@ -33,7 +32,7 @@
 							<p>{formatDistance(distance)} away</p>
 						</div>
 						<button
-							class="standard-button white"
+							class="standard-button bright"
 							onclick={() => {
 								playSound("basic_button");
 								openLocationOnMaps(location[0], location[1], location[2]);
@@ -67,6 +66,7 @@
 		max-height: min(330px, calc(100dvh - 200px));
 		padding-bottom: 0;
 		scrollbar-width: none;
+		border-radius: var(--content-margin);
 	}
 
 	.log-item-mode {
@@ -104,7 +104,7 @@
 		padding: var(--box-margin);
 		padding-inline: var(--layout-margin);
 		border-radius: var(--content-margin);
-		width: calc(100% - 30px);
+		width: 100%;
 	}
 
 	.current {

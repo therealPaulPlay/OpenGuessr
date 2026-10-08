@@ -44,7 +44,7 @@
 		height: 100%;
 		overflow: hidden;
 		border-radius: var(--content-margin);
-		background: radial-gradient(rgba(192, 205, 255, 0.5), var(--dark-background));
+		background: radial-gradient(rgba(192, 205, 255, 0.5), var(--overlay-color));
 	}
 
 	.center-container {

@@ -1,8 +1,7 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
-import { showNotification } from "$lib/utils/notifications";
+import { showNotification, showErrorPopup } from "openguessr-ui";
 import { loadedFriendsData, roomCode } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent, outboxContent } from "$lib/stores/context-specific/inboxOutboxStore";
-import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { inboxPopup } from "$lib/stores/uiStore";
@@ -32,12 +31,12 @@ export async function loadInbox() {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error loading inbox: " + response.status);
-            errorPopup("Error fetching inbox", "An error occured fetching the friend inbox.", data.error);
+            showErrorPopup("Error fetching inbox", "An error occured fetching the friend inbox.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while loading inbox: ', error);
-        errorPopup("Error fetching inbox (Network)", "An error occured fetching the friend inbox.", error.message);
+        showErrorPopup("Error fetching inbox (Network)", "An error occured fetching the friend inbox.", error.message);
     }
 }
 
@@ -61,12 +60,12 @@ export async function loadOutbox() {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error loading outbox: " + response.status);
-            errorPopup("Error fetching outbox", "An error occured fetching the friend outbox.", data.error);
+            showErrorPopup("Error fetching outbox", "An error occured fetching the friend outbox.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while loading outbox: ', error);
-        errorPopup("Error fetching outbox (Network)", "An error occured fetching the friend outbox.", error.message);
+        showErrorPopup("Error fetching outbox (Network)", "An error occured fetching the friend outbox.", error.message);
     }
 }
 
@@ -86,12 +85,12 @@ export async function revokeRequest(recipientId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error revoking friend request: " + response.status);
-            errorPopup("Error revoking request", "An error occured revoking a friend request.", data.error);
+            showErrorPopup("Error revoking request", "An error occured revoking a friend request.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while revoking friend request: ', error);
-        errorPopup("Error revoking request (Network)", "An error occured revoking a friend request.", error.message);
+        showErrorPopup("Error revoking request (Network)", "An error occured revoking a friend request.", error.message);
     }
 }
 
@@ -120,12 +119,12 @@ export async function acceptFriendRequest(senderId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error accepting / deleting the friend request: " + response.status);
-            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", data.error);
+            showErrorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", data.error);
         }
 
     } catch (error) {
         console.error('Error occurred while sending the friend request (Network):', error);
-        errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error.message);
+        showErrorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error.message);
     }
 }
 
@@ -153,12 +152,12 @@ export async function declineFriendRequest(senderId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error accepting / deleting the friend request: " + response.status);
-            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", data.error);
+            showErrorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", data.error);
         }
 
     } catch (error) {
         console.error('Error occurred while sending the friend request:', error);
-        errorPopup("Error accepting / deleting friend request (Network)", "The friend request couldn't be accepted or deleted.", error.message);
+        showErrorPopup("Error accepting / deleting friend request (Network)", "The friend request couldn't be accepted or deleted.", error.message);
     }
 }
 
@@ -216,12 +215,12 @@ export async function removeFriend(friendId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error removing friend: " + response.status);
-            errorPopup("Error removing friend", "The server returned an error for your action.", data.error);
+            showErrorPopup("Error removing friend", "The server returned an error for your action.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while removing friend:', error);
-        errorPopup("Error removing friend (Network)", "The friend request couldn't be accepted or deleted.", error.message);
+        showErrorPopup("Error removing friend (Network)", "The friend request couldn't be accepted or deleted.", error.message);
     }
 }
 
@@ -254,7 +253,7 @@ export async function sendMatchInvite(recipientId) {
 
     } catch (error) {
         console.error('Error occurred while sending invite (Network):', error);
-        errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error.message);
+        showErrorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error.message);
     }
 }
 
@@ -278,12 +277,12 @@ export async function acceptMatchInvite(recipientId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error accepting invite: " + response.status);
-            errorPopup("Error accepting invite", "The server returned an error for your action.", data.error);
+            showErrorPopup("Error accepting invite", "The server returned an error for your action.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while accepting invite: ', error);
-        errorPopup("Network error accepting invite", "The invite couldn't be sent / accepted / declined.", error.message);
+        showErrorPopup("Network error accepting invite", "The invite couldn't be sent / accepted / declined.", error.message);
     }
 }
 
@@ -307,11 +306,11 @@ export async function declineMatchInvite(recipientId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error declining invite: " + response.status);
-            errorPopup("Error declining invite", "The server returned an error for your action.", data.error);
+            showErrorPopup("Error declining invite", "The server returned an error for your action.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while declining invite: ', error);
-        errorPopup("Network error declining invite", "The invite couldn't be sent / accepted / declined.", error.message);
+        showErrorPopup("Network error declining invite", "The invite couldn't be sent / accepted / declined.", error.message);
     }
 }

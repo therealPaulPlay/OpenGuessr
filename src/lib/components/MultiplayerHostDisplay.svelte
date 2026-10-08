@@ -12,16 +12,14 @@
 	import { crazyGames, inviteLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { loadFriends, sendMatchInvite } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { showNotification } from "$lib/utils/notifications";
+	import { showNotification, tooltip, showErrorPopup } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { Eye, Link } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
 	import { onDestroy } from "svelte";
 	import { blur, slide } from "svelte/transition";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { multiplayer } from "$lib/stores/modeStore";
 
 	let {
@@ -44,7 +42,7 @@
 			await get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
 		} catch (error) {
 			if (get(multiplayer)) {
-				errorPopup(
+				showErrorPopup(
 					"Failed to update player's team",
 					"An error occured trying to update the player's team index.",
 					error.message,
@@ -129,7 +127,7 @@
 			</p>
 		{/each}
 	{/if}
-	<p id="small-join-counter" class="white-soft">{$participantCount ?? "?"}</p>
+	<p id="small-join-counter" class="bright-soft">{$participantCount ?? "?"}</p>
 </div>
 
 <!-- Friend invite display -->
@@ -140,7 +138,7 @@
 			{#each $loadedFriendsData.filter((value) => value.online) as entry}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
-					class="standard-button room-creation-friend-item white-soft"
+					class="standard-button room-creation-friend-item bright-soft"
 					transition:blur
 					role="menu"
 					tabindex="0"
@@ -150,7 +148,7 @@
 				>
 					<p class="friends-room-entry-text">{entry.user_name}</p>
 					<button
-						class="standard-button white send-invite-button"
+						class="standard-button bright send-invite-button"
 						{@attach tooltip({ text: "Invite" })}
 						onclick={(e) => {
 							e.stopPropagation();
@@ -170,7 +168,7 @@
 <div class="multiplayer-host-submit-area bar-menu">
 	<button
 		id="roomcode-link"
-		class="large-button standard-button white"
+		class="large standard-button bright"
 		{@attach tooltip({ text: "Copy link" })}
 		disabled={!$roomCode || $inviteLinksDisabled}
 		onclick={() => {
@@ -197,7 +195,7 @@
 	</button>
 	{#if showOpenRoom}
 		<button
-			class="standard-button white large-button"
+			class="standard-button bright large"
 			{@attach tooltip({ text: "List room publicly" })}
 			disabled={!$roomCode || roomOpened || !$isAuthenticated}
 			onclick={async () => {
@@ -212,7 +210,7 @@
 	{/if}
 	<button
 		id="multiplayer-host"
-		class="standard-button large-button"
+		class="standard-button large"
 		disabled={startDisabledCondition}
 		onclick={() => {
 			playSound("basic_button");
@@ -243,7 +241,7 @@
 		padding-top: var(--box-margin);
 		padding-bottom: var(--box-margin);
 		box-shadow: var(--panel-shadow);
-		width: calc(100% - var(--box-margin) * 2);
+		width: 100%;
 	}
 
 	#friends-invite-display {
@@ -282,7 +280,6 @@
 
 	.teams-display {
 		position: relative;
-		min-height: 27px;
 		font-size: 22px;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -323,7 +320,7 @@
 		padding-inline: var(--box-margin);
 		overflow: hidden;
 		text-overflow: ellipsis;
-		max-width: 150px;
+		max-width: 170px;
 	}
 
 	.room-creation-friends-box {
@@ -344,8 +341,8 @@
 		top: var(--content-margin);
 		right: var(--content-margin);
 		padding: var(--content-margin);
-		height: 27px;
-		width: 30px;
+		height: 37px;
+		width: 40px;
 		border-radius: var(--box-margin);
 		text-align: center;
 		color: rgba(255, 255, 255, 0.5);

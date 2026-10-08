@@ -49,7 +49,6 @@
 		box-shadow: var(--box-shadow);
 		position: relative;
 		overflow: hidden;
-		box-sizing: border-box;
 		width: 100%;
 		transition: opacity 250ms ease;
 	}
@@ -75,7 +74,7 @@
 	}
 
 	.streak-day-item {
-		min-width: 25px;
+		min-width: 35px;
 		flex-grow: 1;
 		padding: var(--content-margin);
 		background-color: var(--box-color);

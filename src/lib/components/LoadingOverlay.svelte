@@ -3,6 +3,7 @@
 	import { inMenu, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { quadOut } from "svelte/easing";
 	import { fade } from "svelte/transition";
+	import { LoadingSpinner } from "openguessr-ui";
 
 	let initialPageLoad = $state(true); // Only true for the first location that gets loaded with the page
 
@@ -21,7 +22,9 @@
 		}}
 	>
 		{#if !$inMenu}
-			<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading" class="spinner" transition:fade={{ duration: 150 }} />
+			<div style:display="flex" transition:fade={{ duration: 150 }}>
+				<LoadingSpinner />
+			</div>
 		{/if}
 	</div>
 {/if}

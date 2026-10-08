@@ -4,8 +4,7 @@
 	import { wrapBackLon } from "$lib/logic/miniMap";
 	import { playSound } from "$lib/utils/soundManager";
 	import { showProfile } from "$lib/utils/showProfile";
-	import Popup from "./ui/Popup.svelte";
-	import Tabs from "./ui/Tabs.svelte";
+	import { Popup, Tabs } from "openguessr-ui";
 	import SvgMap from "./SvgMap.svelte";
 	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl";
 

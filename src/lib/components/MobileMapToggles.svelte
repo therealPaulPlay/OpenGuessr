@@ -5,20 +5,21 @@
 	import { ArrowDown, ArrowDownRight, ArrowUpLeft } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { countryGuessr } from "$lib/stores/modeStore";
+	import { inMenu } from "$lib/stores/uiStore";
 
 	let toggleMapButton = $state();
 </script>
 
 <div class="toggle-container">
-	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
+	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
 		<div class="bar-menu floating-map-close-menu" transition:blur={{ duration: 250 }}>
 			<button
-				class="standard-button white floating-button"
+				class="standard-button bright floating-button"
 				aria-label="Toggle minimap"
 				bind:this={toggleMapButton}
 				onclick={() => {
 					mapExpanded.set(false);
-					playSound("floating_button");
+					playSound("toggle_button");
 				}}
 			>
 				<ArrowDown strokeWidth={2.25} size={22} />
@@ -26,7 +27,7 @@
 		</div>
 		<div class="resize-handle bar-menu">
 			<button
-				class="standard-button white center-button"
+				class="standard-button bright center-button"
 				aria-label="Resize minimap"
 				onclick={() => {
 					playSound("basic_button");

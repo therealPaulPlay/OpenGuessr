@@ -144,7 +144,6 @@
 			transform 250ms ease,
 			filter 250ms ease,
 			border 150ms ease;
-		box-sizing: border-box;
 		user-select: none;
 	}
 

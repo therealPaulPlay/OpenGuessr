@@ -1,7 +1,7 @@
 <script>
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { guestName, guestNamePromise } from "$lib/stores/context-specific/multiplayerStore";
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
@@ -48,7 +48,7 @@
 <Popup
 	verySlim={true}
 	bind:open={$guestNamePickerPopup}
-	onUserClose={() => {
+	onuserclose={() => {
 		$guestNamePromise = null;
 		leaveMultiplayer();
 		if (page.url.pathname.startsWith("/multiplayer/")) goto("/multiplayer"); // If on host or other multiplayer child page, return to multiplayer home
@@ -62,7 +62,7 @@
 		<input type="text" class="name-popup-input" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
 	</div>
 	<button
-		class="standard-button bottom-button large-button"
+		class="standard-button popup-bottom-button large"
 		disabled={$guestName?.length < 3}
 		onclick={async () => {
 			playSound("basic_button");

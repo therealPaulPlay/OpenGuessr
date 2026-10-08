@@ -3,7 +3,7 @@ import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
 import { profileData, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { errorPopup } from "./errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 
 // Generic function to update a single profile field
 async function updateSingleProfileField(type, value) {
@@ -25,13 +25,13 @@ async function updateSingleProfileField(type, value) {
 
         if (!response.ok) {
             console.error('Profile update failed: ', response.status);
-            errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status);
+            showErrorPopup("Profile update failed", "The server returned an error for the profile update.", response.status);
         }
 
         return true;
     } catch (error) {
         console.error('Error occurred during profile update: ', error);
-        errorPopup("Profile update failed", "The profile update failed due to a network error.", error);
+        showErrorPopup("Profile update failed", "The profile update failed due to a network error.", error);
     }
 }
 

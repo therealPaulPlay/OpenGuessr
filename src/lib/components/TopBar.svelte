@@ -3,13 +3,12 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur } from "svelte/transition";
 	import { competition, multiplayer } from "$lib/stores/modeStore.js";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { showConfirmPopup, tooltip } from "openguessr-ui";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { leaveTutorial } from "./Tutorial.svelte";
 	import TopLeftLogo from "./TopLeftLogo.svelte";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { leaveCompetition } from "$lib/logic/competitionLogic";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { LogOut } from "@lucide/svelte";
 </script>
 
@@ -20,7 +19,7 @@
 	<!-- Menu -->
 	<nav class="menu-button-area bar-menu" transition:blur={{ duration: 250 }}>
 		<button
-			class="standard-button white"
+			class="standard-button bright"
 			{@attach tooltip({ text: "Settings" })}
 			onclick={() => {
 				playSound("basic_button");

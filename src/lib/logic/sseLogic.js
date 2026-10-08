@@ -1,4 +1,4 @@
-import { showNotification } from "$lib/utils/notifications";
+import { showNotification, showConfirmPopup } from "openguessr-ui";
 import { elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
 import { acceptFriendRequest, declineFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
@@ -10,7 +10,6 @@ import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { goto } from "$app/navigation";
-import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
 import { fetchTournaments } from "$lib/utils/tournamentUtils";
 import { showProfile } from "$lib/utils/showProfile";

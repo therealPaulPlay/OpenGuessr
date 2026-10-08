@@ -1,11 +1,9 @@
 import { isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
-import { showNotification } from "./notifications";
-import { showConfirmPopup } from "./confirmPopup";
+import { showNotification, showConfirmPopup, showErrorPopup } from "openguessr-ui";
 import { signupPrompt } from "./signupPrompt";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, shopPurchaseAnimationTitle, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
-import { errorPopup } from "./errorHandling";
 
 export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
     const action = () => {
@@ -45,7 +43,7 @@ export async function handleShopFreeTokens() {
 
     } catch (error) {
         console.error("Error claiming tokens:", error);
-        errorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
+        showErrorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
     }
 }
 
@@ -71,7 +69,7 @@ export async function handleShopYouTubePin() {
 
     } catch (error) {
         console.error("Error claiming pin:", error);
-        errorPopup("Error claiming pin", "An error occured claiming a pin.", error);
+        showErrorPopup("Error claiming pin", "An error occured claiming a pin.", error);
     }
 }
 
@@ -104,7 +102,7 @@ async function handleStripePurchase(productId) {
 
     } catch (error) {
         console.error("Error occured during checkout:", error);
-        errorPopup("Checkout error", "An error occured trying to create a checkout session.", error);
+        showErrorPopup("Checkout error", "An error occured trying to create a checkout session.", error);
     }
 }
 
@@ -142,7 +140,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
 
         } catch (error) {
             console.error("Error purchasing pin:", error);
-            errorPopup("Error purchasing pin", "An error occured purchasing a pin.", error);
+            showErrorPopup("Error purchasing pin", "An error occured purchasing a pin.", error);
         }
     } else if (type == "bundle") {
         try {
@@ -178,7 +176,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
 
         } catch (error) {
             console.error("Error purchasing bundle:", error);
-            errorPopup("Error purchasing bundle", "An error occured purchasing a bundle.", error);
+            showErrorPopup("Error purchasing bundle", "An error occured purchasing a bundle.", error);
         }
     }
 }

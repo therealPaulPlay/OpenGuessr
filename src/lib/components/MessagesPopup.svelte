@@ -3,17 +3,14 @@
 	import { SvelteMap } from "svelte/reactivity";
 	import { get } from "svelte/store";
 	import { X, SendHorizonal, MessageSquare } from "@lucide/svelte";
-	import Popup from "./ui/Popup.svelte";
+	import { Popup, showErrorPopup, tooltip, InfoBanner } from "openguessr-ui";
 	import MessageItem from "./MessageItem.svelte";
 	import MessagesSidebar from "./MessagesSidebar.svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
 	import { hcClient, activeConversationId, aliasCache, invites } from "$lib/stores/context-specific/headlessChatStore";
 	import { headlessChatInitialLoad, loadAliases } from "$lib/logic/headlessChatLogic";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import InfoBanner from "./InfoBanner.svelte";
 
 	const PAGE_SIZE = 50;
 	const INDICATOR_REFRESH_MS = 2000;
@@ -99,7 +96,7 @@
 			await Promise.all([loadMissingAliases(messages), loadMissingReferences(messages)]);
 		} catch (error) {
 			if (!isStale()) {
-				errorPopup(
+				showErrorPopup(
 					"Failed to load messages",
 					"An error occured trying to load messages for this conversation.",
 					"From headless-chat: " + error.message,
@@ -180,7 +177,7 @@
 			loadMissingAliases(older);
 			loadMissingReferences(older);
 		} catch (error) {
-			errorPopup("Failed to load older messages", "An error occured trying to load more messages.", error.message);
+			showErrorPopup("Failed to load older messages", "An error occured trying to load more messages.", error.message);
 		} finally {
 			isLoadingMore = false;
 		}
@@ -215,7 +212,7 @@
 		try {
 			await get(hcClient).sendMessage(conversationId, text, { referenceMessageId: reference, isForwarded: false });
 		} catch (error) {
-			errorPopup(
+			showErrorPopup(
 				"Failed to send message",
 				"An error occured trying to send your message.",
 				"From headless-chat: " + error.message,
@@ -426,7 +423,7 @@
 							}}
 						/>
 						<button
-							class="standard-button white"
+							class="standard-button bright"
 							{@attach tooltip({ text: "Send message" })}
 							disabled={!inputValue.trim()}
 							onclick={() => {
@@ -468,7 +465,6 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
-		box-sizing: border-box;
 	}
 
 	.invite-name {
@@ -491,7 +487,6 @@
 		gap: var(--box-margin);
 		overflow-y: auto;
 		scrollbar-width: none;
-		box-sizing: border-box;
 	}
 
 	.system-note {
@@ -530,14 +525,13 @@
 		opacity: 0.5;
 		margin: auto;
 		text-align: center;
-		max-width: 330px;
+		max-width: 390px;
 		padding-inline: calc(var(--layout-margin) * 2);
 	}
 
 	.loading-more {
 		opacity: 0.5;
 		text-align: center;
-		box-sizing: border-box;
 		padding: var(--box-margin);
 	}
 

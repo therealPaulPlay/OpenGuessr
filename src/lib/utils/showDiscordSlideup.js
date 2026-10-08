@@ -2,7 +2,7 @@ import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupSto
 import { get } from "svelte/store";
 import { showResultScreenSlideup } from "./resultScreenSlideup";
 import { addUserXP } from "./updateUserXP";
-import { showNotification } from "./notifications";
+import { showNotification } from "openguessr-ui";
 import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 const XP_AMOUNT = 7500;

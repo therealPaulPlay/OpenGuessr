@@ -3,8 +3,7 @@
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
-	import Chip from "./ui/Chip.svelte";
-	import Tabs from "./ui/Tabs.svelte";
+	import { Chip, Tabs } from "openguessr-ui";
 	import { slide } from "svelte/transition";
 	import { untrack } from "svelte";
 	let { isTeamChat = false, inPanel = true, onChange } = $props();

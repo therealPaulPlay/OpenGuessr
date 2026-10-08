@@ -1,15 +1,11 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
 	import { Copy } from "@lucide/svelte";
-	import { showNotification } from "$lib/utils/notifications";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showNotification, showConfirmPopup, showErrorPopup, Popup, Collapsible } from "openguessr-ui";
 	import { extractCoordinates } from "$lib/utils/extractMapCoords";
-	import Popup from "$lib/components/ui/Popup.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
 	import { defaultRestriction, restrictionNames } from "$lib/stores/context-specific/restrictionStore";
-	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 
@@ -48,7 +44,7 @@
 			leaderboardLink = window.location.origin + "/competitions?leaderboard=" + competitionCreationId;
 			successPopup = true;
 		} else {
-			errorPopup("Error submitting competition", "An error occured submitting your competition.", operationMessage);
+			showErrorPopup("Error submitting competition", "An error occured submitting your competition.", operationMessage);
 		}
 	}
 
@@ -156,7 +152,7 @@
 <Popup
 	verySlim={true}
 	bind:open={successPopup}
-	onUserClose={() => {
+	onuserclose={() => {
 		goto("/competitions");
 	}}
 >
@@ -170,7 +166,7 @@
 		<div class="link-box link-box-margin">
 			<p>{enterLink || "https://example.com"}</p>
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -184,7 +180,7 @@
 		<div class="link-box">
 			<p>{leaderboardLink || "https://example.com"}</p>
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -219,7 +215,7 @@
 					</div>
 				</div>
 
-				<Drawer title="Rules" hasBottomLayoutMargin={false}>
+				<Collapsible title="Rules" ontoggle={() => playSound("toggle_button")}>
 					<div class="location-instructions">
 						<ul>
 							<li>Keep all details in English</li>
@@ -230,7 +226,7 @@
 							<li>The number of locations equals the amount of rounds</li>
 						</ul>
 					</div>
-				</Drawer>
+				</Collapsible>
 
 				<div class="form-section">
 					<h3 class="section-title">Settings</h3>
@@ -247,7 +243,7 @@
 						<div class="field-group">
 							<p class="field-label">Visibility</p>
 							<button
-								class="standard-button white large-button toggle-button"
+								class="standard-button bright large toggle-button"
 								onclick={() => {
 									playSound("basic_button");
 									competitionPrivate = !competitionPrivate;
@@ -257,7 +253,7 @@
 						<div class="field-group">
 							<p class="field-label">Restriction</p>
 							<select
-								class="standard-button white large-button toggle-button"
+								class="standard-button bright large toggle-button"
 								bind:value={competitionRestriction}
 								onchange={() => {
 									playSound("basic_button");
@@ -299,7 +295,7 @@
 
 		<div class="submit-area bar-menu">
 			<button
-				class="standard-button large-button"
+				class="standard-button large wide"
 				onclick={() => {
 					playSound("basic_button");
 					showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () =>
@@ -439,10 +435,6 @@
 		background-color: var(--box-color);
 		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
-	}
-
-	.submit-area button {
-		padding-inline: 30px;
 	}
 
 	/* Popup styles */

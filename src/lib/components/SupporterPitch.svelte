@@ -35,7 +35,7 @@
 
 	.supporter-area {
 		border-radius: var(--box-margin);
-		background: var(--supporter-green);
+		background: var(--bright-green-color);
 		color: white;
 		display: flex;
 		flex-wrap: wrap;
@@ -46,7 +46,6 @@
 		gap: var(--box-margin);
 		padding: var(--content-margin);
 		width: 100%;
-		box-sizing: border-box;
 		margin-bottom: var(--layout-margin);
 	}
 

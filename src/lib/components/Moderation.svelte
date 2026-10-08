@@ -1,7 +1,7 @@
 <script>
 	import { moderationPopup } from "$lib/stores/uiStore";
 	import { Lock, MessageSquareOff, MessageSquare, UserRoundX, LockOpen } from "@lucide/svelte";
-	import Popup from "./ui/Popup.svelte";
+	import { Popup, Tabs, showErrorPopup } from "openguessr-ui";
 	import {
 		chatMutedPlayers,
 		multiplayerSortedPlayersArray,
@@ -9,12 +9,10 @@
 		roomLocked,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { get } from "svelte/store";
-	import Tabs from "./ui/Tabs.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { multiplayer } from "$lib/stores/modeStore";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let currentlySettingRoomLock = $state(false);
 
@@ -30,7 +28,7 @@
 	<div class="general-actions">
 		<div class="general-actions-scroll of-left of-right">
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				disabled={$chatMutedPlayers?.length === get(socket)?.storage?.players?.length - 1}
 				onclick={() => {
 					playSound("basic_button");
@@ -43,7 +41,7 @@
 				<MessageSquareOff class="chat-action-icon" size={20} strokeWidth={2.25} /> Mute all
 			</button>
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				disabled={!$chatMutedPlayers?.length}
 				onclick={() => {
 					playSound("basic_button");
@@ -54,7 +52,7 @@
 			</button>
 			{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 				<button
-					class="standard-button white"
+					class="standard-button bright"
 					disabled={currentlySettingRoomLock}
 					onclick={async () => {
 						playSound("basic_button");
@@ -64,7 +62,7 @@
 							await get(socket)?.sendRequest("setRoomLock", newRoomLockState);
 						} catch (error) {
 							if (get(multiplayer)) {
-								errorPopup("Failed to set lock", "An error occured locking/unlocking the room.", error.message);
+								showErrorPopup("Failed to set lock", "An error occured locking/unlocking the room.", error.message);
 							}
 							console.error("Error setting room lock state:", error);
 						}
@@ -122,7 +120,7 @@
 							{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 								{let currentlyKickingPlayer = $state(false)}
 								<button
-									class="standard-button white"
+									class="standard-button bright"
 									disabled={clientId === get(socket)?.id || currentlyKickingPlayer}
 									onclick={async () => {
 										playSound("basic_button");
@@ -131,7 +129,7 @@
 											await get(socket)?.sendRequest("kickClient", clientId);
 										} catch (error) {
 											if (get(multiplayer)) {
-												errorPopup(
+												showErrorPopup(
 													"Failed to kick client",
 													"An error occured trying to kick the client.",
 													error.message,
@@ -199,14 +197,12 @@
 		background-color: var(--box-color);
 		padding: var(--box-margin);
 		width: 100%;
-		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		scrollbar-width: none;
 	}
 
 	.player-box-scroll {
 		display: flex;
-		box-sizing: border-box;
 		width: 100%;
 		gap: var(--box-margin);
 		flex-direction: column;
@@ -225,7 +221,6 @@
 		padding: var(--box-margin);
 		width: fit-content;
 		max-width: 100%;
-		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		margin-bottom: var(--box-margin);
 	}

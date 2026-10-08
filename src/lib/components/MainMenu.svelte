@@ -4,7 +4,7 @@
 	import { isAuthenticated, username } from "$lib/stores/accountStore";
 	import { bugspotPopup, mainMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { tooltip, RoomCodeInput, Chip } from "openguessr-ui";
 	import { blur, fade, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
@@ -17,14 +17,12 @@
 	import { baseMaps, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
-	import RoomCodeInput from "./RoomCodeInput.svelte";
 	import MoreMapsVisualization from "./MoreMapsVisualization.svelte";
 	import { dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
 	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { hasNewMessageOrInvite, hcClient } from "$lib/stores/context-specific/headlessChatStore";
 	import { loadInitialHasNew } from "$lib/logic/headlessChatLogic";
-	import Chip from "./ui/Chip.svelte";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { browser } from "$app/environment";
 	import { onMount } from "svelte";
@@ -155,7 +153,7 @@
 										{imgUrl}
 										cover={imgUrl ? undefined : cover}
 										onclick={() => {
-											playSound("button_juicy");
+											playSound("juicy_button");
 											selectMap(localStorage.getItem("selectedMap"));
 										}}
 									/>
@@ -168,7 +166,7 @@
 										compact={true}
 										selected={isMapSelected(map)}
 										onclick={() => {
-											playSound("button_juicy");
+											playSound("juicy_button");
 											selectMap(map);
 										}}
 									/>
@@ -187,7 +185,7 @@
 								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
 							>
 								<button
-									class="standard-button white navigation-button large-button navigation-button-wide"
+									class="standard-button bright navigation-button large navigation-button-wide"
 									onclick={() => {
 										goto("/multiplayer");
 										playSound("basic_button");
@@ -205,8 +203,8 @@
 								<div class="navigation-inner-options">
 									<div class="multiplayer-quick-play">
 										<RoomCodeInput
-											compact={true}
-											submitFn={(code) => {
+											inPage={false}
+											onsubmit={(code) => {
 												playSound("basic_button");
 												joinFromAnywhere(code);
 											}}
@@ -219,7 +217,7 @@
 								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
 							>
 								<button
-									class="standard-button white large-button navigation-button navigation-button-wide"
+									class="standard-button bright large navigation-button navigation-button-wide"
 									onclick={() => {
 										goto("/competitions");
 										playSound("basic_button");
@@ -242,7 +240,7 @@
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
 								{#if $isAuthenticated}
 									<div
-										class="navigation-button standard-button white large-button account-name-button account-button"
+										class="navigation-button standard-button bright large account-name-button account-button"
 										onclick={() => {
 											showProfile(localStorage.getItem("id"));
 											playSound("basic_button");
@@ -262,7 +260,7 @@
 									</div>
 								{:else}
 									<button
-										class="standard-button white navigation-button large-button account-button"
+										class="standard-button bright navigation-button large account-button"
 										onclick={() => {
 											playSound("basic_button");
 											signupPrompt();
@@ -275,7 +273,7 @@
 								in:rowScale|global={{ duration: 250, start: 0.8, delay: 100 }}
 							>
 								<button
-									class="standard-button white navigation-button navigation-button-small large-button"
+									class="standard-button bright navigation-button navigation-button-small large"
 									{@attach tooltip({ text: "Leaderboard" })}
 									onclick={() => {
 										playSound("basic_button");
@@ -285,7 +283,7 @@
 									<img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
 								</button>
 								<button
-									class="standard-button white navigation-button navigation-button-small large-button"
+									class="standard-button bright navigation-button navigation-button-small large"
 									style:position="relative"
 									{@attach tooltip({ text: "Shop" })}
 									onclick={() => {
@@ -301,7 +299,7 @@
 									{/if}
 								</button>
 								<button
-									class="standard-button white navigation-button navigation-button-small large-button"
+									class="standard-button bright navigation-button navigation-button-small large"
 									aria-label="Education"
 									{@attach tooltip({ text: "Education" })}
 									onclick={() => {
@@ -312,7 +310,7 @@
 									<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
 								</button>
 								<button
-									class="standard-button white navigation-button navigation-button-small large-button"
+									class="standard-button bright navigation-button navigation-button-small large"
 									id="settings-button-mobile"
 									{@attach tooltip({ text: "Settings" })}
 									onclick={() => {
@@ -329,7 +327,7 @@
 					<div class="navigation-box bar-menu link-box" in:blur|global={{ duration: 250 }}>
 						<div class="navigation-box-scroll of-left of-right of-length-2">
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="Report bug"
 								{@attach tooltip({ text: "Report bug" })}
 								onclick={() => {
@@ -340,7 +338,7 @@
 								<Bug size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
 							</button>
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="Discord"
 								{@attach tooltip({ text: "Discord" })}
 								onclick={() => {
@@ -351,7 +349,7 @@
 								<img src="/img/discord.png" alt="Discord logo" class="navigation-icon" />
 							</button>
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="Reddit"
 								{@attach tooltip({ text: "Reddit" })}
 								onclick={() => {
@@ -362,7 +360,7 @@
 								<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
 							</button>
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="YouTube"
 								{@attach tooltip({ text: "YouTube" })}
 								onclick={() => {
@@ -373,7 +371,7 @@
 								<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
 							</button>
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="Twitter"
 								{@attach tooltip({ text: "Twitter" })}
 								onclick={() => {
@@ -384,7 +382,7 @@
 								<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />
 							</button>
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="Legal"
 								{@attach tooltip({ text: "Legal" })}
 								onclick={() => {
@@ -395,7 +393,7 @@
 								<Section size={20} strokeWidth={2.25} style="margin-inline: 2px;" />
 							</button>
 							<button
-								class="standard-button white link-button large-button"
+								class="standard-button bright link-button large"
 								aria-label="About"
 								{@attach tooltip({ text: "About" })}
 								onclick={() => {
@@ -424,7 +422,7 @@
 		align-content: center;
 		display: flex;
 		flex-direction: column;
-		background-color: var(--dark-background);
+		background-color: var(--overlay-color);
 		backdrop-filter: blur(var(--weak-blur));
 	}
 
@@ -493,7 +491,6 @@
 		width: 650px;
 		max-width: 100%;
 		height: 100%;
-		box-sizing: border-box;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
 	}
@@ -521,7 +518,6 @@
 		overflow: hidden;
 		width: 100%;
 		max-width: 100%;
-		box-sizing: border-box;
 		align-items: stretch;
 		position: relative;
 	}
@@ -592,7 +588,6 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: var(--layout-margin);
-		box-sizing: border-box;
 	}
 
 	.navigation-button span {
@@ -647,7 +642,6 @@
 	.multiplayer-quick-play {
 		display: flex;
 		gap: var(--content-margin);
-		box-sizing: border-box;
 		border-radius: var(--box-margin);
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
@@ -709,7 +703,6 @@
 	.logo-visualization-container {
 		width: 100%;
 		max-width: 450px;
-		box-sizing: border-box;
 		margin-inline: auto;
 		flex-grow: 1;
 		align-content: center;

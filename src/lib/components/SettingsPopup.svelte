@@ -1,13 +1,10 @@
 <script>
-	import Popup from "./ui/Popup.svelte";
+	import { Popup, Tabs, TitleSeparator, showConfirmPopup } from "openguessr-ui";
 	import { onMount } from "svelte";
 	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen } from "$lib/stores/context-specific/platformSettingsStore";
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { InfoIcon, Scan, ChevronLeft, ChevronRight, Timer } from "@lucide/svelte";
-	import Tabs from "./ui/Tabs.svelte";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { setRestriction } from "$lib/utils/setRestriction";
@@ -156,12 +153,12 @@
 	<div class="settings-canvas">
 		<TitleSeparator text="Singleplayer" noMargin={true} />
 		<div class="settings-box settings-box-flex" class:box-disabled={!$singleplayer}>
-			<div class="timer-text-box white-soft">
+			<div class="timer-text-box bright-soft">
 				<Timer />
 				<p id="timer-slider-text" contenteditable="false">{timerSliderText}</p>
 			</div>
 			<div class="timer-controls-wrapper">
-				<button class="arrow-button standard-button white" onclick={() => adjustTimer(false)}>
+				<button class="arrow-button standard-button bright" onclick={() => adjustTimer(false)}>
 					<ChevronLeft size={20} strokeWidth={2.5} />
 				</button>
 
@@ -170,12 +167,12 @@
 					min="0"
 					max="121"
 					step="1"
-					class="slider timer-slider"
+					class="timer-slider"
 					onchange={changeTimeout}
 					bind:value={timerSliderValue}
 				/>
 
-				<button class="arrow-button standard-button white" onclick={() => adjustTimer(true)}>
+				<button class="arrow-button standard-button bright" onclick={() => adjustTimer(true)}>
 					<ChevronRight size={20} strokeWidth={2.5} />
 				</button>
 			</div>
@@ -194,7 +191,7 @@
 					min="0"
 					max="1"
 					step="0.01"
-					class="slider short-slider"
+					class="short-slider"
 					bind:value={sfxVolumeSliderValue}
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
@@ -210,14 +207,14 @@
 					min="0"
 					max="1"
 					step="0.01"
-					class="slider short-slider"
+					class="short-slider"
 					bind:value={musicVolumeSliderValue}
 					style:background={musicSliderBg}
 					oninput={inputMusicVolumeSlider}
 				/>
 				<p style:margin-right="auto">{musicSliderBgPercentage}%</p>
 				<button
-					class="standard-button white credits-button"
+					class="standard-button bright credits-button"
 					onclick={() => {
 						playSound("basic_button");
 						showConfirmPopup("Credits", 'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM"!');
@@ -243,7 +240,7 @@
 		{#if !$preventFullscreen}
 			<div class="settings-box settings-box-flex">
 				<p class="settings-box-flex-title">View</p>
-				<button id="fullscreen-button" class="standard-button white" onclick={toggleFullscreen}>
+				<button id="fullscreen-button" class="standard-button bright" onclick={toggleFullscreen}>
 					<span class="fullscreen-icon">
 						<Scan size="17" strokeWidth={3} style="margin-bottom: -1px;" />
 					</span>
@@ -262,8 +259,8 @@
 		box-shadow: var(--box-shadow);
 		overflow: hidden;
 		flex-grow: 1;
-		min-width: 150px;
-		height: 77px;
+		min-width: 170px;
+		height: 97px;
 	}
 
 	.timer-controls-wrapper {
@@ -293,11 +290,11 @@
 		box-shadow: var(--box-shadow);
 		align-items: center;
 		gap: var(--content-margin);
-		height: 31px;
+		height: 41px;
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		border-radius: var(--content-margin);
-		min-width: 125px;
+		min-width: 145px;
 		text-align: center;
 	}
 
@@ -312,6 +309,7 @@
 
 	.timer-slider {
 		flex-grow: 1;
+		width: 60%;
 	}
 
 	.settings-box-flex-title {

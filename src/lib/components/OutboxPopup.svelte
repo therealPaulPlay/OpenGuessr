@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 	import { loadOutbox, revokeRequest } from "$lib/logic/friendAPI";
 	import { outboxContent } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { outboxPopup } from "$lib/stores/uiStore";
@@ -44,7 +44,7 @@
 					>
 						<p class="truncate-name">{entry.user_name}</p>
 						<button
-							class="standard-button white"
+							class="standard-button bright"
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
@@ -68,7 +68,6 @@
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
 		width: 100%;
-		box-sizing: border-box;
 		position: relative;
 		display: flex;
 		justify-content: space-between;
@@ -93,7 +92,6 @@
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: 100%;
-		box-sizing: border-box;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		margin-top: var(--box-margin);

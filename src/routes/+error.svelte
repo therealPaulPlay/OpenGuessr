@@ -32,7 +32,6 @@
 		justify-content: safe center;
 		align-items: safe center;
 		padding: var(--layout-margin);
-		box-sizing: border-box;
 	}
 
 	h1 {

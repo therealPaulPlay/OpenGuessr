@@ -25,7 +25,7 @@
 	import { CircleUser, Flame, MapPinned, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { tooltip } from "openguessr-ui";
 	import { registerResultAds } from "$lib/utils/ads";
 	import { inMenu, roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -254,7 +254,7 @@
 	{#if $resultScreenEnabled}
 		<div class="bar-menu next-round-area">
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				{@attach tooltip({ text: "View panorama" })}
 				onclick={() => {
 					playSound("basic_button");
@@ -266,7 +266,7 @@
 			<button
 				bind:this={continueButtonEl}
 				id="next-round"
-				class="standard-button white"
+				class="standard-button bright"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 				style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
 				{@attach tooltip({
@@ -319,7 +319,7 @@
 		/* Stretch to ensure each result field fills the vertical space available */
 		align-items: stretch;
 		color: white;
-		width: 750px;
+		width: calc(750px + var(--panel-margin) * 2);
 		flex-wrap: wrap;
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
@@ -429,8 +429,8 @@
 	}
 
 	.result-ad-area {
-		width: 728px;
-		height: 90px;
+		width: calc(720px + var(--box-margin));
+		height: calc(90px + var(--box-margin));
 		display: none;
 		justify-content: center;
 		align-items: center;
@@ -463,7 +463,7 @@
 	#experience-area {
 		position: relative;
 		flex-grow: 100;
-		min-width: 300px;
+		min-width: 320px;
 		gap: var(--box-margin);
 	}
 
@@ -539,7 +539,7 @@
 
 	#experience-bar-not-signed-in {
 		justify-content: space-between;
-		max-height: 30px;
+		max-height: 50px;
 	}
 
 	#signup-prompt-text {
@@ -621,7 +621,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		max-width: 750px;
+		max-width: calc(750px + var(--panel-margin) * 2);
 		margin-inline: auto;
 	}
 
@@ -667,13 +667,13 @@
 		}
 
 		#result-box {
-			width: 722px;
+			width: calc(720px + var(--box-margin));
 		}
 	}
 
 	@media all and (max-width: 1350px) {
 		.next-round-area {
-			width: calc(100% - 36px);
+			width: calc(100% - var(--box-margin) * 2);
 			left: var(--box-margin);
 		}
 

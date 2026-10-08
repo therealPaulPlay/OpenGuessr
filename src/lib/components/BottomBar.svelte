@@ -4,9 +4,8 @@
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
-	import { showNotification } from "$lib/utils/notifications";
+	import { showNotification, tooltip } from "openguessr-ui";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
@@ -73,7 +72,7 @@
 	<div id="bottom-bar" class="bottom-bar">
 		<div class="bottom-left-menu bar-menu" transition:blur={{ duration: 250 }}>
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				{@attach tooltip({
 					text: "Click to return to the spawn.",
 					state: returnTutorialNote,
@@ -94,7 +93,7 @@
 			</button>
 			{#if $multiplayer}
 				<button
-					class="standard-button white mobile-chat-button"
+					class="standard-button bright mobile-chat-button"
 					{@attach tooltip({ text: "Chat" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -112,7 +111,7 @@
 		{#if !$countryGuessr}
 			<div class="bottom-right-menu bar-menu" transition:blur|global={{ duration: 250 }}>
 				<button
-					class="standard-button confirm-button white"
+					class="standard-button confirm-button bright"
 					id="confirm-button"
 					class:confirm-active={$confirmButtonActive}
 					style:opacity={$mapInteractive || !$mapExpanded ? "" : "0.5"}
@@ -283,7 +282,7 @@
 	}
 
 	.bottom-right-menu {
-		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
+		width: max(calc(20% + 4px), calc(200px + var(--panel-margin) * 2));
 		margin-right: 60px;
 	}
 

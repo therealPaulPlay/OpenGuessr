@@ -7,7 +7,7 @@ import { isAuthenticated } from "$lib/stores/accountStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 import { multiplayer } from "$lib/stores/modeStore";
 
 // Logic -----------------------
@@ -21,7 +21,7 @@ const matchmakingRoomConfigs = {
 // which triggers instanceDestroyed -> leaveMultiplayer -> matchmakingActive = false; If not removed, the game was already matched
 export async function safeCancel() {
     const code = get(roomCode);
-    if (!code) return errorPopup("Failed to cancel", "The room hasn't been created yet.");
+    if (!code) return showErrorPopup("Failed to cancel", "The room hasn't been created yet.");
 
     try {
         const response = await fetch(get(apiUrl) + "/matchmaking/delete-room/" + code, {
@@ -52,7 +52,7 @@ export function findDuel() {
     const action = async () => {
         // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found,
         // which causes the multiplayer instance to recreate & the player to lose the game
-        if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
+        if (get(multiplayer)) return showErrorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
         goto("/multiplayer/duel"); // Visit duel load page
         matchmakingActive.set(true);
 
@@ -141,7 +141,7 @@ async function attemptFind(type) {
 
         // Display error
         console.error("Error finding match:", error);
-        errorPopup("Failed to find a match", "The request returned an error.", error.message);
+        showErrorPopup("Failed to find a match", "The request returned an error.", error.message);
     }
 }
 
@@ -180,7 +180,7 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
 
     } catch (error) {
         console.error('Failed sending room code to server: ', error);
-        errorPopup("Failed to submit code", "Failed to submit the room code, which is needed for matchmaking.", error.message);
+        showErrorPopup("Failed to submit code", "Failed to submit the room code, which is needed for matchmaking.", error.message);
         return false; // Error
     }
 }

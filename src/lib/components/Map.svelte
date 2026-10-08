@@ -169,7 +169,6 @@
 
 	:global(.leaflet-control-layers-selector[type="radio"]) {
 		appearance: none;
-		box-sizing: border-box;
 		box-shadow: none;
 		margin-right: var(--content-margin);
 		width: 16px;

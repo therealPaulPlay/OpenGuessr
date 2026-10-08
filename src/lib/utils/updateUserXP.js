@@ -1,7 +1,7 @@
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { experience } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
-import { errorPopup } from "./errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 
 export async function addUserXP(addExperience) {
     try {
@@ -33,6 +33,6 @@ export async function addUserXP(addExperience) {
         }
     } catch (error) {
         console.error('Error occurred updating user experience: ', error);
-        errorPopup("Experience update failed", "Failed to update the user's experience.", error.message);
+        showErrorPopup("Experience update failed", "Failed to update the user's experience.", error.message);
     }
 }

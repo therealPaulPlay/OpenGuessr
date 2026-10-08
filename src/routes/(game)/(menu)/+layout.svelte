@@ -40,7 +40,7 @@
 <nav class="menu-nav-bar">
 	<div class="navigation-button-container bar-menu">
 		<button
-			class="standard-button white large-button"
+			class="standard-button bright large"
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
@@ -55,7 +55,7 @@
 	{#if showHomeButton}
 		<div class="navigation-button-container bar-menu">
 			<button
-				class="standard-button white large-button"
+				class="standard-button bright large"
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
@@ -84,7 +84,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: rgba(13, 15, 28, 0.9);
+		background: var(--overlay-color-dark);
 		z-index: 90;
 		backdrop-filter: blur(var(--elevated-blur));
 	}
@@ -132,7 +132,6 @@
 		max-width: 1100px;
 		padding: var(--layout-margin);
 		padding-top: 100px;
-		box-sizing: border-box;
 		width: 100%;
 	}
 

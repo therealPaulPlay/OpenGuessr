@@ -1,5 +1,4 @@
-import { showNotification } from "$lib/utils/notifications";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showNotification, showErrorPopup } from "openguessr-ui";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
@@ -27,11 +26,11 @@ export async function sendFriendRequest(targetUserId) {
             const data = await response.json();
             if (response.status === 409) return showNotification("Already sent a friend request.");
             console.error("Error sending the friend request: " + response.status);
-            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error);
+            showErrorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while sending the friend request:', error);
-        errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error);
+        showErrorPopup("Network error sending friend request", "The friend request couldn't be sent.", error);
     }
 }

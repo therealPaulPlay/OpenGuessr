@@ -3,7 +3,7 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showErrorPopup } from "openguessr-ui";
 
 	// Skip partner platforms that don't support playgama auth verification (those who don't iFrame the Playgama page)
 	export function playgamaLoginSupported() {
@@ -41,7 +41,7 @@
 			checkAuthentication();
 		} catch (error) {
 			console.error("Error occured authenticating with Playgama:", error);
-			errorPopup("Error authenticating", "An error occured trying to authenticate with Playgama.", error.message);
+			showErrorPopup("Error authenticating", "An error occured trying to authenticate with Playgama.", error.message);
 		}
 	}
 </script>

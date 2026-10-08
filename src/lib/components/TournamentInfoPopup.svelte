@@ -2,20 +2,17 @@
 	import { selectedTournament, tournamentMatchResultsIndex } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup, tournamentMatchResultsPopup } from "$lib/stores/uiStore";
 	import { CalendarPlus, Info, Medal } from "@lucide/svelte";
-	import Popup from "./ui/Popup.svelte";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { Popup, TitleSeparator, showErrorPopup, InfoBanner } from "openguessr-ui";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 	import { get } from "svelte/store";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import InfoBanner from "./InfoBanner.svelte";
 
 	let readableDate = $derived.by(() => {
 		const date = new Date($selectedTournament?.date).toLocaleString("en-US", {
@@ -54,7 +51,7 @@
 			}
 		} catch (error) {
 			console.error("Failed to enter tournament:", error);
-			errorPopup("Failed to enter tournament", "An error occured attempting to enter the tournament.", error.message);
+			showErrorPopup("Failed to enter tournament", "An error occured attempting to enter the tournament.", error.message);
 		}
 	}
 
@@ -76,7 +73,7 @@
 			return true;
 		} catch (error) {
 			console.error("Failed to track calendar save:", error);
-			errorPopup(
+			showErrorPopup(
 				"Failed to track calendar save",
 				"An error occured attempting to track the calendar save.",
 				error.message,
@@ -165,7 +162,7 @@
 	{/if}
 	{#if $selectedTournament?.status == "starting"}
 		<button
-			class="standard-button bottom-button large-button"
+			class="standard-button popup-bottom-button large"
 			onclick={async () => {
 				playSound("basic_button");
 				const action = async () => {
@@ -183,7 +180,7 @@
 		</button>
 	{:else if $selectedTournament?.status == "upcoming"}
 		<button
-			class="standard-button bottom-button large-button white"
+			class="standard-button popup-bottom-button large bright"
 			disabled={$selectedTournament?.saved}
 			onclick={async () => {
 				playSound("basic_button");
@@ -223,7 +220,6 @@
 		gap: var(--box-margin);
 		flex-wrap: wrap;
 		max-width: 100%;
-		box-sizing: border-box;
 	}
 
 	:global(.big-medal) {
@@ -250,7 +246,6 @@
 
 	.match-entry {
 		width: 100%;
-		box-sizing: border-box;
 		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
@@ -280,7 +275,6 @@
 		margin-top: var(--layout-margin);
 		padding: var(--box-margin);
 		width: 100%;
-		box-sizing: border-box;
 	}
 
 	.match-box-scroll {
@@ -290,6 +284,7 @@
 		overflow-y: auto;
 		max-height: 180px;
 		scrollbar-width: none;
+		border-radius: var(--content-margin);
 	}
 
 	.winner-box {
@@ -315,7 +310,6 @@
 		flex-direction: column;
 		padding: var(--box-margin);
 		text-wrap: nowrap;
-		box-sizing: border-box;
 		max-width: 100%;
 		flex-grow: 1;
 	}

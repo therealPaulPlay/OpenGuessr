@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 	import { bugspotPopup } from "$lib/stores/uiStore";
-	import IframePopup from "./ui/IframePopup.svelte";
+	import IframePopup from "./IframePopup.svelte";
 
 	let consoleLogs = [];
 	let frozenUrl; // Store frozen URL when popup opens

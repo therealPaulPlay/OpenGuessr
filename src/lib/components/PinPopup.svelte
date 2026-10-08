@@ -1,9 +1,8 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup, TitleSeparator } from "openguessr-ui";
 	import PinHolder from "./PinHolder.svelte";
 	import { pinPopup } from "$lib/stores/uiStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { purchasedPins } from "$lib/stores/accountStore";
 </script>
 
@@ -46,7 +45,6 @@
 		border-radius: var(--box-margin);
 		gap: var(--box-margin);
 		padding: var(--box-margin);
-		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));

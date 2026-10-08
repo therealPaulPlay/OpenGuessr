@@ -5,7 +5,7 @@ import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
 import { showResultScreenSlideup } from "./resultScreenSlideup";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "./signupPrompt";
-import { showConfirmPopup } from "./confirmPopup";
+import { showConfirmPopup } from "openguessr-ui";
 
 export function supporterSlideupProbability() {
     if (Math.random() < 0.05 && get(supporterLevel) == 0 && localStorage.getItem("supporterSlideup") === null) {
@@ -20,8 +20,6 @@ export function supporterSlideupProbability() {
                     () => {
                         signupPrompt(() => goto("/shop#supporter"));
                     },
-                    null,
-                    null,
                     "Sign up",
                 );
             }

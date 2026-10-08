@@ -31,7 +31,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { externalLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
-	import InfoBanner from "$lib/components/InfoBanner.svelte";
+	import { InfoBanner } from "openguessr-ui";
 
 	// Tween the token value for a nicer look
 	const animatedTokens = tweened(0, {
@@ -218,14 +218,14 @@
 					<h1 class="special-offer-title">
 						{$specialOfferRarity?.[0]?.toUpperCase() + $specialOfferRarity.slice(1) || "Default"} bundle!
 					</h1>
-					<div class="special-offer-items">
+					<div class="special-offer-items of-top of-bottom">
 						{#each $specialOfferPins as pinIndex}
 							<PinHolder pinId={pinIndex} shop={true} disabled={$purchasedPins?.includes(pinIndex)} />
 						{/each}
 					</div>
 					<div class="bar-menu special-offer-button-container">
 						<button
-							class="standard-button white special-offer-button large-button"
+							class="standard-button bright special-offer-button large"
 							disabled={$specialOfferPrice == 0}
 							onclick={() => {
 								playSound("basic_button");
@@ -269,7 +269,7 @@
 							<img alt="token graphic" src={offer.imageSrc} class="token-graphic" />
 						</div>
 						<button
-							class="standard-button shop-offer-button white"
+							class="standard-button shop-offer-button bright"
 							disabled={(offer.price == 0 && $freeDailyTokensClaimed) || (offer.price != 0 && $externalLinksDisabled)}
 							onclick={() => {
 								playSound("basic_button");
@@ -304,7 +304,7 @@
 				Not subscribed yet? <span class="social-pin-span">Follow our YouTube channel to claim a free pin!</span>
 			</p>
 			<button
-				class="standard-button white social-pin-button"
+				class="standard-button bright social-pin-button"
 				onclick={() => {
 					playSound("basic_button");
 					window.open("https://www.youtube.com/@OpenGuessrOfficial?sub_confirmation=true", "_blank").focus();
@@ -362,7 +362,7 @@
 				</ul>
 				<button
 					class="standard-button tier-buy-button"
-					class:white={!highlighted}
+					class:bright={!highlighted}
 					class:tier-buy-button-highlighted={highlighted}
 					disabled={$supporterLevel >= tier || $externalLinksDisabled}
 					onclick={() => {
@@ -390,7 +390,6 @@
 
 	.free-social-pin-container {
 		width: 100%;
-		box-sizing: border-box;
 		box-shadow: var(--panel-shadow);
 		padding: var(--box-margin);
 		border-radius: var(--layout-margin);
@@ -451,7 +450,6 @@
 		align-items: center;
 		background-color: var(--box-color);
 		padding: var(--box-margin);
-		box-sizing: border-box;
 		height: 500px;
 		flex-basis: calc(50% - 150px);
 	}
@@ -490,7 +488,6 @@
 		align-items: center;
 		gap: var(--box-margin);
 		padding-inline: var(--layout-margin);
-		box-sizing: border-box;
 	}
 
 	.shop-info-section {
@@ -522,7 +519,6 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
-		box-sizing: border-box;
 		padding: var(--box-margin);
 		border-radius: var(--layout-margin);
 		gap: var(--box-margin);
@@ -534,7 +530,6 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
-		box-sizing: border-box;
 		gap: var(--box-margin);
 		display: flex;
 		flex-direction: column;
@@ -606,7 +601,6 @@
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		gap: var(--box-margin);
-		box-sizing: border-box;
 		margin-bottom: var(--layout-spacer);
 	}
 
@@ -678,7 +672,7 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
-		max-width: calc(100% - var(--layout-margin) * 2);
+		max-width: calc(100% - var(--box-margin) * 2);
 		max-height: 50%;
 		width: 300px;
 		margin-top: 30px;
@@ -686,6 +680,7 @@
 		transition: scale 250ms ease;
 		padding: var(--content-margin);
 		overflow: auto;
+		scrollbar-width: none;
 	}
 
 	:global(.special-offer-items .pin-holder) {
@@ -770,7 +765,7 @@
 	}
 
 	.tier-buy-button-highlighted {
-		background-color: var(--supporter-green);
+		background-color: var(--bright-green-color);
 	}
 
 	.tier-box {
@@ -784,7 +779,7 @@
 		gap: var(--box-margin);
 		flex-grow: 1;
 		position: relative;
-		height: 250px;
+		height: 270px;
 		flex-basis: 0;
 		min-width: 250px;
 	}
@@ -815,7 +810,6 @@
 		flex-direction: column;
 		gap: var(--layout-margin);
 		height: 100%;
-		box-sizing: border-box;
 	}
 
 	.supporter-perks-image {
@@ -832,7 +826,6 @@
 			transparent 90%,
 			transparent 100%
 		);
-		box-sizing: border-box;
 		padding: var(--content-margin);
 		user-select: none;
 		pointer-events: none;
@@ -842,8 +835,7 @@
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
-		box-sizing: border-box;
-		background: linear-gradient(to right, var(--box-color) 50%, var(--supporter-green-tint));
+		background: linear-gradient(to right, var(--box-color) 50%, var(--bright-green-color-dark));
 		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
@@ -858,7 +850,6 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--box-margin);
-		box-sizing: border-box;
 		width: 100%;
 		padding: var(--box-margin);
 		border-radius: var(--layout-margin);
@@ -888,7 +879,7 @@
 		.supporter-info-box {
 			flex-direction: column;
 			height: fit-content;
-			background: linear-gradient(to bottom, var(--box-color) 50%, var(--supporter-green-tint));
+			background: linear-gradient(to bottom, var(--box-color) 50%, var(--bright-green-color-dark));
 		}
 
 		.supporter-perks-image {

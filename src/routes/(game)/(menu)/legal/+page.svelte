@@ -1,5 +1,5 @@
 <script>
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showErrorPopup } from "openguessr-ui";
 
 	function openConsentManager() {
 		try {
@@ -9,7 +9,7 @@
 			});
 		} catch (error) {
 			console.error("TCF API error:", error);
-			errorPopup(
+			showErrorPopup(
 				"TCF API not loaded",
 				"The consent management system is not loaded. This is common when using an ad blocker.",
 			);

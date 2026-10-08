@@ -28,7 +28,7 @@
 
 <div class="progress-container">
 	<div class="progress-bar-wrapper">
-		<div class="progress-bar white-soft">
+		<div class="progress-bar bright-soft">
 			<div class="progress-bar-fill" style="width: {fillPercentage}%"></div>
 		</div>
 
@@ -50,7 +50,7 @@
 <style>
 	.progress-container {
 		position: relative;
-		width: calc(100% - 50px);
+		width: 100%;
 		height: 120px;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);

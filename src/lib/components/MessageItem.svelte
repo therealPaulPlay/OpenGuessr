@@ -4,10 +4,8 @@
 	import { Reply, SmilePlus, Trash2 } from "@lucide/svelte";
 	import { hcClient } from "$lib/stores/context-specific/headlessChatStore";
 	import { getAliasCached } from "$lib/logic/headlessChatLogic";
-	import { errorPopup } from "$lib/utils/errorHandling";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { showErrorPopup, showConfirmPopup, tooltip } from "openguessr-ui";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { messagesPopup } from "$lib/stores/uiStore";
 	import { page } from "$app/state";
@@ -45,7 +43,7 @@
 				await get(hcClient).removeReaction(existing.reactionId); // Remove, don't replace
 			else await get(hcClient).addReaction(message.messageId, emoji); // Add new reaction
 		} catch (error) {
-			errorPopup(
+			showErrorPopup(
 				"Failed to react",
 				"An error occured trying to update a reaction.",
 				"From headless-chat: " + error.message,
@@ -162,7 +160,7 @@
 						{#if !isOwn}
 							<button
 								bind:this={reactButtonElement}
-								class="standard-button white action-button"
+								class="standard-button bright action-button"
 								{@attach tooltip({ text: "React" })}
 								onclick={() => {
 									playSound("basic_button");
@@ -174,7 +172,7 @@
 						{/if}
 						{#if isOwn}
 							<button
-								class="standard-button white action-button"
+								class="standard-button bright action-button"
 								{@attach tooltip({ text: "Delete" })}
 								onclick={() => {
 									playSound("basic_button");
@@ -185,7 +183,7 @@
 											try {
 												await get(hcClient).deleteMessage(message.messageId);
 											} catch (error) {
-												errorPopup(
+												showErrorPopup(
 													"Failed to delete message",
 													"An error occured trying to delete your message.",
 													"From headless-chat: " + error.message,
@@ -199,7 +197,7 @@
 							</button>
 						{/if}
 						<button
-							class="standard-button white action-button"
+							class="standard-button bright action-button"
 							{@attach tooltip({ text: "Reply" })}
 							onclick={() => {
 								playSound("basic_button");
@@ -330,11 +328,11 @@
 		border-radius: var(--box-margin);
 		padding: var(--content-margin) var(--panel-margin);
 		overflow-wrap: anywhere;
-		max-width: 250px;
+		max-width: 265px;
 	}
 
 	.has-reference {
-		min-width: 100px;
+		min-width: 120px;
 	}
 
 	.bubble p {
@@ -400,7 +398,6 @@
 		padding: var(--content-margin);
 		padding-inline: var(--panel-margin);
 		opacity: 0.75;
-		box-sizing: border-box;
 	}
 
 	.reference-author {

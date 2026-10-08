@@ -74,7 +74,7 @@
 		</div>
 		<div class="button-box">
 			<button
-				class="standard-button white"
+				class="standard-button bright"
 				style:width={!$slideupCallback ? "100%" : ""}
 				onclick={() => {
 					playSound("basic_button");
@@ -113,7 +113,6 @@
 		position: fixed;
 		bottom: var(--box-margin);
 		left: var(--box-margin);
-		box-sizing: border-box;
 	}
 
 	.supporter-stat-text {
@@ -148,7 +147,6 @@
 		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		box-sizing: border-box;
 		max-width: 300px;
 	}
 

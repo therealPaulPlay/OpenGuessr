@@ -1,13 +1,12 @@
 <!-- This is being shown when joining a multiplayer round via a link. It displays the loading status and shows if joining is possible -->
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup, TitleSeparator } from "openguessr-ui";
 	import { linkJoinPopup } from "$lib/stores/uiStore";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
-	import TitleSeparator from "./ui/TitleSeparator.svelte";
 </script>
 
-<Popup verySlim={true} bind:open={$linkJoinPopup} onUserClose={leaveMultiplayer}>
+<Popup verySlim={true} bind:open={$linkJoinPopup} onuserclose={leaveMultiplayer}>
 	<div class="popup-title">
 		<h1>Room</h1>
 	</div>
@@ -24,7 +23,6 @@
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);
-		box-sizing: border-box;
 		width: 100%;
 	}
 </style>

@@ -1,15 +1,13 @@
 <!-- A popup where you can search for other players and send out friend requests -->
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup, showErrorPopup, Chip } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 	import { friendBrowserPopup, inboxPopup, outboxPopup } from "$lib/stores/uiStore";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Mail, MailClock, Search, UserRoundPlus } from "@lucide/svelte";
 	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
-	import Chip from "./ui/Chip.svelte";
 
 	let userSearchResults = $state();
 	let searchQuery = $state("");
@@ -25,7 +23,7 @@
 			const query = searchQuery;
 
 			if (!query) {
-				errorPopup("Empty search", "The search input cannot be empty.", "Missing query");
+				showErrorPopup("Empty search", "The search input cannot be empty.", "Missing query");
 				return;
 			}
 
@@ -42,11 +40,11 @@
 				if (userSearchResults.length == 0) userSearchResults = undefined;
 			} else {
 				console.error("Error loading the user browser: " + response.status);
-				errorPopup("Error loading users", "An error occured loading users in the user browser.", response.status);
+				showErrorPopup("Error loading users", "An error occured loading users in the user browser.", response.status);
 			}
 		} catch (error) {
 			console.error("Fetch/Network error occurred while loading user browser results: ", error);
-			errorPopup("Error loading users (Network)", "A network error occured loading users in the user browser.", error);
+			showErrorPopup("Error loading users (Network)", "A network error occured loading users in the user browser.", error);
 		}
 	}
 </script>
@@ -75,7 +73,7 @@
 		/>
 		<button
 			id="start-friend-search"
-			class="standard-button white"
+			class="standard-button bright"
 			onclick={() => {
 				playSound("basic_button");
 				startSearch();
@@ -100,7 +98,7 @@
 						<p class="entry-name">{entry.user_name}</p>
 						<button
 							id="send-friend-request"
-							class="send-friend-request-browser standard-button white"
+							class="send-friend-request-browser standard-button bright"
 							disabled={entry.id == yourId}
 							onclick={(e) => {
 								e.stopPropagation();
@@ -122,7 +120,7 @@
 			Sent requests
 		</p>
 		<button
-			class="standard-button white"
+			class="standard-button bright"
 			style:position="relative"
 			style:flex-grow="1"
 			onclick={() => {
@@ -142,7 +140,7 @@
 			{/if}
 		</p>
 		<button
-			class="standard-button white"
+			class="standard-button bright"
 			style:position="relative"
 			style:flex-grow="1"
 			onclick={() => {
@@ -188,7 +186,6 @@
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: 100%;
-		box-sizing: border-box;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		padding: var(--box-margin);
@@ -217,7 +214,7 @@
 		border-radius: var(--content-margin);
 		padding: var(--box-margin);
 		padding-inline: 20px;
-		width: calc(100% - 40px);
+		width: 100%;
 		transition: background-color 250ms ease;
 		background-color: var(--box-color);
 	}

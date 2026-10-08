@@ -9,7 +9,7 @@
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showErrorPopup } from "openguessr-ui";
 	import { inMenu } from "$lib/stores/uiStore";
 
 	onMount(async () => {
@@ -138,7 +138,7 @@
 			checkAuthentication();
 		} catch (error) {
 			console.error("Error authenticating with CrazyGames:", error);
-			errorPopup("Error authenticating", "An error occured trying to authenticate with CrazyGames.", error.message);
+			showErrorPopup("Error authenticating", "An error occured trying to authenticate with CrazyGames.", error.message);
 		}
 	}
 </script>

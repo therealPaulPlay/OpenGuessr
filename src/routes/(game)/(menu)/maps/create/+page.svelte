@@ -1,14 +1,10 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup, showErrorPopup, showConfirmPopup, showNotification, Collapsible } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { goto } from "$app/navigation";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import { showNotification } from "$lib/utils/notifications";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Upload } from "@lucide/svelte";
-	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 
@@ -81,7 +77,7 @@
 			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase());
 			showNotification("Map created!");
 		} else {
-			errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
+			showErrorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
 		}
 	}
 </script>
@@ -126,7 +122,7 @@
 					<div class="field-group">
 						<p class="field-label">Category</p>
 						<select
-							class="standard-button white large-button category-dropdown"
+							class="standard-button bright large category-dropdown"
 							bind:value={categoryValue}
 							onchange={() => {
 								playSound("basic_button");
@@ -148,7 +144,7 @@
 					</div>
 				</div>
 
-				<Drawer title="Rules" hasBottomLayoutMargin={false}>
+				<Collapsible title="Rules" ontoggle={() => playSound("toggle_button")}>
 					<div class="location-instructions">
 						<ul>
 							<li>You are limited to 3 maps per day</li>
@@ -159,7 +155,7 @@
 							<li>A maximum of 2,000 locations is recommended, up to 15,000 are possible</li>
 						</ul>
 					</div>
-				</Drawer>
+				</Collapsible>
 
 				<div class="form-section">
 					<h3 class="section-title">Locations (JSON)</h3>
@@ -179,7 +175,7 @@
 						</p>
 					</div>
 					<button
-						class="standard-button white large-button upload-button"
+						class="standard-button bright large upload-button"
 						onclick={() => {
 							playSound("basic_button");
 							filePicker.click();
@@ -226,7 +222,7 @@
 
 		<div class="submit-area bar-menu">
 			<button
-				class="standard-button large-button"
+				class="standard-button large wide"
 				onclick={() => {
 					playSound("basic_button");
 					showConfirmPopup(
@@ -385,10 +381,6 @@
 		background-color: var(--box-color);
 		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
-	}
-
-	.submit-area button {
-		padding-inline: 30px;
 	}
 
 	/* Popup styles */

@@ -2,17 +2,14 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showErrorPopup, showConfirmPopup, Tabs, Collapsible } from "openguessr-ui";
 	import { competitionData, dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
 	import { Plus, Search } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import { openCompetitionLeaderboard } from "$lib/utils/openCompetitionLeaderboard";
 	import { page } from "$app/state";
@@ -87,7 +84,7 @@
 			}
 		} catch (error) {
 			console.error("Error occurred trying to enter a competition:", error);
-			errorPopup("Error entering competition", null, error.message);
+			showErrorPopup("Error entering competition", null, error.message);
 		}
 	}
 
@@ -229,7 +226,7 @@
 
 {#snippet showMoreButton(callback)}
 	<button
-		class="load-more-item standard-button white competition-fade-in-item"
+		class="load-more-item standard-button bright competition-fade-in-item"
 		onclick={() => {
 			callback?.();
 		}}
@@ -282,19 +279,19 @@
 		</div>
 		<div class="competition-properties-box">
 			<div class="property-item">
-				<div class="label white-soft">
+				<div class="label bright-soft">
 					<p>Plays</p>
 				</div>
 				<p class="item-text of-left of-right">{playercount.toLocaleString()}</p>
 			</div>
 			<div class="property-item">
-				<div class="label white-soft">
+				<div class="label bright-soft">
 					<p>Restriction</p>
 				</div>
 				<p class="item-text of-left of-right">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
 			<div class="property-item">
-				<div class="label white-soft">
+				<div class="label bright-soft">
 					<p>Duration</p>
 				</div>
 				<p class="item-text of-left of-right">
@@ -307,13 +304,13 @@
 				</p>
 			</div>
 			<div class="property-item">
-				<div class="label white-soft">
+				<div class="label bright-soft">
 					<p>Rounds</p>
 				</div>
 				<p class="item-text of-left of-right">{locationAmount}</p>
 			</div>
 			<div class="property-item">
-				<div class="label white-soft">
+				<div class="label bright-soft">
 					<p>Round length</p>
 				</div>
 				<p class="item-text of-left of-right">{roundLength}s</p>
@@ -328,7 +325,7 @@
 				showConfirmPopup("About", description);
 			}}
 		>
-			<div class="label white-soft" role="button" tabindex="0">
+			<div class="label bright-soft" role="button" tabindex="0">
 				<p>Description</p>
 			</div>
 			<p class="item-text desc-text">
@@ -337,7 +334,7 @@
 		</div>
 		<div class="competition-button-box">
 			<button
-				class="standard-button competition-button white"
+				class="standard-button competition-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					openCompetitionLeaderboard(id);
@@ -347,7 +344,7 @@
 			</button>
 			{#if !expired}
 				<button
-					class="standard-button competition-button white"
+					class="standard-button competition-button bright"
 					class:daily-primary={daily}
 					disabled={entered || (authorId != null && authorId == localStorage.getItem("id"))}
 					onclick={() => {
@@ -418,10 +415,10 @@
 						</div>
 					</div>
 				{:else}
-					<Drawer
+					<Collapsible
 						title="Yesterday's results"
-						class="competition-fade-in-item daily-expired-drawer"
-						hasBottomLayoutMargin={false}
+						class="competition-fade-in-item daily-expired-collapsible"
+						ontoggle={() => playSound("toggle_button")}
 					>
 						{@render competitionItem(
 							entry.id,
@@ -439,7 +436,7 @@
 							entry.entered,
 							true,
 						)}
-					</Drawer>
+					</Collapsible>
 				{/if}
 			{/each}
 		{:else}
@@ -453,7 +450,7 @@
 	</div>
 	<div class="button-toolbar">
 		<button
-			class="standard-button white"
+			class="standard-button bright"
 			onclick={() => {
 				playSound("basic_button");
 				if ($isAuthenticated) goto("/competitions/create");
@@ -488,7 +485,7 @@
 			/>
 			<button
 				id="start-search"
-				class="standard-button white"
+				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
 					startSearch();
@@ -573,7 +570,6 @@
 		justify-content: space-between;
 		box-shadow: var(--panel-shadow);
 		flex-wrap: wrap;
-		box-sizing: border-box;
 		gap: var(--box-margin);
 		align-items: center;
 		border-radius: var(--layout-margin);
@@ -641,10 +637,9 @@
 		display: flex;
 		flex-direction: column;
 		position: relative;
-		box-sizing: border-box;
 	}
 
-	:global(.daily-expired-drawer) {
+	:global(.daily-expired-collapsible) {
 		grid-column: 1 / -1;
 	}
 
@@ -703,7 +698,7 @@
 		padding: 3px;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		max-height: 39px;
+		max-height: 45px;
 		display: flex;
 		align-items: center;
 		background-color: var(--box-color);
@@ -772,7 +767,7 @@
 		transition: background-color 250ms ease;
 		padding-inline: var(--box-margin);
 		min-width: 0;
-		max-width: 225px;
+		max-width: 245px;
 		flex: 1;
 		text-overflow: ellipsis;
 	}
@@ -816,7 +811,6 @@
 		display: flex;
 		position: relative;
 		overflow: hidden;
-		box-sizing: border-box;
 		min-height: 100%;
 	}
 
@@ -825,7 +819,6 @@
 		flex-direction: column;
 		position: relative;
 		overflow: hidden;
-		box-sizing: border-box;
 		flex-grow: 1;
 	}
 
@@ -843,7 +836,6 @@
 		border-radius: var(--content-margin);
 		gap: var(--content-margin);
 		display: flex;
-		box-sizing: border-box;
 		align-items: center;
 		height: 100%;
 		padding: var(--content-margin);

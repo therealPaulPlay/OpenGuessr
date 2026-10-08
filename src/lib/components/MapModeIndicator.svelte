@@ -11,7 +11,7 @@
 	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
-	import Chip from "./ui/Chip.svelte";
+	import { Chip } from "openguessr-ui";
 	import MapAttribution from "./MapAttribution.svelte";
 	import { inMenu } from "$lib/stores/uiStore";
 
@@ -90,7 +90,6 @@
 		flex-shrink: 0;
 		height: 56px;
 		width: 100%;
-		box-sizing: border-box;
 		position: relative;
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;

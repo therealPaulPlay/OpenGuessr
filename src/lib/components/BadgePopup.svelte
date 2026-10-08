@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 	import { badgePopup } from "$lib/stores/uiStore";
 	import { ArrowRight } from "@lucide/svelte";
 	import { profileData, profileId } from "$lib/stores/context-specific/profileStore";
@@ -117,7 +117,6 @@
 		border-top-right-radius: 0;
 		padding: var(--box-margin);
 		width: 100%;
-		box-sizing: border-box;
 		margin-bottom: var(--layout-margin);
 	}
 

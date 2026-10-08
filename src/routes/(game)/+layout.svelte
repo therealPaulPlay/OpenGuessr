@@ -2,14 +2,16 @@
 	import { initializeAds } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 	import initOverfade from "overfade";
+	import { playSound } from "$lib/utils/soundManager";
+	import { ConfirmPopup, ErrorPopup, Notification } from "openguessr-ui";
 
 	let { children } = $props();
 
 	// Component Imports
 	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
-	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";
 	import TopBar from "$lib/components/TopBar.svelte";
 	import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
@@ -17,7 +19,6 @@
 	import MapHolder from "$lib/components/MapHolder.svelte";
 	import MobileMapToggles from "$lib/components/MobileMapToggles.svelte";
 	import Map from "$lib/components/Map.svelte";
-	import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
 	import BottomBar from "$lib/components/BottomBar.svelte";
 	import Panorama from "$lib/components/Panorama.svelte";
 	import SignupIframe from "$lib/components/SignupIframe.svelte";
@@ -52,7 +53,6 @@
 	import Navigation from "$lib/components/MainMenu.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
-	import Notification from "$lib/components/Notification.svelte";
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
 	import CompetitionResultPopup from "$lib/components/CompetitionResultPopup.svelte";
@@ -105,7 +105,11 @@
 
 <!-- Logo and Nav -->
 <TopBar />
-<Notification />
+<Notification
+	top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}
+	onaccept={() => playSound("basic_button")}
+	ondismiss={() => playSound("basic_button")}
+/>
 
 <!-- Music -->
 <MusicController />
@@ -113,7 +117,7 @@
 <LoadingOverlay />
 <ErrorPopup />
 <Navigation />
-<ConfirmPopup />
+<ConfirmPopup onconfirm={() => playSound("basic_button")} />
 <ShopPurchaseAnimation />
 <MessagesPopup />
 <ProfilePopup />

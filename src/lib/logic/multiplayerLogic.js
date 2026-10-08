@@ -1,4 +1,4 @@
-import { errorPopup } from "$lib/utils/errorHandling";
+import { showErrorPopup } from "openguessr-ui";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore.js";
@@ -120,7 +120,7 @@ export async function createMultiplayerInstance() {
                 try {
                     await get(socket)?.sendRequest("startRoom");
                 } catch (error) {
-                    if (get(multiplayer)) errorPopup("Failed to start room", "An error occured trying to start the room upon host migration.", error.message);
+                    if (get(multiplayer)) showErrorPopup("Failed to start room", "An error occured trying to start the room upon host migration.", error.message);
                     console.error("Error starting room upon host migration:", error);
                 }
             }
@@ -157,7 +157,7 @@ export async function createMultiplayerInstance() {
             if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerDataAdded) {
                 playerDataAdded = true;
                 get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
-                    if (get(multiplayer)) errorPopup("Failed to add player", "An error occured trying to add this player's data.", error.message);
+                    if (get(multiplayer)) showErrorPopup("Failed to add player", "An error occured trying to add this player's data.", error.message);
                     console.error("Error adding player data in multiplayer:", error);
                 });
             }
@@ -220,7 +220,7 @@ export async function createMultiplayerInstance() {
                 if (reason) {
                     // Kicked as reason is expected during matchmaking cancellation, as the server kicks the player
                     const isCancelKick = get(cancellingMatchmaking) && reason?.toLowerCase()?.includes?.("kicked");
-                    if (!isCancelKick) errorPopup("Disconnected from multiplayer", "You are no longer in multiplayer due to the reason below.", reason);
+                    if (!isCancelKick) showErrorPopup("Disconnected from multiplayer", "You are no longer in multiplayer due to the reason below.", reason);
                 }
                 leaveMultiplayer(false); // If not already left, leave (e.g. on error)
             }
@@ -288,7 +288,7 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) 
     } catch (error) {
         matchmakingActive.set(false);
         console.error("Error setting up room:", error);
-        errorPopup("Error creating room", null, error.message);
+        showErrorPopup("Error creating room", null, error.message);
         return false; // Error
     }
 }
@@ -301,7 +301,7 @@ export async function joinMultiplayerRoom(code) {
         // Create instance
         try { await createMultiplayerInstance(); } catch (error) {
             matchmakingActive.set(false); // If the instance creation throws, exit matchmaking - if join fails, keep matchmaking active
-            errorPopup("Error joining room", null, error.message);
+            showErrorPopup("Error joining room", null, error.message);
             throw error; // Re-throw
         }
 

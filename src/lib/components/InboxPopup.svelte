@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 	import { inboxPopup } from "$lib/stores/uiStore";
 	import { newFriendRequest, inboxContent } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { loadInbox } from "$lib/logic/friendAPI";
@@ -50,7 +50,7 @@
 						<p>{entry.user_name}</p>
 						<div class="inbox-item-buttons">
 							<button
-								class="standard-button white"
+								class="standard-button bright"
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
@@ -60,7 +60,7 @@
 								<Check size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
 							</button>
 							<button
-								class="standard-button white"
+								class="standard-button bright"
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
@@ -84,7 +84,7 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
-		width: calc(100% - 30px);
+		width: 100%;
 		position: relative;
 		display: flex;
 		justify-content: space-between;
@@ -115,7 +115,6 @@
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: 100%;
-		box-sizing: border-box;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		margin-top: var(--box-margin);

@@ -403,7 +403,7 @@
 							transform={`translate(${point.x},${point.y})`}
 						>
 							<!-- Outline + fill passes to match the flag's halo style (no inner stroke over the fill). -->
-							<circle r="7" fill="var(--dark-background)" />
+							<circle r="7" fill="var(--overlay-color)" />
 							<circle r="5" fill="var(--brand-color)" class="point-circle" />
 						</g>
 					{/each}
@@ -418,16 +418,16 @@
 								<g transform="translate(-3.2,-17.6) scale(0.8)" stroke-linecap="round" stroke-linejoin="round">
 									<path
 										d={FLAG_CLOTH_PATH}
-										fill="var(--dark-background)"
-										stroke="var(--dark-background)"
+										fill="var(--overlay-color)"
+										stroke="var(--overlay-color)"
 										stroke-width="6"
 									/>
-									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--dark-background)" stroke-width="6" />
+									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--overlay-color)" stroke-width="6" />
 									<path d={FLAG_CLOTH_PATH} fill="var(--brand-color)" stroke="var(--brand-color)" stroke-width="2" />
 									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--brand-color)" stroke-width="2" />
 								</g>
 							{:else}
-								<circle r="7" fill="var(--dark-background)" />
+								<circle r="7" fill="var(--overlay-color)" />
 								<circle r="5" fill="var(--brand-color)" />
 							{/if}
 							{#if marker.label}
@@ -503,7 +503,7 @@
 		font-size: 18px;
 		font-weight: 600;
 		paint-order: stroke;
-		stroke: var(--dark-background);
+		stroke: var(--overlay-color);
 		stroke-width: 3px;
 		stroke-linejoin: round;
 		pointer-events: none;

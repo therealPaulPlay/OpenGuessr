@@ -1,5 +1,5 @@
 <script>
-	import InfoBanner from "$lib/components/InfoBanner.svelte";
+	import { InfoBanner } from "openguessr-ui";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import MultiplayerMatchmakingDisplay from "$lib/components/MultiplayerMatchmakingDisplay.svelte";
 	import { createTeamDuelRoom, startFindTeamDuel, safeCancel } from "$lib/logic/matchmakingLogic";

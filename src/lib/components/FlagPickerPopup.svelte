@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/ui/Popup.svelte";
+	import { Popup } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";
@@ -111,7 +111,7 @@
 		width: fit-content;
 		margin-left: 0;
 		padding: var(--panel-margin);
-		min-width: calc(100% - 16px);
+		min-width: 100%;
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color-dark);
 		border-radius: var(--box-margin);
