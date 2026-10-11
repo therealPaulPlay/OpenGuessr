@@ -411,8 +411,12 @@
 				</div>
 			</div>
 		{/if}
-		<!-- Needed since the SV shines through the main menu background -->
-		<MapAttribution forPanorama />
+		{#if $tutorialStep >= 0}
+			<!-- Needed since the SV shines through the main menu background -->
+			<div in:blur|global={{ duration: 250 }}>
+				<MapAttribution forPanorama />
+			</div>
+		{/if}
 	</div>
 {/if}
 
