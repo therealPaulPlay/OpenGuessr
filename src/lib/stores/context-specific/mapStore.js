@@ -10,6 +10,7 @@ export const map = writable();
 export const mapInteractive = writable(true);
 export const mapExpanded = writable(isMobile ? false : true);
 export const mapHovered = writable(false);
+export const mapHoveredImmediate = writable(false); // True map hover state without the cancellation delay
 
 // Marker / Pin position
 export const guessLat = writable(0); // Player pin latitude
