@@ -1,5 +1,5 @@
 <script>
-	import { mapExpanded, mapHovered, map } from "$lib/stores/context-specific/mapStore";
+	import { mapExpanded, mapHovered, map, mapHoveredImmediate } from "$lib/stores/context-specific/mapStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
@@ -23,10 +23,12 @@
 		if (lastPointerType === "touch") return;
 		clearTimeout(mapResizeTimeout);
 		mapHovered.set(true);
+		mapHoveredImmediate.set(true);
 	}
 
 	function handleMapUnhover() {
 		if (lastPointerType === "touch") return;
+		mapHoveredImmediate.set(false);
 		mapResizeTimeout = setTimeout(() => {
 			mapHovered.set(false);
 		}, 250);
@@ -62,6 +64,7 @@
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
 	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "55dvh" : "max(18dvh, 150px)") : "0"}
+	style:opacity={$mapHoveredImmediate ? "1" : ""}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
 ></div>
 
@@ -88,12 +91,8 @@
 		outline: none;
 	}
 
-	#map:hover {
-		opacity: 100%;
-	}
-
-	/* On mobile, the map doesn't fade out if it's not being hovered over */
-	@media (orientation: portrait) and (max-width: 800px) {
+	/* On mobile or touch devices, the map is always full opacity */
+	@media (orientation: portrait) and (max-width: 800px), not all and (pointer: fine) {
 		#map {
 			opacity: 100%;
 		}
@@ -130,31 +129,6 @@
 
 	:global(.leaflet-interactive) {
 		cursor: crosshair !important;
-	}
-
-	:global(.gm-style .gm-style-iw) {
-		font-size: 16px;
-		text-align: center;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		padding-bottom: 0;
-		padding-inline: 0;
-		padding-right: var(--layout-margin);
-	}
-
-	:global(.gm-style-iw-ch) {
-		display: none;
-	}
-
-	:global(.gm-style iframe + div) {
-		border: none !important;
-	}
-
-	:global(.gm-style-iw-d) {
-		overflow: visible !important;
-		margin-right: 20px !important;
 	}
 
 	:global(.leaflet-control-layers-toggle) {

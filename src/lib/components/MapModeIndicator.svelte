@@ -7,7 +7,11 @@
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
-	import { defaultRestriction, restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
+	import {
+		defaultRestriction,
+		restrictionNames,
+		selectedRestriction,
+	} from "$lib/stores/context-specific/restrictionStore";
 	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
@@ -38,10 +42,7 @@
 
 {#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
 	<!-- Needed for TOS compliance -->
-	<div
-		in:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: 150 }}
-		out:fade={{ duration: $resultScreenEnabled ? 0 : 50 }}
-	>
+	<div in:fade={{ duration: 150, delay: 150 }} out:fade={{ duration: $resultScreenEnabled ? 0 : 50 }}>
 		<MapAttribution />
 	</div>
 	<div

@@ -18,6 +18,7 @@
 	import { isMapSelected, selectMap } from "$lib/utils/changeMapUtils";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 	import MoreMapsVisualization from "./MoreMapsVisualization.svelte";
+	import MapAttribution from "./MapAttribution.svelte";
 	import { dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
 	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
@@ -410,6 +411,8 @@
 				</div>
 			</div>
 		{/if}
+		<!-- Needed since the SV shines through the main menu background -->
+		<MapAttribution forPanorama />
 	</div>
 {/if}
 
