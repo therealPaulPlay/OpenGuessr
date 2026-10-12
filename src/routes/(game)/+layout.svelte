@@ -103,7 +103,7 @@
 <!-- Log user in -->
 <Authentication />
 
-<!-- Logo and Nav -->
+<!-- Logo and Notification -->
 <TopBar />
 <Notification
 	top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}
