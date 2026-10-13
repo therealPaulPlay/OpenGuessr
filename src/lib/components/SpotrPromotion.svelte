@@ -9,7 +9,7 @@
 		<div class="left">
 			<div class="left-text">
 				<h2 class="heading">
-					Spotr <Chip style="margin-top: auto; margin-bottom: 3px;" text="Experiment" red italic mutedOpacity={false} />
+					Spotr <Chip style="margin-top: auto; margin-bottom: 3px;" italic text="Experiment" />
 				</h2>
 
 				<p style:opacity="0.75" style:margin-right="var(--layout-margin)">
