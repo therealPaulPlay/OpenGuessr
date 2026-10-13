@@ -56,7 +56,7 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: var(--layout-margin);
+		gap: calc(var(--layout-margin) + var(--box-margin));
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		padding: var(--box-margin);
@@ -66,7 +66,7 @@
 	.left-text {
 		display: flex;
 		flex-direction: column;
-		gap: var(--layout-margin);
+		gap: var(--box-margin);
 		padding-inline: var(--content-margin);
 	}
 
