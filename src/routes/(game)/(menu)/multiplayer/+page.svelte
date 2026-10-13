@@ -33,6 +33,8 @@
 	import { loadInitialHasNew } from "$lib/logic/headlessChatLogic";
 	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import SpotrPromotion from "$lib/components/SpotrPromotion.svelte";
+	import { externalLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 
 	let friendsRefreshInterval;
 	let matchmakingPlayerAmount = $state(0);
@@ -203,6 +205,10 @@
 			</div>
 		</div>
 	</div>
+	<!-- Spotr promotion -->
+	{#if !$externalLinksDisabled}
+		<SpotrPromotion />
+	{/if}
 	<div class="header-container header-margin-top">
 		<h2 class="header">Tournaments</h2>
 	</div>
