@@ -13,8 +13,8 @@
 				</h2>
 
 				<p style:opacity="0.75" style:margin-right="var(--layout-margin)">
-					A multiplayer photography challenge taking place in Street View. Instead of looking for a location, you search for the
-					perfect spot to capture in a given category.
+					A multiplayer photography challenge based on Street View. Spot what the category asks for and take the best
+					picture!
 				</p>
 			</div>
 
@@ -25,11 +25,7 @@
 					playSound("basic_button");
 					window.open("https://spotr.openguessr.com", "_blank");
 				}}
-				>Play Spotr <ExternalLink
-					size={20}
-					strokeWidth={2.25}
-					style="margin-bottom: -2px; margin-left: 3px;"
-				/></button
+				>Play Spotr <ExternalLink size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 3px;" /></button
 			>
 		</div>
 
@@ -84,7 +80,7 @@
 		object-fit: cover;
 		width: 100%;
 		height: 100%;
-        aspect-ratio: 21/9;
+		aspect-ratio: 24/9;
 	}
 
 	.heading {
@@ -95,7 +91,7 @@
 	@container promotion (width < 800px) {
 		.content {
 			flex-direction: column;
-            flex-direction: column-reverse;
+			flex-direction: column-reverse;
 		}
 	}
 </style>
