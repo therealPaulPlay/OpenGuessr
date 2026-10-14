@@ -20,8 +20,10 @@
 	});
 
 	// SFX Volume ----------------------------------------------------------------------------
-	let sfxVolumeSliderValue = $state(0.5);
-	let sfxSliderBgPercentage = $state(100);
+	const DEFAULT_VOLUME = 0.5; // For both SFX and music
+
+	let sfxVolumeSliderValue = $state(DEFAULT_VOLUME);
+	let sfxSliderBgPercentage = $state(100 * DEFAULT_VOLUME);
 
 	function inputSFXVolumeSlider() {
 		setSoundsVolume(sfxVolumeSliderValue);
@@ -29,7 +31,9 @@
 	}
 
 	onMount(() => {
-		const savedSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
+		const savedSoundVolume = parseFloat(
+			localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : DEFAULT_VOLUME,
+		);
 		setSoundsVolume(savedSoundVolume);
 		sfxVolumeSliderValue = savedSoundVolume;
 		sfxSliderBgPercentage = Math.round(sfxVolumeSliderValue * 100);
@@ -40,8 +44,8 @@
 	);
 
 	// Music Volume -------------------------------------------------------------------------
-	let musicVolumeSliderValue = $state(0.5);
-	let musicSliderBgPercentage = $state(100);
+	let musicVolumeSliderValue = $state(DEFAULT_VOLUME);
+	let musicSliderBgPercentage = $state(100 * DEFAULT_VOLUME);
 
 	function inputMusicVolumeSlider() {
 		setMusicVolume(musicVolumeSliderValue);
@@ -49,8 +53,10 @@
 	}
 
 	onMount(() => {
-		const savedMusicVolume = localStorage.getItem("musicVolume") ? localStorage.getItem("musicVolume") : 0.5;
-		setMusicVolume(parseFloat(savedMusicVolume));
+		const savedMusicVolume = parseFloat(
+			localStorage.getItem("musicVolume") ? localStorage.getItem("musicVolume") : DEFAULT_VOLUME,
+		);
+		setMusicVolume(savedMusicVolume);
 		musicVolumeSliderValue = savedMusicVolume;
 		musicSliderBgPercentage = Math.round(musicVolumeSliderValue * 100);
 	});
@@ -179,8 +185,7 @@
 		</div>
 		<div class="settings-box settings-box-flex no-flex-wrap" class:box-disabled={!$singleplayer}>
 			<p class="settings-box-flex-title">No Move, Pan or Zoom</p>
-			<Tabs tabs={["On", "Off"]} selected={selectedNMPZ} onchange={(selected) => setSingleplayerNMPZ(selected)}
-			></Tabs>
+			<Tabs tabs={["On", "Off"]} selected={selectedNMPZ} onchange={(selected) => setSingleplayerNMPZ(selected)}></Tabs>
 		</div>
 		<TitleSeparator text="Audio" noMargin={true} />
 		<div class="settings-box">
@@ -195,6 +200,10 @@
 					bind:value={sfxVolumeSliderValue}
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
+					ondblclick={() => {
+						sfxVolumeSliderValue = DEFAULT_VOLUME;
+						inputSFXVolumeSlider();
+					}}
 				/>
 				<p style:margin-right="auto">{sfxSliderBgPercentage}%</p>
 			</div>
@@ -211,6 +220,10 @@
 					bind:value={musicVolumeSliderValue}
 					style:background={musicSliderBg}
 					oninput={inputMusicVolumeSlider}
+					ondblclick={() => {
+						musicVolumeSliderValue = DEFAULT_VOLUME;
+						inputMusicVolumeSlider();
+					}}
 				/>
 				<p style:margin-right="auto">{musicSliderBgPercentage}%</p>
 				<button
