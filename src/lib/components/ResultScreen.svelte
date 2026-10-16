@@ -274,7 +274,7 @@
 					imageSrc: "/img/tutorial/tutorial_next_round.png",
 					state: nextRoundTutorialNote,
 					zIndex: 13,
-					maxWidth: 125,
+					maxWidth: 150,
 					showDelay: 3000,
 				})}
 				onclick={() => {
