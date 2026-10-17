@@ -130,7 +130,7 @@ export async function loadResultScreenXP(distance) {
     earnedExperience.set(earnedBasicXP || 0);
 
     if (earnedXP > 0 && get(isAuthenticated)) addUserXP(earnedXP); // Save XP to database
-    if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
+    if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 150);
 
     if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
         supporterXpBoostAnimation(supporterMultiplier);
@@ -140,10 +140,11 @@ export async function loadResultScreenXP(distance) {
     }
 }
 
+// Should roughly match the duration of animatedExperience minus the initial timeout
 function playScoreincreaseSound() {
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 26; i++) {
         setTimeout(() => {
             playSound("score_increase");
-        }, 50 * i)
+        }, 65 * i)
     }
 }
