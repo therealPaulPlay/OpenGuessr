@@ -100,5 +100,6 @@
 		font-size: 18px;
 		opacity: 0.5;
 		text-wrap: nowrap;
+		user-select: none;
 	}
 </style>
