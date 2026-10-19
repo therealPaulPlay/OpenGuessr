@@ -519,7 +519,7 @@
 	</div>
 
 	{#if otherMapsByAuthor.length}
-		<div class="header-container" style:margin-top="var(--layout-spacer)">
+		<div class="header-container">
 			<h3 class="header other-maps-header">
 				More by <button
 					class="author-text"
@@ -665,6 +665,7 @@
 		text-wrap: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		font-size: 35px;
 	}
 
 	.locations-trim-note {
