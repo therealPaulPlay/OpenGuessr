@@ -19,6 +19,7 @@
 	import { page } from "$app/state";
 	import MapItem from "$lib/components/MapItem.svelte";
 	import { get } from "svelte/store";
+	import { formatMapNameForUrl } from "$lib/utils/idToMapName";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -85,18 +86,6 @@
 					},
 					widget: {
 						externalGames: [
-							{
-								name: "Bluelife",
-								domain: "paulplay.studio/bluelife",
-								description:
-									"Dive into the world of Bluelife, an action-packed ocean adventure! Experience challenging levels with unique obstacles to overcome.",
-								cover_image_url:
-									"https://paulplay-storage-1.fra1.digitaloceanspaces.com/openguessr-media/bluelife-cover.jpg",
-								cover_video_url:
-									"https://paulplay-storage-1.fra1.digitaloceanspaces.com/openguessr-media/bluelife-cover-video.mp4",
-								badge: "By PaulPlay",
-								square: true,
-							},
 							{
 								name: "Worldle",
 								domain: "worldle.teuteuf.fr",
@@ -313,8 +302,7 @@
 		animate={true}
 		onclick={() => {
 			playSound("basic_button");
-			const nameFormattedForUrl = map.name.split(" ").join("_").toLowerCase();
-			goto("/maps/community/" + nameFormattedForUrl + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
+			goto("/maps/community/" + formatMapNameForUrl(map.name) + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
 		}}
 	>
 		<button
@@ -721,12 +709,13 @@
 		padding-inline: var(--box-margin);
 		text-overflow: ellipsis;
 		width: 0;
-		min-width: calc(min(200px, max(15dvw, 75px)) + var(--box-margin) * 2);
+		min-width: calc(min(215px, max(15dvw, 75px)) + var(--box-margin) * 2);
 	}
 
 	.search-container {
 		display: flex;
 		flex-grow: 1;
+		gap: var(--panel-margin);
 	}
 
 	#start-search {
@@ -761,7 +750,7 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		gap: var(--box-margin);
+		gap: var(--panel-margin);
 		scrollbar-width: none;
 	}
 
@@ -786,10 +775,10 @@
 		box-shadow: var(--bulb-shadow);
 		width: 100%;
 		min-width: 300px;
-		gap: var(--box-margin);
+		gap: var(--panel-margin);
 		align-items: center;
-		border-radius: var(--layout-margin);
-		padding: var(--box-margin);
+		border-radius: var(--box-margin);
+		padding: var(--panel-margin);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
 	}

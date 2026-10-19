@@ -7,3 +7,7 @@ export function idToMapName(str) {
         return "Error (?)";
     }
 }
+
+export function formatMapNameForUrl(name = "") {
+    return name.split(" ").join("_").toLowerCase();
+}
