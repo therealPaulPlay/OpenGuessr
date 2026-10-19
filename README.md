@@ -14,24 +14,14 @@ Please refer to the `README.md` of `openguessr-ui`.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-```
+Once you've installed the dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server using `npm run dev`.
 
 ## Linting
 
-`ESlint` is used for linting. Use it with `npm run lint`.
+`ESlint` is used for linting. Use it via `npm run lint`.
 
 ## Building
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
+To create a production build, run `npm run build`. You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
