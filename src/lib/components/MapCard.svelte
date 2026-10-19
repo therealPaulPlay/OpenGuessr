@@ -107,5 +107,6 @@
 		word-break: break-word;
 		overflow: hidden;
 		opacity: 0.5;
+		text-wrap: balance;
 	}
 </style>

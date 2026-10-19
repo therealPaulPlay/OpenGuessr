@@ -116,11 +116,15 @@
 		width: 100%;
 		aspect-ratio: 16/9;
 		object-fit: cover;
-		border-radius: var(--content-margin);
+		border-radius: var(--panel-margin);
 		pointer-events: none;
 		user-select: none;
 		/* To hide the alt text during load */
 		color: transparent;
+	}
+
+	.map-item-compact .map-cover-image {
+		border-radius: var(--content-margin);
 	}
 
 	.map-cover-placeholder {
@@ -129,8 +133,12 @@
 		justify-content: center;
 		width: 100%;
 		aspect-ratio: 16/9;
-		border-radius: var(--content-margin);
+		border-radius: var(--panel-margin);
 		background-color: rgba(255, 255, 255, 0.1);
+	}
+
+	.map-item-compact .map-cover-placeholder {
+		border-radius: var(--content-margin);
 	}
 
 	.map-info {
@@ -207,8 +215,12 @@
 		position: absolute;
 		inset: 0;
 		background: rgba(0, 0, 0, 0.5);
-		border-radius: var(--content-margin);
+		border-radius: var(--panel-margin);
 		opacity: 0;
 		transition: opacity 250ms ease;
+	}
+
+	.map-item-compact .play-map-cover {
+		border-radius: var(--content-margin);
 	}
 </style>
