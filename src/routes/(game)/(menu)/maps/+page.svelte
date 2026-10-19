@@ -772,7 +772,7 @@
 	.categories-search-area {
 		display: flex;
 		justify-content: space-between;
-		box-shadow: var(--bulb-shadow);
+		box-shadow: var(--panel-shadow);
 		width: 100%;
 		min-width: 300px;
 		gap: var(--panel-margin);
