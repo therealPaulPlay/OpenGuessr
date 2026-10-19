@@ -256,7 +256,7 @@
 	{const yesterdaysDaily = $derived(expired && daily)}
 	<div
 		class="competition-item competition-fade-in-item"
-		style:border-radius={yesterdaysDaily ? "8px" : ""}
+		style:border-radius={yesterdaysDaily ? "var(--box-margin)" : ""}
 		style:box-shadow={yesterdaysDaily ? "var(--box-shadow)" : ""}
 		class:daily-competition-item={daily}
 	>
