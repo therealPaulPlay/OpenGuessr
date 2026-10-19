@@ -26,6 +26,7 @@
 	import SvgMap from "$lib/components/SvgMap.svelte";
 	import { page } from "$app/state";
 	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl.js";
+	import MapCard from "$lib/components/MapCard.svelte";
 
 	let { data } = $props();
 
@@ -34,8 +35,7 @@
 	let map = $state(null);
 	let mapLocationData = $derived(map?.map_data);
 	let locationIndex = $state(0);
-
-	let playerId = $state(0);
+	let otherMapsByAuthor = $derived(map?.otherMaps ?? []);
 	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
 
 	let locationsArrayForSvgMap = $derived.by(() => {
@@ -56,12 +56,23 @@
 			: null,
 	);
 
+	let playerId = $state(0);
+
 	onMount(() => {
 		playerId = localStorage.getItem("id");
 	});
 
-	onMount(async () => {
+	$effect(async () => {
+		// Resets
+		untrack(() => {
+			map = null;
+			locationIndex = 0;
+			isLiked = false;
+			likesCount = "...";
+		});
+
 		try {
+			const nameIdAtFetch = nameId;
 			const response = await fetch(get(apiUrl) + `/maps/${encodeURIComponent(nameId)}`);
 			if (!response.ok) throw new Error(response.status);
 
@@ -72,6 +83,9 @@
 			if (!contentResponse.ok) throw new Error(contentResponse.status);
 
 			mapData.map_data = await contentResponse.json();
+
+			if (nameIdAtFetch !== nameId) return; // If the map changed in between requests
+
 			map = mapData;
 		} catch (error) {
 			console.error("Error fetching map:", error);
@@ -104,6 +118,7 @@
 
 		const action = async () => {
 			if (isLiked == like) return; // Already in the requested state, e.g. after signing in on a map you liked before
+			if (typeof likesCount !== "number") return; // Like status still loading
 
 			const previousLiked = isLiked;
 			const previousCount = likesCount;
@@ -356,7 +371,7 @@
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<p
-				class="author-text"
+				class="author-text author-text-low-opacity"
 				style:pointer-events={map?.authorId == null ? "none" : undefined}
 				onclick={() => {
 					showProfile(map?.authorId);
@@ -502,6 +517,26 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if otherMapsByAuthor.length}
+		<div class="header-container" style:margin-top="var(--layout-spacer)">
+			<h3 class="header other-maps-header">
+				More by <button
+					class="author-text"
+					style:font-size="inherit"
+					style:pointer-events={map?.authorId == null ? "none" : undefined}
+					onclick={() => {
+						showProfile(map?.authorId);
+					}}>{map?.author ?? "..."}</button
+				>
+			</h3>
+		</div>
+		<div class="other-maps-section">
+			{#each otherMapsByAuthor as map}
+				<MapCard {map} showAuthor={false} returnToMultiplayer={returnAfterChange} />
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <Popup bind:open={updatePopup} verySlim={true}>
@@ -597,6 +632,7 @@
 		justify-content: center;
 		align-items: center;
 		padding-inline: var(--box-margin);
+		margin-bottom: var(--layout-spacer);
 	}
 
 	.map-title {
@@ -615,6 +651,20 @@
 		overflow: hidden;
 		margin-bottom: var(--layout-spacer);
 		position: relative;
+	}
+
+	.other-maps-section {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		gap: var(--layout-margin);
+		align-items: stretch;
+		width: 100%;
+	}
+
+	.other-maps-header {
+		text-wrap: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 
 	.locations-trim-note {
@@ -757,13 +807,20 @@
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
 		overflow: hidden;
-		opacity: 0.5;
 		width: fit-content;
 		cursor: pointer;
 		transition: opacity 250ms ease;
 	}
 
 	.author-text:hover {
+		opacity: 0.5;
+	}
+
+	.author-text-low-opacity {
+		opacity: 0.5;
+	}
+
+	.author-text-low-opacity:hover {
 		opacity: 0.25;
 	}
 

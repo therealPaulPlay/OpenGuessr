@@ -471,7 +471,7 @@
 				getCompetitionsFromServer(false, false, false, hideEntered);
 			}}
 		/>
-		<search>
+		<search style:gap="var(--panel-margin)">
 			<input
 				id="competition-search"
 				bind:value={searchQuery}
@@ -570,11 +570,11 @@
 		justify-content: space-between;
 		box-shadow: var(--panel-shadow);
 		flex-wrap: wrap;
-		gap: var(--box-margin);
+		gap: var(--panel-margin);
 		align-items: center;
-		border-radius: var(--layout-margin);
+		border-radius: var(--box-margin);
 		width: calc(100%);
-		padding: var(--box-margin);
+		padding: var(--panel-margin);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
 	}

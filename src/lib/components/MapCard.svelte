@@ -4,8 +4,9 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur } from "svelte/transition";
+	import { formatMapNameForUrl } from "$lib/utils/idToMapName";
 
-	let { map } = $props();
+	let { map, showAuthor = true, returnToMultiplayer = false } = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -14,7 +15,9 @@
 	in:blur|global
 	onclick={() => {
 		playSound("basic_button");
-		goto("/maps/community/" + map.name);
+		goto(
+			"/maps/community/" + formatMapNameForUrl(map.name) + (returnToMultiplayer ? "?return-to-multiplayer=true" : ""),
+		);
 	}}
 	role="menu"
 	tabindex="0"
@@ -22,16 +25,18 @@
 	<h3 style:padding-inline="var(--content-margin)">{map.name}</h3>
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<p
-		class="author-name"
-		style:padding-inline="var(--content-margin)"
-		onclick={(e) => {
-			e.stopPropagation();
-			showProfile(map.authorId);
-		}}
-	>
-		by {map.author}
-	</p>
+	{#if showAuthor}
+		<p
+			class="author-name"
+			style:padding-inline="var(--content-margin)"
+			onclick={(e) => {
+				e.stopPropagation();
+				showProfile(map.authorId);
+			}}
+		>
+			by {map.author}
+		</p>
+	{/if}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="description-box"
@@ -40,7 +45,9 @@
 			showConfirmPopup("About", map.description);
 		}}
 	>
-		<p style:opacity="0.75">{map.description?.length > 90 ? map.description.substring(0, 87) + "..." : map.description}</p>
+		<p>
+			{map.description?.length > 90 ? map.description.substring(0, 87) + "..." : map.description}
+		</p>
 	</div>
 </div>
 
@@ -62,6 +69,8 @@
 
 	.map-item h3 {
 		text-wrap: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 
 	.map-item:hover,
@@ -84,13 +93,19 @@
 	}
 
 	.description-box {
-		border-radius: var(--content-margin);
+		border-radius: var(--box-margin);
 		background-color: var(--box-color-dark);
 		box-shadow: var(--box-shadow);
 		margin-top: var(--box-margin);
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		cursor: pointer;
-        flex-grow: 1;
+		flex-grow: 1;
+	}
+
+	.description-box p {
+		word-break: break-word;
+		overflow: hidden;
+		opacity: 0.5;
 	}
 </style>

@@ -74,7 +74,7 @@
 		box-shadow: var(--panel-shadow);
 		text-decoration: none;
 		align-items: center;
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		text-align: start;
 		min-width: 300px;
@@ -175,6 +175,7 @@
 		min-width: 140px;
 		flex-basis: 0;
 		box-shadow: var(--box-shadow);
+		border-radius: var(--box-margin);
 	}
 
 	.map-item-compact .map-cover-image,
