@@ -2,7 +2,7 @@
 	import { GripVertical } from "@lucide/svelte";
 
 	let {
-		startElo = 1500,
+		startElo = 0,
 		rangeLeft = $bindable(0),
 		rangeRight = $bindable(0),
 		rangeStart = 1000,
@@ -153,6 +153,10 @@
 		align-items: center;
 		gap: 3px;
 	}
+
+    .elo-marker p {
+        opacity: 0.75;
+    }
 
 	.elo-marker.elo-start {
 		left: 0;
