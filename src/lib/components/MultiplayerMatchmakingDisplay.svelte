@@ -5,21 +5,58 @@
 		matchmakingHosting,
 		matchmakingSubmitted,
 		cancellingMatchmaking,
+		matchmakingEloRange,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "@lucide/svelte";
 	import MatchmakingRange from "./MatchmakingRange.svelte";
+	import { setMatchmakingRange } from "$lib/logic/matchmakingLogic";
+	import { elo } from "$lib/stores/accountStore";
 
 	let {
 		findFunction = () => console.warn("No find function set!"),
 		cancelFunction = () => console.warn("No cancel function set!"),
+		showEloRange = false,
 	} = $props();
+
+	let rangeLeft = $state(0);
+	let rangeRight = $state(0);
+	let expandFrame;
+
+	// Animate the server's range expansion
+	$effect(() => {
+		if (!$matchmakingEloRange) return;
+		const { initialOffset, maxOffset, expandDuration, receivedAt } = $matchmakingEloRange;
+
+		const expand = () => {
+			const timeFactor = Math.min(1, (Date.now() - receivedAt) / expandDuration); // 0 at start, 1 when fully expanded
+			const offset = initialOffset + (maxOffset - initialOffset) * timeFactor; // Current offset (expands over time)
+			
+			// Apply new range bounds
+			rangeLeft = $elo - offset;
+			rangeRight = $elo + offset;
+
+			// Repeat until the expansion has finished (time factor 1 means 100% of the range is now shown)
+			if (timeFactor < 1) expandFrame = requestAnimationFrame(expand);
+		};
+		expand();
+
+		return () => cancelAnimationFrame(expandFrame);
+	});
 </script>
 
 <h2 class="multiplayer-matchmaking-status" class:loading={$multiplayerStatus && $matchmakingHosting}>
 	{$multiplayerStatus || "No match found."}
 </h2>
-<MatchmakingRange />
+{#if showEloRange && $matchmakingSubmitted}
+	<MatchmakingRange
+		bind:rangeLeft
+		bind:rangeRight
+		startValue={$elo}
+		ondragstart={() => cancelAnimationFrame(expandFrame) /* Cancel on any drag to avoid auto-expanding further when the user is inputting */}
+		onchange={() => setMatchmakingRange(rangeLeft, rangeRight)}
+	/>
+{/if}
 <div class="try-button-container bar-menu">
 	<button
 		class="standard-button try-button large"

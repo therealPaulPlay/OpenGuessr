@@ -2,65 +2,68 @@
 	import { GripVertical } from "@lucide/svelte";
 
 	let {
-		startElo = 0,
+		startValue = 0,
+        valueName = "Elo",
 		rangeLeft = $bindable(0),
 		rangeRight = $bindable(0),
 		rangeStart = 1000,
 		rangeEnd = 2000,
+		ondragstart,
+		onchange,
 	} = $props();
 
-	const TOTAL_RANGE = $derived(rangeEnd - rangeStart); // Full elo width
+	const TOTAL_RANGE = $derived(rangeEnd - rangeStart); // Full value range (e.g. 1000 -> 2000 it would be 1000)
 	const MIN_HALF_PIXELS = 16; // Keeps both drag handles visible
 
 	let isDragging = $state(false);
 	let startX = $state(0);
 	let right = $state(false);
 
-	let halfBarWidthPixels = $state(MIN_HALF_PIXELS); // Bar extent from the center to each side
 	let startPixelValue = $state(MIN_HALF_PIXELS);
 
 	let width = $state(250); // Width of the full range container
+	let valuePerPixel = $derived(TOTAL_RANGE / width);
 
 	// Bar width and offset
-	// The exact center point of the bar, accounting for the drag handle widths
+	// The exact center point of the bar (for the startValue), accounting for the drag handle widths
 	let centerPixel = $derived(
-		Math.min(width - MIN_HALF_PIXELS, Math.max(MIN_HALF_PIXELS, ((startElo - rangeStart) / TOTAL_RANGE) * width)),
+		Math.min(width - MIN_HALF_PIXELS, Math.max(MIN_HALF_PIXELS, ((startValue - rangeStart) / TOTAL_RANGE) * width)),
 	);
-	let maxHalfPixels = $derived(Math.max(centerPixel, width - centerPixel));
+	let maxHalfBarWidthPixels = $derived(Math.max(centerPixel, width - centerPixel)); // The longer half of the bar texture, if it was max. extended, from center pixel to edge
 
-	let barLeft = $derived(Math.max(0, centerPixel - halfBarWidthPixels));
-	let barRight = $derived(Math.min(width, centerPixel + halfBarWidthPixels));
+	// The bar follows rangeLeft and rangeRight, but ensures the drag handles never overlap
+	let barLeft = $derived(Math.max(0, Math.min(centerPixel - MIN_HALF_PIXELS, (rangeLeft - rangeStart) / valuePerPixel)));
+	let barRight = $derived(Math.min(width, Math.max(centerPixel + MIN_HALF_PIXELS, (rangeRight - rangeStart) / valuePerPixel)));
+	let halfBarWidthPixels = $derived(Math.max(centerPixel - barLeft, barRight - centerPixel)); // Bar extent from the center to each side (the greater one)
 
 	function handleStart(event, isRight) {
 		right = isRight;
 		isDragging = true;
 		startX = event.clientX;
 		startPixelValue = halfBarWidthPixels;
+		ondragstart?.();
 	}
 
 	function handleCancel() {
+		if (!isDragging) return;
 		isDragging = false;
 		right = false;
 		startX = 0;
 		startPixelValue = 0;
+		onchange?.();
 	}
 
 	function handleDrag(event) {
 		if (!isDragging) return;
 		const delta = event.clientX - startX;
 
-		halfBarWidthPixels = Math.min(
-			maxHalfPixels,
+		const newHalfBarWidthPixels = Math.min(
+			maxHalfBarWidthPixels,
 			Math.max(MIN_HALF_PIXELS, right ? startPixelValue + delta : startPixelValue - delta),
 		);
+		rangeLeft = Math.round(rangeStart + Math.max(0, centerPixel - newHalfBarWidthPixels) * valuePerPixel);
+		rangeRight = Math.round(rangeStart + Math.min(width, centerPixel + newHalfBarWidthPixels) * valuePerPixel);
 	}
-
-	// Range left and right calculations
-	$effect(() => {
-		const eloPerPixel = TOTAL_RANGE / width;
-		rangeLeft = Math.round(rangeStart + barLeft * eloPerPixel);
-		rangeRight = Math.round(rangeStart + barRight * eloPerPixel);
-	});
 
 	function numberToK(num = 0) {
 		if (num >= 1000) {
@@ -69,22 +72,22 @@
 	}
 </script>
 
-<svelte:window onpointermove={handleDrag} onpointerup={handleCancel} />
+<svelte:window onpointermove={handleDrag} onpointerup={handleCancel} onpointercancel={handleCancel} />
 
 <div class="range-container bar-menu" style:width={width + "px"}>
-	<div class="elo-marker elo-start">
+	<div class="value-marker value-marker-start">
 		<p>&lt;{numberToK(rangeStart)}</p>
-		<span class="elo-line"></span>
+		<span class="value-line"></span>
 	</div>
-	<div class="elo-marker elo-end">
+	<div class="value-marker value-marker-end">
 		<p>&gt;{numberToK(rangeEnd)}</p>
-		<span class="elo-line"></span>
+		<span class="value-line"></span>
 	</div>
 	<div class="selection-display bar-menu">
-		<p class="grow-selection">{rangeLeft <= rangeStart ? "<" : ""}{numberToK(rangeLeft)}</p>
+		<p class="grow-selection">{rangeLeft <= rangeStart ? "<" : ""}{numberToK(Math.max(rangeStart, rangeLeft))}</p>
 		<p style:opacity="0.75">-</p>
-		<p class="grow-selection">{rangeRight >= rangeEnd ? ">" : ""}{numberToK(rangeRight)}</p>
-		<p style:opacity="0.75">Elo</p>
+		<p class="grow-selection">{rangeRight >= rangeEnd ? ">" : ""}{numberToK(Math.min(rangeEnd, rangeRight))}</p>
+		<p style:opacity="0.75">{valueName}</p>
 	</div>
 	<div class="range-texture bright-soft" style:left={barLeft + "px"} style:width={barRight - barLeft + "px"}>
 		<div class="range-texture-depth"></div>
@@ -145,7 +148,7 @@
 		right: 0;
 	}
 
-	.elo-marker {
+	.value-marker {
 		position: absolute;
 		bottom: calc(100% + 8px);
 		display: flex;
@@ -154,21 +157,21 @@
 		gap: 3px;
 	}
 
-    .elo-marker p {
+    .value-marker p {
         opacity: 0.75;
     }
 
-	.elo-marker.elo-start {
+	.value-marker.value-marker-start {
 		left: 0;
 		transform: translateX(calc(-50% + var(--panel-margin)));
 	}
 
-	.elo-marker.elo-end {
+	.value-marker.value-marker-end {
 		right: 0;
 		transform: translateX(calc(50% - var(--panel-margin)));
 	}
 
-	.elo-line {
+	.value-line {
 		width: 2px;
 		background-color: white;
 		height: var(--panel-margin);
