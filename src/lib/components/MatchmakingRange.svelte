@@ -10,21 +10,32 @@
 	} = $props();
 
 	const TOTAL_RANGE = $derived(rangeEnd - rangeStart); // Full elo width
+	const MIN_HALF_PIXELS = 16; // Keeps both drag handles visible
 
 	let isDragging = $state(false);
 	let startX = $state(0);
 	let right = $state(false);
 
-	let barPixelValue = $state(50);
-	let startPixelValue = $state(50);
+	let halfBarWidthPixels = $state(MIN_HALF_PIXELS); // Bar extent from the center to each side
+	let startPixelValue = $state(MIN_HALF_PIXELS);
 
-	let width = $state(200);
+	let width = $state(250); // Width of the full range container
+
+	// Bar width and offset
+	// The exact center point of the bar, accounting for the drag handle widths
+	let centerPixel = $derived(
+		Math.min(width - MIN_HALF_PIXELS, Math.max(MIN_HALF_PIXELS, ((startElo - rangeStart) / TOTAL_RANGE) * width)),
+	);
+	let maxHalfPixels = $derived(Math.max(centerPixel, width - centerPixel));
+
+	let barLeft = $derived(Math.max(0, centerPixel - halfBarWidthPixels));
+	let barRight = $derived(Math.min(width, centerPixel + halfBarWidthPixels));
 
 	function handleStart(event, isRight) {
 		right = isRight;
 		isDragging = true;
 		startX = event.clientX;
-		startPixelValue = barPixelValue;
+		startPixelValue = halfBarWidthPixels;
 	}
 
 	function handleCancel() {
@@ -36,17 +47,19 @@
 
 	function handleDrag(event) {
 		if (!isDragging) return;
-		const delta = (event.clientX - startX) * 2;
+		const delta = event.clientX - startX;
 
-		barPixelValue = Math.min(width, Math.max(32, right ? startPixelValue + delta : startPixelValue - delta));
+		halfBarWidthPixels = Math.min(
+			maxHalfPixels,
+			Math.max(MIN_HALF_PIXELS, right ? startPixelValue + delta : startPixelValue - delta),
+		);
 	}
 
-	// Calculations
+	// Range left and right calculations
 	$effect(() => {
-		const range = (TOTAL_RANGE / width) * barPixelValue; // Selected elo range
-		const halfRange = range * 0.5;
-		rangeLeft = Math.round(startElo - halfRange);
-		rangeRight = Math.round(startElo + halfRange);
+		const eloPerPixel = TOTAL_RANGE / width;
+		rangeLeft = Math.round(rangeStart + barLeft * eloPerPixel);
+		rangeRight = Math.round(rangeStart + barRight * eloPerPixel);
 	});
 
 	function numberToK(num = 0) {
@@ -60,19 +73,20 @@
 
 <div class="range-container bar-menu" style:width={width + "px"}>
 	<div class="elo-marker elo-start">
-		<p>{numberToK(rangeStart)}</p>
+		<p>&lt;{numberToK(rangeStart)}</p>
 		<span class="elo-line"></span>
 	</div>
 	<div class="elo-marker elo-end">
-		<p>{numberToK(rangeEnd)}+</p>
+		<p>&gt;{numberToK(rangeEnd)}</p>
 		<span class="elo-line"></span>
 	</div>
 	<div class="selection-display bar-menu">
-		<p class="grow-selection">{numberToK(rangeLeft)}</p>
+		<p class="grow-selection">{rangeLeft <= rangeStart ? "<" : ""}{numberToK(rangeLeft)}</p>
 		<p style:opacity="0.75">-</p>
-		<p class="grow-selection">{numberToK(rangeRight)}</p>
+		<p class="grow-selection">{rangeRight >= rangeEnd ? ">" : ""}{numberToK(rangeRight)}</p>
+		<p style:opacity="0.75">Elo</p>
 	</div>
-	<div class="range-texture bright-soft" style:width={barPixelValue + "px"}>
+	<div class="range-texture bright-soft" style:left={barLeft + "px"} style:width={barRight - barLeft + "px"}>
 		<div class="range-texture-depth"></div>
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div class="range-drag left" onpointerdown={(e) => handleStart(e, false)}>
@@ -89,21 +103,23 @@
 	.range-container {
 		height: 40px;
 		position: relative;
-		justify-content: center;
 		padding: 0;
-		margin-top: var(--layout-spacer);
+		margin-top: 58px;
+		margin-bottom: var(--box-margin);
+		user-select: none;
 	}
 
 	.range-texture {
-		height: 100%;
-		position: relative;
+		position: absolute;
+		top: 0;
+		bottom: 0;
 		border-radius: var(--box-margin);
 	}
 
 	.range-texture-depth {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(to right, var(--box-color) 20%, transparent, var(--box-color) 80%);
+		background: linear-gradient(to right, var(--box-color) 20%, transparent 40%, transparent 60%, var(--box-color) 80%);
 	}
 
 	.range-drag {
@@ -136,7 +152,6 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 3px;
-		user-select: none;
 	}
 
 	.elo-marker.elo-start {
@@ -160,18 +175,19 @@
 	.selection-display {
 		position: absolute;
 		bottom: calc(100% + var(--layout-margin));
-		margin-inline: auto;
-		text-align: center;
-		user-select: none;
 		display: flex;
 		font-variant-numeric: tabular-nums;
-		min-width: 130px;
+		min-width: 175px;
+		left: 0;
+		right: 0;
+		margin-inline: auto;
+        padding-inline: var(--layout-margin);
 	}
 
 	.grow-selection {
 		flex-grow: 1;
-        flex-basis: 0;
+		flex-basis: 0;
 		text-align: center;
-        font-variant-numeric: tabular-nums;
+		font-variant-numeric: tabular-nums;
 	}
 </style>
