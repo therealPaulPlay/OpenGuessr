@@ -1,5 +1,11 @@
 <script>
-	import { mapExpanded, mapHovered, map, mapHoveredImmediate } from "$lib/stores/context-specific/mapStore";
+	import {
+		mapExpanded,
+		mapHovered,
+		map,
+		mapHoveredImmediate,
+		mobilePortrait,
+	} from "$lib/stores/context-specific/mapStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
@@ -7,17 +13,16 @@
 	import { initMap } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
-	import { MediaQuery } from "svelte/reactivity";
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { inMenu } from "$lib/stores/uiStore";
+	import MapAttribution from "./MapAttribution.svelte";
+	import { fade } from "svelte/transition";
 
 	let mapElement = $state();
 	let mapResizeObserver;
 	let mapResizeTimeout;
 	let lastPointerType = $state("mouse");
 	let mapOpen = $derived($mapExpanded && (!$countryGuessr || $resultScreenEnabled) && !$inMenu);
-
-	const mobilePortrait = new MediaQuery("(orientation: portrait) and (max-width: 800px)");
 
 	function handleMapHover() {
 		if (lastPointerType === "touch") return;
@@ -63,10 +68,17 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
-	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "55dvh" : "max(18dvh, 150px)") : "0"}
+	style:height={mapOpen ? (mobilePortrait.current || $mapHovered ? "55dvh" : "max(18dvh, 150px)") : "0"}
 	style:opacity={$mapHoveredImmediate ? "1" : ""}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
 ></div>
+
+{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
+	<!-- Needed for TOS compliance -->
+	<div in:fade={{ duration: 150, delay: 150 }} out:fade={{ duration: $resultScreenEnabled ? 0 : 50 }}>
+		<MapAttribution />
+	</div>
+{/if}
 
 <style>
 	#map {

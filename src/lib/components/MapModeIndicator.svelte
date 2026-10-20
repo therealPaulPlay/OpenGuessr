@@ -12,12 +12,13 @@
 		restrictionNames,
 		selectedRestriction,
 	} from "$lib/stores/context-specific/restrictionStore";
-	import { blur, fade, slide } from "svelte/transition";
-	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
+	import { blur, slide } from "svelte/transition";
+	import { mapExpanded, mobilePortrait } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { Chip } from "openguessr-ui";
-	import MapAttribution from "./MapAttribution.svelte";
 	import { inMenu } from "$lib/stores/uiStore";
+
+	let { mobile } = $props();
 
 	let mapCategoryName = $derived.by(() => {
 		if (!$currentLocationLatitude || !$currentLocationLongitude) return "...";
@@ -38,17 +39,20 @@
 		if ($multiplayer) return $roundAmount;
 		if ($competition) return $competitionData?.roundAmount;
 	});
+
+	function indicatorTransition(node) {
+		return mobile
+			? blur(node, { duration: 250 })
+			: slide(node, { axis: "y", duration: $resultScreenEnabled ? 0 : 150 });
+	}
 </script>
 
-{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
-	<!-- Needed for TOS compliance -->
-	<div in:fade={{ duration: 150, delay: 150 }} out:fade={{ duration: $resultScreenEnabled ? 0 : 50 }}>
-		<MapAttribution />
-	</div>
+{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu && ((!mobilePortrait.current && !mobile) || (mobilePortrait.current && mobile))}
 	<div
 		class="bar-menu map-mode-indicator"
+		class:mobile
 		class:fading={Boolean($mapModeIndicatorFading)}
-		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
+		transition:indicatorTransition|global
 	>
 		<div class="map-mode-text-container of-left of-right">
 			<p>
@@ -86,15 +90,18 @@
 			width 250ms ease,
 			border-radius 250ms ease,
 			margin 250ms ease;
-		z-index: 1;
 		user-select: none;
-		flex-shrink: 0;
 		height: 56px;
 		width: 100%;
-		position: relative;
+		min-width: 0;
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
 		position: relative;
+	}
+
+	.mobile {
+		border-radius: var(--box-margin) !important;
+		margin-left: var(--box-margin);
 	}
 
 	.map-icon {

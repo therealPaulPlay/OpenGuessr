@@ -1,5 +1,5 @@
 <script>
-	import { mapHoveredImmediate } from "$lib/stores/context-specific/mapStore";
+	import { mapHoveredImmediate, mobilePortrait } from "$lib/stores/context-specific/mapStore";
 
 	let { forPanorama = false } = $props();
 </script>
@@ -8,7 +8,7 @@
 	class="map-attribution-container"
 	class:panorama-attribution={forPanorama}
 	class:full-opacity={$mapHoveredImmediate || forPanorama}
-	style:bottom={forPanorama ? "0" : "56px"}
+	style:bottom={forPanorama || mobilePortrait.current ? "0" : "56px"}
 >
 	<div class="map-attribution-data-box">
 		<p>{forPanorama ? "© " : "Map Data ©"}{new Date().getFullYear()} Google</p>
@@ -20,7 +20,7 @@
 			>
 		</p>
 	</div>
-	{#if !forPanorama}
+	{#if !forPanorama && !mobilePortrait.current}
 		<div class="map-attribution-logo">
 			<img
 				style="width: 60px"
