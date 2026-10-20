@@ -8,6 +8,7 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "@lucide/svelte";
+	import MatchmakingRange from "./MatchmakingRange.svelte";
 
 	let {
 		findFunction = () => console.warn("No find function set!"),
@@ -18,6 +19,7 @@
 <h2 class="multiplayer-matchmaking-status" class:loading={$multiplayerStatus && $matchmakingHosting}>
 	{$multiplayerStatus || "No match found."}
 </h2>
+<MatchmakingRange />
 <div class="try-button-container bar-menu">
 	<button
 		class="standard-button try-button large"
