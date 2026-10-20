@@ -102,6 +102,7 @@
 	.mobile {
 		border-radius: var(--box-margin) !important;
 		margin-left: var(--box-margin);
+		width: fit-content;
 	}
 
 	.map-icon {
