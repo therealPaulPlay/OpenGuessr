@@ -12,7 +12,7 @@ import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupSto
 import { supporterSlideupProbability } from "./showSupporterSlideup";
 import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId, currentLocationPitch } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
-import { mapExpanded, mapHovered, guessLat, guessLon, mapHoveredImmediate } from "$lib/stores/context-specific/mapStore";
+import { mapExpanded, mapHovered, guessLat, guessLon, mapHoveredImmediate, mobilePortrait } from "$lib/stores/context-specific/mapStore";
 import { saveRoundToLog } from "./saveRoundToLog";
 import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 import { discordSlideupProbability } from "./showDiscordSlideup";
@@ -56,7 +56,7 @@ export function disableResultScreen() {
     earnedExperience.set(0); // Reset per-round earned XP
 
     // Map resets
-    if (window.matchMedia("(orientation: portrait) and (max-width: 800px)").matches) mapExpanded.set(false); // On mobile, collapse map
+    if (mobilePortrait.current) mapExpanded.set(false); // On mobile, collapse map
     mapHovered.set(false); // Revoke map hover state
     mapHoveredImmediate.set(false); // Revoke immediate map hover state
     resetMap(); // Reset the map for the next round

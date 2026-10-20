@@ -7,23 +7,28 @@
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { inMenu } from "$lib/stores/uiStore";
 
+	let { children } = $props();
+
 	let toggleMapButton = $state();
 </script>
 
 <div class="toggle-container">
 	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
-		<div class="bar-menu floating-map-close-menu" transition:blur={{ duration: 250 }}>
-			<button
-				class="standard-button bright floating-button"
-				aria-label="Toggle minimap"
-				bind:this={toggleMapButton}
-				onclick={() => {
-					mapExpanded.set(false);
-					playSound("toggle_button");
-				}}
-			>
-				<ArrowDown strokeWidth={2.25} size={22} />
-			</button>
+		<div class="floating-close-container">
+			{@render children?.()}
+			<div class="bar-menu floating-map-close-menu" transition:blur={{ duration: 250 }}>
+				<button
+					class="standard-button bright floating-button"
+					aria-label="Toggle minimap"
+					bind:this={toggleMapButton}
+					onclick={() => {
+						mapExpanded.set(false);
+						playSound("toggle_button");
+					}}
+				>
+					<ArrowDown strokeWidth={2.25} size={22} />
+				</button>
+			</div>
 		</div>
 		<div class="resize-handle bar-menu">
 			<button
@@ -60,11 +65,18 @@
 		display: none;
 		pointer-events: auto;
 		margin-left: auto;
-		margin-bottom: var(--box-margin);
+		margin-right: var(--box-margin);
+		gap: var(--box-margin);
 	}
 
 	.toggle-container {
 		margin-top: auto;
+		width: 100%;
+	}
+
+	.floating-close-container {
+		display: flex;
+		gap: var(--box-margin);
 		width: 100%;
 	}
 
@@ -77,6 +89,9 @@
 	@media (orientation: portrait) and (max-width: 800px) {
 		.floating-map-close-menu {
 			display: block;
+		}
+		.floating-close-container {
+			margin-bottom: var(--box-margin);
 		}
 		.resize-handle {
 			display: none;

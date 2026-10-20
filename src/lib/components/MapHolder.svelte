@@ -1,17 +1,10 @@
 <script>
 	let { children } = $props();
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { mapHovered } from "$lib/stores/context-specific/mapStore";
 </script>
 
-<div
-	id="map-holder"
-	class="map-holder"
-	class:map-hover={$mapHovered}
-	class:map-holder-to-result={$resultScreenEnabled}
-	class:map-holder-ad-shift={!$adsDisabled}
->
+<div id="map-holder" class="map-holder" class:map-hover={$mapHovered} class:map-holder-to-result={$resultScreenEnabled}>
 	{@render children?.()}
 </div>
 
@@ -51,13 +44,11 @@
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.map-holder-ad-shift {
-			bottom: 136px; /* Shift up to fit ad */
-		}
-
 		.map-holder {
-			width: calc(100% - calc(var(--box-margin) * 2));
-			right: var(--box-margin);
+			width: 100%;
+			right: 0;
+			bottom: 0;
+			z-index: 10;
 		}
 	}
 </style>

@@ -152,9 +152,11 @@
 <Panorama />
 <CountryGuesserBar />
 <MapHolder>
-	<MobileMapToggles />
+	<MobileMapToggles>
+		<MapModeIndicator mobile={true} />
+	</MobileMapToggles>
 	<Map />
-	<MapModeIndicator />
+	<MapModeIndicator mobile={false} />
 </MapHolder>
 <ChatHolder />
 <BottomBar />
