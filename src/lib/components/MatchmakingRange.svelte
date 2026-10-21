@@ -1,6 +1,7 @@
 <script>
 	import { GripVertical } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
+	import { onDestroy } from "svelte";
 
 	let {
 		startValue = 0,
@@ -9,6 +10,7 @@
 		rangeRight = $bindable(0),
 		rangeStart = 1000,
 		rangeEnd = 2000,
+		isDragging = $bindable(false),
 		ondragstart,
 		onchange,
 	} = $props();
@@ -16,7 +18,6 @@
 	let totalRange = $derived(rangeEnd - rangeStart); // Full value range (e.g. 1000 -> 2000 it would be 1000)
 	const MIN_HALF_PIXELS = 16; // Keeps both drag handles visible
 
-	let isDragging = $state(false);
 	let startX = $state(0);
 	let right = $state(false);
 	let dragPointerId = $state(null);
@@ -43,26 +44,33 @@
 	let halfBarWidthPixels = $derived(Math.max(centerPixel - barLeft, barRight - centerPixel)); // Bar extent from the center to each side (the greater one)
 
 	function handleStart(event, isRight) {
+		if (dragPointerId !== null) return; // Ignore start attempts while already started
 		right = isRight;
-		isDragging = true;
 		startX = event.clientX;
 		dragPointerId = event.pointerId;
 		startPixelValue = halfBarWidthPixels;
-		ondragstart?.();
 	}
 
 	function handleCancel(event) {
-		if (!isDragging || event.pointerId !== dragPointerId) return;
-		isDragging = false;
+		if (event.pointerId !== dragPointerId) return;
+		dragPointerId = null;
 		right = false;
 		startX = 0;
 		startPixelValue = 0;
-		onchange?.();
+		if (isDragging) {
+			isDragging = false;
+			onchange?.();
+		}
 	}
 
 	function handleDrag(event) {
-		if (!isDragging || event.pointerId !== dragPointerId) return;
+		if (event.pointerId !== dragPointerId) return;
 		const delta = event.clientX - startX;
+		if (!isDragging) {
+			if (delta === 0) return;
+			isDragging = true;
+			ondragstart?.();
+		}
 
 		const newHalfBarWidthPixels = Math.min(
 			maxHalfBarWidthPixels,
@@ -74,9 +82,12 @@
 
 	function numberToK(num = 0) {
 		if (num >= 1000) {
-			return Math.round((num / 1000) * 100) / 100 + "k";
+			const thousands = Math.round((num / 1000) * 100) / 100;
+			return (Number.isInteger(thousands) ? thousands : thousands.toFixed(2)) + "k";
 		} else return Math.round(num).toLocaleString();
 	}
+
+	onDestroy(() => (isDragging = false)); // Reset on unmount (important for parent components that bind)
 </script>
 
 <svelte:window onpointermove={handleDrag} onpointerup={handleCancel} onpointercancel={handleCancel} />
