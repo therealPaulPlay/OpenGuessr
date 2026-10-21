@@ -103,7 +103,7 @@ export async function headlessChatInitialLoad() {
         } catch (error) {
             showErrorPopup(
                 "Failed to load messages",
-                "An error occured trying to load conversations, participant activities and invites.",
+                "An error occurred trying to load conversations, participant activities and invites.",
                 error.message,
             );
         } finally {
@@ -184,14 +184,14 @@ async function handleInviteEvent({ conversationId, toParticipantId, data }) {
                 activeConversationId.set(data.conversation.conversationId);
                 messagesPopup.set(true);
             } catch (error) {
-                showErrorPopup("Failed to accept invite", "An error occured trying to accept an invite.", "From headless-chat: " + error.message);
+                showErrorPopup("Failed to accept invite", "An error occurred trying to accept an invite.", "From headless-chat: " + error.message);
             }
         },
         async () => {
             try {
                 await get(hcClient).declineInvite(data.conversation.conversationId);
             } catch (error) {
-                showErrorPopup("Failed to decline invite", "An error occured trying to decline a conversation invite.", "From headless-chat: " + error.message);
+                showErrorPopup("Failed to decline invite", "An error occurred trying to decline a conversation invite.", "From headless-chat: " + error.message);
             }
         },
         false,
@@ -273,7 +273,7 @@ export async function openDirectMessageWith(participantId) {
     } catch (error) {
         showErrorPopup(
             "Failed to start conversation",
-            "An error occured trying to open a conversation with this user.",
+            "An error occurred trying to open a conversation with this user.",
             error.message,
         );
     }

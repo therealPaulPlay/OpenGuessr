@@ -40,11 +40,11 @@
 				if (userSearchResults.length == 0) userSearchResults = undefined;
 			} else {
 				console.error("Error loading the user browser: " + response.status);
-				showErrorPopup("Error loading users", "An error occured loading users in the user browser.", response.status);
+				showErrorPopup("Error loading users", "An error occurred loading users in the user browser.", response.status);
 			}
 		} catch (error) {
 			console.error("Fetch/Network error occurred while loading user browser results: ", error);
-			showErrorPopup("Error loading users (Network)", "A network error occured loading users in the user browser.", error);
+			showErrorPopup("Error loading users (Network)", "A network error occurred loading users in the user browser.", error);
 		}
 	}
 </script>

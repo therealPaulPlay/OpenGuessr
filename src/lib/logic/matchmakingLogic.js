@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking, socket, clientToken } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, socket, clientToken, matchmakingEloRange } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -57,8 +57,8 @@ export function findDuel() {
         matchmakingActive.set(true);
 
         // Create & submit a room, which the server then pairs up with another queued room
-        const created = await createMatchmakingRoom("division-duel", get(skillBasedMatchmaking), matchmakingRoomConfigs["division-duel"]);
-        if (created && await submitRoomCodeForMatchmaking("division-duel", get(skillBasedMatchmaking))) attemptFind("division-duel");
+        const created = await createMatchmakingRoom(matchmakingRoomConfigs["division-duel"]);
+        if (created) await submitRoomCodeForMatchmaking("division-duel");
     };
 
     if (!get(isAuthenticated)) signupPrompt(action);
@@ -69,7 +69,7 @@ export function findDuel() {
 
 export function createTeamDuelRoom() {
     goto("/multiplayer/team-duel");
-    return createMatchmakingRoom("team-duel", false, matchmakingRoomConfigs["team-duel"]);
+    return createMatchmakingRoom(matchmakingRoomConfigs["team-duel"]);
 }
 
 export async function startFindTeamDuel() {
@@ -77,13 +77,12 @@ export async function startFindTeamDuel() {
     matchmakingActive.set(true);
 
     // Submit room code and look for a match if successful
-    if (await submitRoomCodeForMatchmaking("team-duel", false)) attemptFind("team-duel");
+    if (await submitRoomCodeForMatchmaking("team-duel")) attemptFindTeamDuel();
 }
 
 // Shared -----------------------
 
-function createMatchmakingRoom(type, skillBased, roomOptions) {
-    if (skillBased === undefined) return console.warn("Skill-based argument not defined!");
+function createMatchmakingRoom(roomOptions) {
     if (!roomOptions || !roomOptions.roundAmount || roomOptions.teamAmount == null) return console.error("Provided room options are lacking:", JSON.stringify(roomOptions));
 
     // Set standard matchmaking room options
@@ -102,15 +101,16 @@ function createMatchmakingRoom(type, skillBased, roomOptions) {
     return createMultiplayerRoom(roomOptions.sizeLimit, true);
 }
 
-async function submitRoomCodeForMatchmaking(type, skillBased) {
+async function submitRoomCodeForMatchmaking(type) {
     multiplayerStatus.set("Submitting code...");
 
-    const success = await submitRoomCode(type, skillBased);
-    if (!success) {
+    const data = await submitRoomCode(type);
+    if (!data) {
         matchmakingActive.set(false);
         leaveMultiplayer();
         return false;
     } else {
+        if (data.eloRange) matchmakingEloRange.set({ ...data.eloRange, receivedAt: Date.now() });
         matchmakingSubmitted.set(true);
         multiplayerStatus.set("Waiting for players...");
         return true;
@@ -120,16 +120,15 @@ async function submitRoomCodeForMatchmaking(type, skillBased) {
 // API --------------------------
 
 // The server forms the match by moving all involved players into one of the queued rooms
-async function attemptFind(type) {
+async function attemptFindTeamDuel() {
     try {
-        const response = await fetch(get(apiUrl) + "/matchmaking/find-" + type, {
+        const response = await fetch(get(apiUrl) + "/matchmaking/find-team-duel", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ code: get(roomCode), clientToken: get(clientToken) })
         });
-
         if (!response.ok) throw new Error(response.status);
 
     } catch (error) {
@@ -141,11 +140,11 @@ async function attemptFind(type) {
 
         // Display error
         console.error("Error finding match:", error);
-        showErrorPopup("Failed to find a match", "The request returned an error.", error.message);
+        showErrorPopup("Failed to find a team duel", "An error occurred finding a team duel.", error.message);
     }
 }
 
-export async function submitRoomCode(type, skillBased = false, map = get(defaultMap)) {
+export async function submitRoomCode(type, map = get(defaultMap)) {
     if (!type) {
         console.error("Room type must be specified for submitting a code!");
         return false;
@@ -159,7 +158,6 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
             clientId: get(socket)?.id,
             clientToken: get(clientToken),
             type,
-            skillBased,
             map
         }
         if (localStorage.getItem("id") != null) requestBody.id = localStorage.getItem("id");
@@ -176,12 +174,28 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
         });
 
         if (!response.ok) throw new Error(response.status);
-        return true; // Success
+        return await response.json(); // Success (return response data)
 
     } catch (error) {
         console.error('Failed sending room code to server: ', error);
         showErrorPopup("Failed to submit code", "Failed to submit the room code, which is needed for matchmaking.", error.message);
-        return false; // Error
+        return false; // Error (return false)
+    }
+}
+
+export async function setMatchmakingEloRange(lower, upper) {
+    try {
+        const response = await fetch(get(apiUrl) + "/matchmaking/set-elo-range/" + get(roomCode), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ clientId: get(socket)?.id, clientToken: get(clientToken), lower, upper }),
+        });
+        if (!response.ok) throw new Error(response.status);
+    } catch (error) {
+        console.error("Failed to set matchmaking range:", error);
+        showErrorPopup("Failed to set range", "An error occurred setting the elo matchmaking range.", error.message);
     }
 }
 

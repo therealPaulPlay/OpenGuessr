@@ -50,7 +50,7 @@ async function updateUsername(requestedUsername) {
 
     } catch (error) {
         console.error('Failed to update username:', error);
-        showErrorPopup("Failed to update username", "An error occured trying to update the username.", error.message);
+        showErrorPopup("Failed to update username", "An error occurred trying to update the username.", error.message);
         return false;
     }
 }

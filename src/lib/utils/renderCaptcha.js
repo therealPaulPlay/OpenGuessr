@@ -5,6 +5,6 @@ export function renderCaptcha(elementId, callback) {
             callback: callback, // Ensure this callback function is defined globally (window.functionName)
         });
     } catch (error) {
-        console.error("Error occured trying to render captcha with Turnstile:", error);
+        console.error("Error occurred trying to render captcha with Turnstile:", error);
     }
 }

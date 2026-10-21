@@ -47,6 +47,6 @@ async function getMonthlySupportedAmount() {
             monthlySupportAmount.set(data.supported_amount);
         }
     } catch (error) {
-        console.error("Network error occured trying to load monthly supported amount: " + error);
+        console.error("Network error occurred trying to load monthly supported amount: " + error);
     }
 }

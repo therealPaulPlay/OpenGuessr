@@ -37,20 +37,16 @@
 
 	// Finalization ----------------------------------------------------
 	let finishTimeout;
-	let finalizeOnNewRound = false;
+	let finalizeOnNextRound = false;
 
-	// Check for finalization on each round start
-	resultScreenEnabled.subscribe((value) => {
-		if (!value && finalizeOnNewRound) {
-			finalizeOnNewRound = false;
+	export function evolveTutorial() {
+		if (!finalizeOnNextRound) finalizeOnNextRound = true;
+		else {
+			if (!get(tutorial)) console.warn("Cannot finalize tutorial, not active.");
+			changeMap(get(defaultMap)); // Change without regenerating
 			finishTimeout = setTimeout(() => markTutorialCompleted(3), 150);
+			finalizeOnNextRound = false;
 		}
-	});
-
-	export function finalizeTutorial() {
-		if (!get(tutorial)) console.warn("Cannot finalize tutorial, not active.");
-		changeMap(get(defaultMap)); // Change without regenerating
-		finalizeOnNewRound = true;
 	}
 </script>
 
@@ -62,7 +58,6 @@
 	import { ArrowRight } from "@lucide/svelte";
 	import { get } from "svelte/store";
 	import { blur, fly } from "svelte/transition";
-	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { mainMenu } from "$lib/stores/uiStore";
 

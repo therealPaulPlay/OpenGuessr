@@ -93,7 +93,7 @@ async function loadUserInfo() {
   try {
     await getUser().then((user) => {
 
-      if (!user) return; // If an error occured and no data is provided, exit
+      if (!user) return; // If an error occurred and no data is provided, exit
 
       // Extract profile data
       experience.set(user.experience);
@@ -124,7 +124,7 @@ async function loadUserInfo() {
         window.location.reload();
       });
     } else {
-      showErrorPopup("Error getting user data", "An error occured trying to fetch user info.", error.message);
+      showErrorPopup("Error getting user data", "An error occurred trying to fetch user info.", error.message);
     }
   }
 }

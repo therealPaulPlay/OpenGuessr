@@ -120,7 +120,7 @@ export async function createMultiplayerInstance() {
                 try {
                     await get(socket)?.sendRequest("startRoom");
                 } catch (error) {
-                    if (get(multiplayer)) showErrorPopup("Failed to start room", "An error occured trying to start the room upon host migration.", error.message);
+                    if (get(multiplayer)) showErrorPopup("Failed to start room", "An error occurred trying to start the room upon host migration.", error.message);
                     console.error("Error starting room upon host migration:", error);
                 }
             }
@@ -157,7 +157,7 @@ export async function createMultiplayerInstance() {
             if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerDataAdded) {
                 playerDataAdded = true;
                 get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
-                    if (get(multiplayer)) showErrorPopup("Failed to add player", "An error occured trying to add this player's data.", error.message);
+                    if (get(multiplayer)) showErrorPopup("Failed to add player", "An error occurred trying to add this player's data.", error.message);
                     console.error("Error adding player data in multiplayer:", error);
                 });
             }
