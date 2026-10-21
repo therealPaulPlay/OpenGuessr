@@ -173,7 +173,7 @@
 						}}
 					>
 						2v2
-						<Handshake size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+						<Handshake size={20} strokeWidth={2.25} style="margin-bottom: -2px; flex-shrink: 0;" />
 					</button>
 				</div>
 				{#if matchmakingPlayerAmount}
@@ -476,6 +476,10 @@
 			flex-direction: row;
 			flex-wrap: nowrap;
 			justify-content: space-between;
+		}
+
+		.group-party-buttons:not(:last-child) {
+			margin-bottom: var(--content-margin);
 		}
 
 		.group-party-content-container {

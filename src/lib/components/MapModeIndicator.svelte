@@ -55,7 +55,7 @@
 		transition:indicatorTransition|global
 	>
 		<div class="map-mode-text-container of-left of-right">
-			<p>
+			<p id="mode-name">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
 			<Chip class="info-tag">
@@ -102,7 +102,10 @@
 	.mobile {
 		border-radius: var(--box-margin) !important;
 		margin-left: var(--box-margin);
-		width: fit-content;
+	}
+
+	.mobile #mode-name {
+		margin-right: auto;
 	}
 
 	.map-icon {
