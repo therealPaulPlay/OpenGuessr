@@ -110,7 +110,7 @@ async function submitRoomCodeForMatchmaking(type) {
         leaveMultiplayer();
         return false;
     } else {
-        if (data.range) matchmakingEloRange.set({ ...data.range, receivedAt: Date.now() });
+        if (data.eloRange) matchmakingEloRange.set({ ...data.eloRange, receivedAt: Date.now() });
         matchmakingSubmitted.set(true);
         multiplayerStatus.set("Waiting for players...");
         return true;
@@ -184,14 +184,14 @@ export async function submitRoomCode(type, map = get(defaultMap)) {
     }
 }
 
-export async function setMatchmakingRange(min, max) {
+export async function setMatchmakingRange(lower, upper) {
     try {
         const response = await fetch(get(apiUrl) + "/matchmaking/set-range/" + get(roomCode), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ clientId: get(socket)?.id, clientToken: get(clientToken), min, max }),
+            body: JSON.stringify({ clientId: get(socket)?.id, clientToken: get(clientToken), lower, upper }),
         });
         if (!response.ok) throw new Error(response.status);
     } catch (error) {

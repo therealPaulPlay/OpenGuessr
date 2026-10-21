@@ -1,9 +1,10 @@
 <script>
 	import { GripVertical } from "@lucide/svelte";
+	import { blur } from "svelte/transition";
 
 	let {
 		startValue = 0,
-        valueName = "Elo",
+		valueName = "Elo",
 		rangeLeft = $bindable(0),
 		rangeRight = $bindable(0),
 		rangeStart = 1000,
@@ -32,8 +33,12 @@
 	let maxHalfBarWidthPixels = $derived(Math.max(centerPixel, width - centerPixel)); // The longer half of the bar texture, if it was max. extended, from center pixel to edge
 
 	// The bar follows rangeLeft and rangeRight, but ensures the drag handles never overlap
-	let barLeft = $derived(Math.max(0, Math.min(centerPixel - MIN_HALF_PIXELS, (rangeLeft - rangeStart) / valuePerPixel)));
-	let barRight = $derived(Math.min(width, Math.max(centerPixel + MIN_HALF_PIXELS, (rangeRight - rangeStart) / valuePerPixel)));
+	let barLeft = $derived(
+		Math.max(0, Math.min(centerPixel - MIN_HALF_PIXELS, (rangeLeft - rangeStart) / valuePerPixel)),
+	);
+	let barRight = $derived(
+		Math.min(width, Math.max(centerPixel + MIN_HALF_PIXELS, (rangeRight - rangeStart) / valuePerPixel)),
+	);
 	let halfBarWidthPixels = $derived(Math.max(centerPixel - barLeft, barRight - centerPixel)); // Bar extent from the center to each side (the greater one)
 
 	function handleStart(event, isRight) {
@@ -74,7 +79,7 @@
 
 <svelte:window onpointermove={handleDrag} onpointerup={handleCancel} onpointercancel={handleCancel} />
 
-<div class="range-container bar-menu" style:width={width + "px"}>
+<div class="range-container bar-menu" style:width={width + "px"} transition:blur={{ duration: 250 }}>
 	<div class="value-marker value-marker-start">
 		<p>&lt;{numberToK(rangeStart)}</p>
 		<span class="value-line"></span>
@@ -83,14 +88,13 @@
 		<p>&gt;{numberToK(rangeEnd)}</p>
 		<span class="value-line"></span>
 	</div>
-	<div class="selection-display bar-menu">
+	<div class="selection-display">
 		<p class="grow-selection">{rangeLeft <= rangeStart ? "<" : ""}{numberToK(Math.max(rangeStart, rangeLeft))}</p>
 		<p style:opacity="0.75">-</p>
 		<p class="grow-selection">{rangeRight >= rangeEnd ? ">" : ""}{numberToK(Math.min(rangeEnd, rangeRight))}</p>
 		<p style:opacity="0.75">{valueName}</p>
 	</div>
-	<div class="range-texture bright-soft" style:left={barLeft + "px"} style:width={barRight - barLeft + "px"}>
-		<div class="range-texture-depth"></div>
+	<div class="range-texture bright" style:left={barLeft + "px"} style:width={barRight - barLeft + "px"}>
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div class="range-drag left" onpointerdown={(e) => handleStart(e, false)}>
 			<GripVertical size={16} style="pointer-events: none;" />
@@ -105,7 +109,9 @@
 <style>
 	.range-container {
 		height: 40px;
-		position: relative;
+		position: absolute;
+		margin-inline: auto;
+		inset: 0;
 		padding: 0;
 		margin-top: 58px;
 		margin-bottom: var(--box-margin);
@@ -117,12 +123,6 @@
 		top: 0;
 		bottom: 0;
 		border-radius: var(--box-margin);
-	}
-
-	.range-texture-depth {
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(to right, var(--box-color) 20%, transparent 40%, transparent 60%, var(--box-color) 80%);
 	}
 
 	.range-drag {
@@ -157,9 +157,9 @@
 		gap: 3px;
 	}
 
-    .value-marker p {
-        opacity: 0.75;
-    }
+	.value-marker p {
+		opacity: 0.75;
+	}
 
 	.value-marker.value-marker-start {
 		left: 0;
@@ -184,11 +184,12 @@
 		bottom: calc(100% + var(--layout-margin));
 		display: flex;
 		font-variant-numeric: tabular-nums;
-		min-width: 175px;
+		width: 175px;
+        margin-bottom: var(--content-margin);
 		left: 0;
 		right: 0;
 		margin-inline: auto;
-        padding-inline: var(--layout-margin);
+		padding-inline: var(--layout-margin);
 	}
 
 	.grow-selection {
