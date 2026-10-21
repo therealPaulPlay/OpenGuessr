@@ -75,7 +75,7 @@
 	function numberToK(num = 0) {
 		if (num >= 1000) {
 			return Math.round((num / 1000) * 100) / 100 + "k";
-		} else return num.toLocaleString();
+		} else return Math.round(num).toLocaleString();
 	}
 </script>
 
