@@ -69,10 +69,9 @@
 		class="standard-button try-button large"
 		disabled={($matchmakingActive && !$matchmakingSubmitted) || $cancellingMatchmaking}
 		onclick={async () => {
-			if (!$matchmakingActive) {
-				playSound("basic_button");
-				findFunction?.();
-			} else {
+			playSound("basic_button");
+			if (!$matchmakingActive) findFunction?.();
+			else {
 				$cancellingMatchmaking = true;
 				try {
 					await cancelFunction?.();
