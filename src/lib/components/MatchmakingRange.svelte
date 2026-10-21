@@ -13,22 +13,23 @@
 		onchange,
 	} = $props();
 
-	const TOTAL_RANGE = $derived(rangeEnd - rangeStart); // Full value range (e.g. 1000 -> 2000 it would be 1000)
+	let totalRange = $derived(rangeEnd - rangeStart); // Full value range (e.g. 1000 -> 2000 it would be 1000)
 	const MIN_HALF_PIXELS = 16; // Keeps both drag handles visible
 
 	let isDragging = $state(false);
 	let startX = $state(0);
 	let right = $state(false);
+	let dragPointerId = $state(null);
 
 	let startPixelValue = $state(MIN_HALF_PIXELS);
 
 	let width = $state(250); // Width of the full range container
-	let valuePerPixel = $derived(TOTAL_RANGE / width);
+	let valuePerPixel = $derived(totalRange / width);
 
 	// Bar width and offset
 	// The exact center point of the bar (for the startValue), accounting for the drag handle widths
 	let centerPixel = $derived(
-		Math.min(width - MIN_HALF_PIXELS, Math.max(MIN_HALF_PIXELS, ((startValue - rangeStart) / TOTAL_RANGE) * width)),
+		Math.min(width - MIN_HALF_PIXELS, Math.max(MIN_HALF_PIXELS, ((startValue - rangeStart) / totalRange) * width)),
 	);
 	let maxHalfBarWidthPixels = $derived(Math.max(centerPixel, width - centerPixel)); // The longer half of the bar texture, if it was max. extended, from center pixel to edge
 
@@ -45,12 +46,13 @@
 		right = isRight;
 		isDragging = true;
 		startX = event.clientX;
+		dragPointerId = event.pointerId;
 		startPixelValue = halfBarWidthPixels;
 		ondragstart?.();
 	}
 
-	function handleCancel() {
-		if (!isDragging) return;
+	function handleCancel(event) {
+		if (!isDragging || event.pointerId !== dragPointerId) return;
 		isDragging = false;
 		right = false;
 		startX = 0;
@@ -59,7 +61,7 @@
 	}
 
 	function handleDrag(event) {
-		if (!isDragging) return;
+		if (!isDragging || event.pointerId !== dragPointerId) return;
 		const delta = event.clientX - startX;
 
 		const newHalfBarWidthPixels = Math.min(
