@@ -764,7 +764,8 @@
 
 	.account-prompt-input {
 		padding: var(--content-margin) var(--box-margin);
-		width: 40%;
+		width: 225px;
+		max-width: 100%;
 	}
 
 	.account-prompt-input-margin,

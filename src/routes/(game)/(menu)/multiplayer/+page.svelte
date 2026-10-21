@@ -161,7 +161,7 @@
 									playSound("basic_button");
 									$historyForUserId = localStorage.getItem("id");
 									divisionMatchHistoryPopup.set(true);
-								}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
+								}}><History strokeWidth={2.25} size={20} style="margin-bottom: -1px;" /></button
 							>
 						</span>
 					</div>
@@ -500,16 +500,19 @@
 	}
 
 	.inner-duel-button {
-		padding-inline: var(--panel-margin);
+		padding-inline: var(--box-margin);
 		height: 34px;
 		border: none;
 		background-color: var(--box-color-dark-soft);
+		display: flex;
+		gap: var(--content-margin);
+		align-items: center;
 	}
 
 	#multiplayer-select-duels {
 		position: relative;
 		overflow: hidden;
-		min-width: 150px;
+		min-width: 120px;
 	}
 
 	#multiplayer-select-duels::before {

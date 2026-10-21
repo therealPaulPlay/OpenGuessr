@@ -35,6 +35,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		min-height: calc(100dvh - 120px);
 	}
 
@@ -45,7 +46,5 @@
 		width: 100%;
 		max-width: 400px;
 		gap: var(--layout-margin);
-		margin-top: auto;
-		margin-bottom: auto;
 	}
 </style>
