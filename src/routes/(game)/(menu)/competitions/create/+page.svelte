@@ -44,7 +44,7 @@
 			leaderboardLink = window.location.origin + "/competitions?leaderboard=" + competitionCreationId;
 			successPopup = true;
 		} else {
-			showErrorPopup("Error submitting competition", "An error occured submitting your competition.", operationMessage);
+			showErrorPopup("Error submitting competition", "An error occurred submitting your competition.", operationMessage);
 		}
 	}
 
@@ -71,7 +71,7 @@
 			}
 			return totalSeconds;
 		} catch (error) {
-			console.error("Error occured when extracting time seconds from inputs: " + error);
+			console.error("Error occurred when extracting time seconds from inputs: " + error);
 			return null;
 		}
 	}
@@ -135,7 +135,7 @@
 
 					return errorMessages.join(" ");
 				} catch {
-					return "Error occured on server and response did not include a json response.";
+					return "Error occurred on server and response did not include a json response.";
 				}
 			}
 		} catch (error) {

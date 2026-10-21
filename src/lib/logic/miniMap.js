@@ -160,7 +160,7 @@ function onMapClick(latLng) {
 
         if (get(multiplayer)) {
             get(socket)?.sendRequest("addGuessMarker", { lat: get(guessLat), lon: get(guessLon) }).catch((error) => {
-                if (get(multiplayer)) showErrorPopup("Failed to add map marker", "An error occured adding the guess marker for multiplayer.", error.message);
+                if (get(multiplayer)) showErrorPopup("Failed to add map marker", "An error occurred adding the guess marker for multiplayer.", error.message);
                 console.error("Error adding guess marker for multiplayer:", error);
             });
         }

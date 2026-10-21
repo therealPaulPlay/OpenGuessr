@@ -58,7 +58,7 @@ export function findDuel() {
 
         // Create & submit a room, which the server then pairs up with another queued room
         const created = await createMatchmakingRoom(matchmakingRoomConfigs["division-duel"]);
-        if (created && await submitRoomCodeForMatchmaking("division-duel")) attemptFind("division-duel");
+        if (created) await submitRoomCodeForMatchmaking("division-duel");
     };
 
     if (!get(isAuthenticated)) signupPrompt(action);
@@ -77,7 +77,7 @@ export async function startFindTeamDuel() {
     matchmakingActive.set(true);
 
     // Submit room code and look for a match if successful
-    if (await submitRoomCodeForMatchmaking("team-duel")) attemptFind("team-duel");
+    if (await submitRoomCodeForMatchmaking("team-duel")) attemptFindTeamDuel();
 }
 
 // Shared -----------------------
@@ -120,16 +120,15 @@ async function submitRoomCodeForMatchmaking(type) {
 // API --------------------------
 
 // The server forms the match by moving all involved players into one of the queued rooms
-async function attemptFind(type) {
+async function attemptFindTeamDuel() {
     try {
-        const response = await fetch(get(apiUrl) + "/matchmaking/find-" + type, {
+        const response = await fetch(get(apiUrl) + "/matchmaking/find-team-duel", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ code: get(roomCode), clientToken: get(clientToken) })
         });
-
         if (!response.ok) throw new Error(response.status);
 
     } catch (error) {
@@ -141,7 +140,7 @@ async function attemptFind(type) {
 
         // Display error
         console.error("Error finding match:", error);
-        showErrorPopup("Failed to find a match", "The request returned an error.", error.message);
+        showErrorPopup("Failed to find a team duel", "An error occurred finding a team duel.", error.message);
     }
 }
 
@@ -184,9 +183,9 @@ export async function submitRoomCode(type, map = get(defaultMap)) {
     }
 }
 
-export async function setMatchmakingRange(lower, upper) {
+export async function setMatchmakingEloRange(lower, upper) {
     try {
-        const response = await fetch(get(apiUrl) + "/matchmaking/set-range/" + get(roomCode), {
+        const response = await fetch(get(apiUrl) + "/matchmaking/set-elo-range/" + get(roomCode), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -196,7 +195,7 @@ export async function setMatchmakingRange(lower, upper) {
         if (!response.ok) throw new Error(response.status);
     } catch (error) {
         console.error("Failed to set matchmaking range:", error);
-        showErrorPopup("Failed to set range", "An error occured setting the elo matchmaking range.", error.message);
+        showErrorPopup("Failed to set range", "An error occurred setting the elo matchmaking range.", error.message);
     }
 }
 

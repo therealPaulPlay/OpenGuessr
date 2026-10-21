@@ -51,7 +51,7 @@
 			}
 		} catch (error) {
 			console.error("Failed to enter tournament:", error);
-			showErrorPopup("Failed to enter tournament", "An error occured attempting to enter the tournament.", error.message);
+			showErrorPopup("Failed to enter tournament", "An error occurred attempting to enter the tournament.", error.message);
 		}
 	}
 
@@ -75,7 +75,7 @@
 			console.error("Failed to track calendar save:", error);
 			showErrorPopup(
 				"Failed to track calendar save",
-				"An error occured attempting to track the calendar save.",
+				"An error occurred attempting to track the calendar save.",
 				error.message,
 			);
 			return false;

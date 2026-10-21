@@ -43,7 +43,7 @@ export async function handleShopFreeTokens() {
 
     } catch (error) {
         console.error("Error claiming tokens:", error);
-        showErrorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
+        showErrorPopup("Error claiming tokens", "An error occurred claiming tokens.", error);
     }
 }
 
@@ -69,7 +69,7 @@ export async function handleShopYouTubePin() {
 
     } catch (error) {
         console.error("Error claiming pin:", error);
-        showErrorPopup("Error claiming pin", "An error occured claiming a pin.", error);
+        showErrorPopup("Error claiming pin", "An error occurred claiming a pin.", error);
     }
 }
 
@@ -101,8 +101,8 @@ async function handleStripePurchase(productId) {
         } else throw new Error(response.status);
 
     } catch (error) {
-        console.error("Error occured during checkout:", error);
-        showErrorPopup("Checkout error", "An error occured trying to create a checkout session.", error);
+        console.error("Error occurred during checkout:", error);
+        showErrorPopup("Checkout error", "An error occurred trying to create a checkout session.", error);
     }
 }
 
@@ -140,7 +140,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
 
         } catch (error) {
             console.error("Error purchasing pin:", error);
-            showErrorPopup("Error purchasing pin", "An error occured purchasing a pin.", error);
+            showErrorPopup("Error purchasing pin", "An error occurred purchasing a pin.", error);
         }
     } else if (type == "bundle") {
         try {
@@ -176,7 +176,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
 
         } catch (error) {
             console.error("Error purchasing bundle:", error);
-            showErrorPopup("Error purchasing bundle", "An error occured purchasing a bundle.", error);
+            showErrorPopup("Error purchasing bundle", "An error occurred purchasing a bundle.", error);
         }
     }
 }

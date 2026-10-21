@@ -10,8 +10,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "@lucide/svelte";
 	import MatchmakingRange from "./MatchmakingRange.svelte";
-	import { setMatchmakingRange } from "$lib/logic/matchmakingLogic";
-	import { elo } from "$lib/stores/accountStore";
+	import { setMatchmakingEloRange } from "$lib/logic/matchmakingLogic";
 
 	let {
 		findFunction = () => console.warn("No find function set!"),
@@ -26,15 +25,15 @@
 	// Animate the server's range expansion
 	$effect(() => {
 		if (!$matchmakingEloRange) return;
-		const { initialOffset, finalOffset, expandDuration, receivedAt } = $matchmakingEloRange;
+		const { clampedElo, initialOffset, finalOffset, expandDuration, receivedAt } = $matchmakingEloRange;
 
 		const expand = () => {
 			const timeFactor = Math.min(1, (Date.now() - receivedAt) / expandDuration); // 0 at start, 1 when fully expanded
 			const offset = initialOffset + (finalOffset - initialOffset) * timeFactor; // Current offset (expands over time)
 
 			// Apply new range bounds
-			rangeLeft = $elo - offset;
-			rangeRight = $elo + offset;
+			rangeLeft = clampedElo - offset;
+			rangeRight = clampedElo + offset;
 
 			// Repeat until the expansion has finished (time factor 1 means 100% of the range is now shown)
 			if (timeFactor < 1) expandFrame = requestAnimationFrame(expand);
@@ -58,9 +57,9 @@
 		<MatchmakingRange
 			bind:rangeLeft
 			bind:rangeRight
-			startValue={$elo}
+			startValue={$matchmakingEloRange?.clampedElo ?? 0}
 			ondragstart={() => cancelAnimationFrame(expandFrame)}
-			onchange={() => setMatchmakingRange(rangeLeft, rangeRight)}
+			onchange={() => setMatchmakingEloRange(rangeLeft, rangeRight)}
 		/>
 	{/if}
 </div>

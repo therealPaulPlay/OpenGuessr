@@ -17,7 +17,7 @@ export function confirmButtonClicks() {
         playSound("lock_guess_in");
         mapInteractive.set(false);
         get(socket)?.sendRequest("confirmGuess").catch((error) => {
-            showErrorPopup("Failed to confirm guess", "An error occured confirming the guess for multiplayer.", error.message);
+            showErrorPopup("Failed to confirm guess", "An error occurred confirming the guess for multiplayer.", error.message);
             console.error("Error confirming guess for multiplayer:", error);
         });
     }

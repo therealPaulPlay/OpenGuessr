@@ -138,7 +138,7 @@
 			checkAuthentication();
 		} catch (error) {
 			console.error("Error authenticating with CrazyGames:", error);
-			showErrorPopup("Error authenticating", "An error occured trying to authenticate with CrazyGames.", error.message);
+			showErrorPopup("Error authenticating", "An error occurred trying to authenticate with CrazyGames.", error.message);
 		}
 	}
 </script>

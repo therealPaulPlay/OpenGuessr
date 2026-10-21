@@ -146,7 +146,7 @@
 									await get(socket)?.sendRequest("rematch");
 								} catch (error) {
 									if (get(multiplayer)) {
-										showErrorPopup("Failed to rematch", "An error occured trying to rematch.", error.message);
+										showErrorPopup("Failed to rematch", "An error occurred trying to rematch.", error.message);
 									}
 									console.error("Error processing rematch:", error);
 								}

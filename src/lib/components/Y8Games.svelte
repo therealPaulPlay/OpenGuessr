@@ -103,8 +103,8 @@
 			// Now, set UI status and fetch user info
 			checkAuthentication();
 		} catch (error) {
-			console.error("Error occured authenticating with Y8:", error);
-			showErrorPopup("Error authenticating", "An error occured trying to authenticate with Y8.", error.message);
+			console.error("Error occurred authenticating with Y8:", error);
+			showErrorPopup("Error authenticating", "An error occurred trying to authenticate with Y8.", error.message);
 		}
 	}
 </script>

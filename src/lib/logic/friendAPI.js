@@ -31,12 +31,12 @@ export async function loadInbox() {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error loading inbox: " + response.status);
-            showErrorPopup("Error fetching inbox", "An error occured fetching the friend inbox.", data.error);
+            showErrorPopup("Error fetching inbox", "An error occurred fetching the friend inbox.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while loading inbox: ', error);
-        showErrorPopup("Error fetching inbox (Network)", "An error occured fetching the friend inbox.", error.message);
+        showErrorPopup("Error fetching inbox (Network)", "An error occurred fetching the friend inbox.", error.message);
     }
 }
 
@@ -60,12 +60,12 @@ export async function loadOutbox() {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error loading outbox: " + response.status);
-            showErrorPopup("Error fetching outbox", "An error occured fetching the friend outbox.", data.error);
+            showErrorPopup("Error fetching outbox", "An error occurred fetching the friend outbox.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while loading outbox: ', error);
-        showErrorPopup("Error fetching outbox (Network)", "An error occured fetching the friend outbox.", error.message);
+        showErrorPopup("Error fetching outbox (Network)", "An error occurred fetching the friend outbox.", error.message);
     }
 }
 
@@ -85,12 +85,12 @@ export async function revokeRequest(recipientId) {
             let data = { error: response.status };
             try { data = await response.json(); } catch { }
             console.error("Error revoking friend request: " + response.status);
-            showErrorPopup("Error revoking request", "An error occured revoking a friend request.", data.error);
+            showErrorPopup("Error revoking request", "An error occurred revoking a friend request.", data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while revoking friend request: ', error);
-        showErrorPopup("Error revoking request (Network)", "An error occured revoking a friend request.", error.message);
+        showErrorPopup("Error revoking request (Network)", "An error occurred revoking a friend request.", error.message);
     }
 }
 

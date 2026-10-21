@@ -47,7 +47,7 @@ async function deleteUser(password) {
 
     } catch (error) {
         console.error("Faled to delete account:", error);
-        showErrorPopup("Failed to delete account", "An error occured trying to delete the account.", error.message);
+        showErrorPopup("Failed to delete account", "An error occurred trying to delete the account.", error.message);
         return false;
     }
 }

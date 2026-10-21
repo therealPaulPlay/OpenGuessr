@@ -44,7 +44,7 @@
 			if (get(multiplayer)) {
 				showErrorPopup(
 					"Failed to update player's team",
-					"An error occured trying to update the player's team index.",
+					"An error occurred trying to update the player's team index.",
 					error.message,
 				);
 			}
