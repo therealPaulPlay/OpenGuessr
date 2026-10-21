@@ -18,9 +18,12 @@
 		showEloRange = false,
 	} = $props();
 
+	// Elo range
 	let rangeLeft = $state(0);
 	let rangeRight = $state(0);
-	let expandFrame;
+	let rangeExpandFrame;
+	let pauseMatchmakingRequest;
+	let isDraggingRange = $state(false);
 
 	// Animate the server's range expansion
 	$effect(() => {
@@ -36,11 +39,11 @@
 			rangeRight = clampedElo + offset;
 
 			// Repeat until the expansion has finished (time factor 1 means 100% of the range is now shown)
-			if (timeFactor < 1) expandFrame = requestAnimationFrame(expand);
+			if (timeFactor < 1) rangeExpandFrame = requestAnimationFrame(expand);
 		};
 		expand();
 
-		return () => cancelAnimationFrame(expandFrame);
+		return () => cancelAnimationFrame(rangeExpandFrame);
 	});
 </script>
 
@@ -57,9 +60,16 @@
 		<MatchmakingRange
 			bind:rangeLeft
 			bind:rangeRight
+			bind:isDragging={isDraggingRange}
 			startValue={$matchmakingEloRange?.clampedElo ?? 0}
-			ondragstart={() => cancelAnimationFrame(expandFrame)}
-			onchange={() => setMatchmakingEloRange(rangeLeft, rangeRight)}
+			ondragstart={() => {
+				cancelAnimationFrame(rangeExpandFrame);
+				pauseMatchmakingRequest = setMatchmakingEloRange(rangeLeft, rangeRight, true); // Pause the matchmaking while adjusting the range
+			}}
+			onchange={async () => {
+				await pauseMatchmakingRequest; // Await to ensure pause comes in before the new range
+				if (!isDraggingRange) setMatchmakingEloRange(rangeLeft, rangeRight); // If player is already dragging again, skip
+			}}
 		/>
 	{/if}
 </div>

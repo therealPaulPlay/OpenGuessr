@@ -183,14 +183,14 @@ export async function submitRoomCode(type, map = get(defaultMap)) {
     }
 }
 
-export async function setMatchmakingEloRange(lower, upper) {
+export async function setMatchmakingEloRange(lower, upper, paused = false) {
     try {
         const response = await fetch(get(apiUrl) + "/matchmaking/set-elo-range/" + get(roomCode), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ clientId: get(socket)?.id, clientToken: get(clientToken), lower, upper }),
+            body: JSON.stringify({ clientId: get(socket)?.id, clientToken: get(clientToken), lower, upper, paused }),
         });
         if (!response.ok) throw new Error(response.status);
     } catch (error) {
