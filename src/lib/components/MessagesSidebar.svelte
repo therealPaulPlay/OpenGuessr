@@ -92,7 +92,7 @@
 								} catch (error) {
 									showErrorPopup(
 										"Failed to accept invite",
-										"An error occured trying to accept an invite.",
+										"An error occurred trying to accept an invite.",
 										"From headless-chat: " + error.message,
 									);
 								}
@@ -107,7 +107,7 @@
 								} catch (error) {
 									showErrorPopup(
 										"Failed to decline invite",
-										"An error occured trying to decline a conversation invite.",
+										"An error occurred trying to decline a conversation invite.",
 										"From headless-chat: " + error.message,
 									);
 								}
@@ -170,7 +170,7 @@
 									} catch (error) {
 										showErrorPopup(
 											"Failed to leave conversation",
-											"An error occured trying to leave this conversation.",
+											"An error occurred trying to leave this conversation.",
 											"From headless-chat: " + error.message,
 										);
 									}

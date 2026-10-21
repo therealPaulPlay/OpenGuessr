@@ -115,7 +115,7 @@ export async function loadResultScreenXP(distance) {
         const hasGuess = get(socket)?.storage?.guessLocationsArray?.some((g) => g.id === get(socket)?.id);
         if (get(multiplayer) && !hasGuess) showErrorPopup("Points not added", "Since you joined while the result was already shown, your points were not added for this round.");
         else if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP).catch((error) => {
-            if (get(multiplayer)) showErrorPopup("Failed to add to score", "An error occured trying to submit the score addition.", error.message);
+            if (get(multiplayer)) showErrorPopup("Failed to add to score", "An error occurred trying to submit the score addition.", error.message);
             console.error("Error adding to score:", error);
         });
 

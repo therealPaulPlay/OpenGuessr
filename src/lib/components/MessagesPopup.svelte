@@ -98,7 +98,7 @@
 			if (!isStale()) {
 				showErrorPopup(
 					"Failed to load messages",
-					"An error occured trying to load messages for this conversation.",
+					"An error occurred trying to load messages for this conversation.",
 					"From headless-chat: " + error.message,
 				);
 			}
@@ -177,7 +177,7 @@
 			loadMissingAliases(older);
 			loadMissingReferences(older);
 		} catch (error) {
-			showErrorPopup("Failed to load older messages", "An error occured trying to load more messages.", error.message);
+			showErrorPopup("Failed to load older messages", "An error occurred trying to load more messages.", error.message);
 		} finally {
 			isLoadingMore = false;
 		}
@@ -214,7 +214,7 @@
 		} catch (error) {
 			showErrorPopup(
 				"Failed to send message",
-				"An error occured trying to send your message.",
+				"An error occurred trying to send your message.",
 				"From headless-chat: " + error.message,
 			);
 		}

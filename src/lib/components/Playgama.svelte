@@ -40,8 +40,8 @@
 			// Now, set UI status and fetch user info
 			checkAuthentication();
 		} catch (error) {
-			console.error("Error occured authenticating with Playgama:", error);
-			showErrorPopup("Error authenticating", "An error occured trying to authenticate with Playgama.", error.message);
+			console.error("Error occurred authenticating with Playgama:", error);
+			showErrorPopup("Error authenticating", "An error occurred trying to authenticate with Playgama.", error.message);
 		}
 	}
 </script>

@@ -44,7 +44,7 @@
 			if (get(multiplayer)) {
 				showErrorPopup(
 					"Failed to update player's team",
-					"An error occured trying to update the player's team index.",
+					"An error occurred trying to update the player's team index.",
 					error.message,
 				);
 			}
@@ -200,7 +200,7 @@
 			disabled={!$roomCode || roomOpened || !$isAuthenticated}
 			onclick={async () => {
 				playSound("basic_button");
-				await submitRoomCode("open-room", false, localStorage.getItem("selectedMap") || $defaultMap);
+				await submitRoomCode("open-room", localStorage.getItem("selectedMap") || $defaultMap);
 				roomOpened = true;
 				showNotification("Room is now publicly listed.");
 			}}

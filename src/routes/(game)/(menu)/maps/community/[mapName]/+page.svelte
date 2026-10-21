@@ -89,7 +89,7 @@
 			map = mapData;
 		} catch (error) {
 			console.error("Error fetching map:", error);
-			showErrorPopup("Map failed to load", "An error occured trying to load the map.", error.message);
+			showErrorPopup("Map failed to load", "An error occurred trying to load the map.", error.message);
 		}
 	});
 

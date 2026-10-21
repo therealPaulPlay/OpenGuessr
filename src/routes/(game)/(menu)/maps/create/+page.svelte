@@ -63,7 +63,7 @@
 					let resultErrors = "";
 					result.errors?.forEach((e) => (resultErrors += e.msg + " "));
 					if (result.error) resultErrors += result.error;
-					console.error("Error(s) occured trying to submit a map: " + resultErrors);
+					console.error("Error(s) occurred trying to submit a map: " + resultErrors);
 					return resultErrors || "Failed to submit map.";
 				}
 			} catch (error) {
@@ -77,7 +77,7 @@
 			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase());
 			showNotification("Map created!");
 		} else {
-			showErrorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
+			showErrorPopup("Error occurred uploading a map", "Please refer to the error code below.", operationMessage);
 		}
 	}
 </script>

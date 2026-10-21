@@ -3,10 +3,8 @@
 		PlusCircle,
 		Unplug,
 		TriangleAlert,
-		BicepsFlexed,
 		X,
 		History,
-		Globe,
 		Handshake,
 		Plus,
 		MessagesSquare,
@@ -15,11 +13,11 @@
 	import { divisionMatchHistoryPopup, friendBrowserPopup, messagesPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
-	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+	import { loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
 	import { newFriendRequest } from "$lib/stores/context-specific/inboxOutboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { showConfirmPopup, showNotification, tooltip, Collapsible, Chip, InfoBanner } from "openguessr-ui";
+	import { showConfirmPopup, tooltip, Collapsible, Chip, InfoBanner } from "openguessr-ui";
 	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
@@ -163,24 +161,8 @@
 									playSound("basic_button");
 									$historyForUserId = localStorage.getItem("id");
 									divisionMatchHistoryPopup.set(true);
-								}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
+								}}><History strokeWidth={2.25} size={20} style="margin-bottom: -1px;" /></button
 							>
-							<button
-								class="standard-button dark inner-duel-button"
-								{@attach tooltip({ text: "Division-based or Everyone" })}
-								style:flex-grow={0}
-								onclick={(e) => {
-									e.stopPropagation();
-									$skillBasedMatchmaking = !$skillBasedMatchmaking;
-									showNotification("Matchmaking set to " + ($skillBasedMatchmaking ? "division-based." : "everyone."));
-								}}
-							>
-								{#if $skillBasedMatchmaking}
-									<BicepsFlexed strokeWidth={2} size={20} style="margin-bottom: -1px;" />
-								{:else}
-									<Globe strokeWidth={2} size={20} style="margin-bottom: -1px;" />
-								{/if}
-							</button>
 						</span>
 					</div>
 					<button
@@ -518,16 +500,19 @@
 	}
 
 	.inner-duel-button {
-		padding-inline: var(--panel-margin);
+		padding-inline: var(--box-margin);
 		height: 34px;
 		border: none;
 		background-color: var(--box-color-dark-soft);
+		display: flex;
+		gap: var(--content-margin);
+		align-items: center;
 	}
 
 	#multiplayer-select-duels {
 		position: relative;
 		overflow: hidden;
-		min-width: 150px;
+		min-width: 120px;
 	}
 
 	#multiplayer-select-duels::before {

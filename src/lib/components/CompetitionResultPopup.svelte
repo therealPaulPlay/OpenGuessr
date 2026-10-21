@@ -58,11 +58,11 @@
 				} catch {}
 
 				if (responseData?.error) {
-					showErrorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", responseData.error);
+					showErrorPopup("Failed loading a leaderboard", "An error occurred loading a leaderboard", responseData.error);
 				} else {
 					showErrorPopup(
 						"Unknown error loading a leaderboard",
-						"An unknown erorr occured loading a leaderboard.",
+						"An unknown erorr occurred loading a leaderboard.",
 						"Request failed with status " + response.status + ".",
 					);
 				}
@@ -96,13 +96,13 @@
 				let error = await response.json().error;
 				if (!error) error = response.status;
 
-				console.error("An occured submitting the competition rating: " + error);
+				console.error("An occurred submitting the competition rating: " + error);
 				ratingText = "Error: " + error;
 			} else {
 				ratingText = "Rating received. Thank you!";
 			}
 		} catch (error) {
-			console.error("A network error occured submitting the competition rating: " + error);
+			console.error("A network error occurred submitting the competition rating: " + error);
 			ratingText = "Network error.";
 		}
 	}

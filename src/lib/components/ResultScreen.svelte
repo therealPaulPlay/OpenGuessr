@@ -29,7 +29,7 @@
 	import { registerResultAds } from "$lib/utils/ads";
 	import { inMenu, roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { finalizeTutorial } from "./Tutorial.svelte";
+	import { evolveTutorial } from "./Tutorial.svelte";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { countryGuessr } from "$lib/stores/modeStore";
 
@@ -135,7 +135,7 @@
 		// Tutorial state
 		if ($tutorial) {
 			if (isFirstTutorialRound) isFirstTutorialRound = false;
-			else finalizeTutorial();
+			else evolveTutorial();
 		}
 
 		// Go to next round

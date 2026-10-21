@@ -13,6 +13,7 @@
 	// View transitions
 	onNavigate((navigation) => {
 		if (!document.startViewTransition) return;
+		if (navigation.from?.url.pathname === navigation.to?.url.pathname) return; // Skip if the underlying page didn't change (e.g. goto("/") if already on "/")
 
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => { // Takes first snapshot (old page)

@@ -5,28 +5,72 @@
 		matchmakingHosting,
 		matchmakingSubmitted,
 		cancellingMatchmaking,
+		matchmakingEloRange,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "@lucide/svelte";
+	import MatchmakingRange from "./MatchmakingRange.svelte";
+	import { setMatchmakingEloRange } from "$lib/logic/matchmakingLogic";
 
 	let {
 		findFunction = () => console.warn("No find function set!"),
 		cancelFunction = () => console.warn("No cancel function set!"),
+		showEloRange = false,
 	} = $props();
+
+	let rangeLeft = $state(0);
+	let rangeRight = $state(0);
+	let expandFrame;
+
+	// Animate the server's range expansion
+	$effect(() => {
+		if (!$matchmakingEloRange) return;
+		const { clampedElo, initialOffset, finalOffset, expandDuration, receivedAt } = $matchmakingEloRange;
+
+		const expand = () => {
+			const timeFactor = Math.min(1, (Date.now() - receivedAt) / expandDuration); // 0 at start, 1 when fully expanded
+			const offset = initialOffset + (finalOffset - initialOffset) * timeFactor; // Current offset (expands over time)
+
+			// Apply new range bounds
+			rangeLeft = clampedElo - offset;
+			rangeRight = clampedElo + offset;
+
+			// Repeat until the expansion has finished (time factor 1 means 100% of the range is now shown)
+			if (timeFactor < 1) expandFrame = requestAnimationFrame(expand);
+		};
+		expand();
+
+		return () => cancelAnimationFrame(expandFrame);
+	});
 </script>
 
 <h2 class="multiplayer-matchmaking-status" class:loading={$multiplayerStatus && $matchmakingHosting}>
 	{$multiplayerStatus || "No match found."}
 </h2>
+{const rangeShown = $derived(showEloRange && $matchmakingSubmitted)}
+<div
+	style:margin-bottom={!(showEloRange && $matchmakingSubmitted) ? "calc(-1 * var(--layout-margin))" : ""}
+	style:height={rangeShown ? "108px" : "0"}
+	class="matchmaking-range-container"
+>
+	{#if rangeShown}
+		<MatchmakingRange
+			bind:rangeLeft
+			bind:rangeRight
+			startValue={$matchmakingEloRange?.clampedElo ?? 0}
+			ondragstart={() => cancelAnimationFrame(expandFrame)}
+			onchange={() => setMatchmakingEloRange(rangeLeft, rangeRight)}
+		/>
+	{/if}
+</div>
 <div class="try-button-container bar-menu">
 	<button
 		class="standard-button try-button large"
 		disabled={($matchmakingActive && !$matchmakingSubmitted) || $cancellingMatchmaking}
 		onclick={async () => {
-			if (!$matchmakingActive) {
-				playSound("basic_button");
-				findFunction?.();
-			} else {
+			playSound("basic_button");
+			if (!$matchmakingActive) findFunction?.();
+			else {
 				$cancellingMatchmaking = true;
 				try {
 					await cancelFunction?.();
@@ -72,6 +116,14 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		transition: color 250ms ease;
+	}
+
+	.matchmaking-range-container {
+		width: 100%;
+		position: relative;
+		transition:
+			margin 400ms ease,
+			height 400ms ease;
 	}
 
 	@keyframes loading-text {

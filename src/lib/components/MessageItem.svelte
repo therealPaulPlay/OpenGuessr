@@ -45,7 +45,7 @@
 		} catch (error) {
 			showErrorPopup(
 				"Failed to react",
-				"An error occured trying to update a reaction.",
+				"An error occurred trying to update a reaction.",
 				"From headless-chat: " + error.message,
 			);
 		}
@@ -185,7 +185,7 @@
 											} catch (error) {
 												showErrorPopup(
 													"Failed to delete message",
-													"An error occured trying to delete your message.",
+													"An error occurred trying to delete your message.",
 													"From headless-chat: " + error.message,
 												);
 											}
