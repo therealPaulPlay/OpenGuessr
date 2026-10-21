@@ -161,7 +161,7 @@
 									playSound("basic_button");
 									$historyForUserId = localStorage.getItem("id");
 									divisionMatchHistoryPopup.set(true);
-								}}><History strokeWidth={2.25} size={20} style="margin-bottom: -1px;" /></button
+								}}><History strokeWidth={2.25} size={20} /></button
 							>
 						</span>
 					</div>
