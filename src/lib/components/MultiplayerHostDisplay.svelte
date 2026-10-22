@@ -8,7 +8,6 @@
 		socket,
 		teamAmount,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { crazyGames, inviteLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { loadFriends, sendMatchInvite } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
@@ -200,7 +199,7 @@
 			disabled={!$roomCode || roomOpened || !$isAuthenticated}
 			onclick={async () => {
 				playSound("basic_button");
-				await submitRoomCode("open-room", localStorage.getItem("selectedMap") || $defaultMap);
+				await submitRoomCode("open-room");
 				roomOpened = true;
 				showNotification("Room is now publicly listed.");
 			}}

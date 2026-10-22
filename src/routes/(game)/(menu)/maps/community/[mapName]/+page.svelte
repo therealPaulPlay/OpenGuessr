@@ -36,7 +36,7 @@
 	let mapLocationData = $derived(map?.map_data);
 	let locationIndex = $state(0);
 	let otherMapsByAuthor = $derived(map?.otherMaps ?? []);
-	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
+	let forMultiplayer = $derived(page.url.searchParams.get("for-multiplayer"));
 
 	let locationsArrayForSvgMap = $derived.by(() => {
 		if (mapLocationData?.locations?.length > 500) {
@@ -479,7 +479,7 @@
 						if (!map) return showNotification("Map not loaded yet, please try again.");
 
 						// Change to map
-						selectMap(map?.name, { community: true, returnToMultiplayer: returnAfterChange });
+						selectMap(map?.name, { community: true, forMultiplayer });
 					}}
 				>
 					<Play strokeWidth={2.5} />
@@ -533,7 +533,7 @@
 		</div>
 		<div class="other-maps-section">
 			{#each otherMapsByAuthor as map}
-				<MapCard {map} showAuthor={false} returnToMultiplayer={returnAfterChange} />
+				<MapCard {map} showAuthor={false} {forMultiplayer} />
 			{/each}
 		</div>
 	{/if}

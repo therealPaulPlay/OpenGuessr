@@ -3,9 +3,11 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
-	import { goto, afterNavigate } from "$app/navigation";
+	import { goto, afterNavigate, beforeNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
 	import { page } from "$app/state";
+	import { mainMenu } from "$lib/stores/uiStore";
+	import { multiplayer } from "$lib/stores/modeStore";
 
 	import { setContext } from "svelte";
 
@@ -21,7 +23,7 @@
 			if (historyStack.length > 0) historyStack.pop();
 			isGoingBack = false;
 		} else if (from?.url?.pathname && from.url.pathname !== to?.url?.pathname) {
-			historyStack.push(from.url.pathname);
+			historyStack.push(from.url.pathname + from.url.search);
 		}
 	});
 
@@ -30,11 +32,18 @@
 		goto(historyStack.at(-1) || "/", { state: { restoreSnapshot: true } });
 	}
 
-	function leaveMultiplayerIfReturningFromMultiplayerPage(goingHome = false) {
-		if (page.url.pathname.startsWith("/multiplayer") || (page.url.searchParams.get("return-to-multiplayer") && goingHome)) leaveMultiplayer();
-	}
+	// For-multiplayer pages (pages for the host settings) only count as multiplayer before multiplayer starts (bc afterwards, you can't change these settings anymore)
+	const isMultiplayerUrl = (url) => url?.pathname.startsWith("/multiplayer/") || (url?.searchParams.has("for-multiplayer") && !$multiplayer);
 
-	let showHomeButton = $derived(historyStack.length > 0 && historyStack.at(-1) !== "/");
+	// Leave multiplayer when navigating out of multiplayer pages (except moving to "/" on game start, where the main menu is closed first)
+	beforeNavigate(({ from, to, complete }) => {
+		if (isMultiplayerUrl(from?.url) && !isMultiplayerUrl(to?.url) && !(to?.url.pathname === "/" && !$mainMenu)) {
+			// After completion to avoid value resets changing the UI during nav (also if cancelled by a newer navigation)
+			complete.then(() => leaveMultiplayer(), () => leaveMultiplayer()); // The second arg here is the cancellation callback
+		}
+	});
+
+	let showHomeButton = $derived(historyStack.length > 0 && new URL(historyStack.at(-1), page.url.origin).pathname !== "/");
 </script>
 
 <nav class="menu-nav-bar">
@@ -44,7 +53,6 @@
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
-				leaveMultiplayerIfReturningFromMultiplayerPage(false);
 				goBack();
 			}}
 		>
@@ -59,7 +67,6 @@
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
-					leaveMultiplayerIfReturningFromMultiplayerPage(true);
 					goto("/");
 				}}
 			>

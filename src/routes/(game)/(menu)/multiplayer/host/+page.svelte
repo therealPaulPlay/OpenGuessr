@@ -13,14 +13,12 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Ticker, Tabs, showNotification, showErrorPopup } from "openguessr-ui";
+	import { Ticker, Tabs, showErrorPopup } from "openguessr-ui";
 	import { goto } from "$app/navigation";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
-	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import { multiplayer } from "$lib/stores/modeStore";
-	import { browser } from "$app/environment";
 
 	let isCreatingRoom = $state(false);
 	let isCurrentlyStarting = $state(false);
@@ -40,7 +38,7 @@
 				<Ticker
 					maximum={10}
 					minimum={1}
-					initialValue={3}
+					initialValue={$roundAmount}
 					minValueWidth="40px"
 					bind:value={$roundAmount}
 					onchange={() => playSound("change_value")}
@@ -55,7 +53,7 @@
 					maximumValue={Infinity}
 					maximumText="∞"
 					note="sec"
-					initialValue={60}
+					initialValue={$roundLength === Infinity ? 310 : $roundLength}
 					minValueWidth="50px"
 					bind:value={$roundLength}
 					onchange={() => playSound("change_value")}
@@ -81,7 +79,7 @@
 					maximum={5}
 					minimumText="No"
 					note="teams"
-					initialValue={1}
+					initialValue={$teamAmount}
 					minValueWidth="45px"
 					bind:value={$teamAmount}
 					onchange={() => playSound("change_value")}
@@ -102,16 +100,13 @@
 				<p>Map</p>
 				<div class="selected-map-field bright-soft">
 					<p id="multiplayer-map-display">
-						{(() => {
-							if (browser) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
-							else return "...";
-						})()}
+						{idToMapName($multiplayerMap)}
 					</p>
 					<button
 						class="standard-button bright"
 						onclick={() => {
 							playSound("basic_button");
-							goto("/maps?return-to-multiplayer=true");
+							goto("/maps?for-multiplayer=true");
 						}}><ArrowRightLeft size={17} strokeWidth={2} /></button
 					>
 				</div>
@@ -124,15 +119,6 @@
 					onclick={async () => {
 						isCreatingRoom = true;
 						playSound("basic_button");
-
-						// Check if map is invalid for multiplayer
-						if (["Country Guessr", "Tutorial"].includes(localStorage.getItem("selectedMap"))) {
-							showNotification("Map not supported in multiplayer.");
-							isCreatingRoom = false;
-							return;
-						}
-
-						multiplayerMap.set(localStorage.getItem("selectedMap") || $defaultMap);
 						await createMultiplayerRoom();
 						isCreatingRoom = false;
 					}}>Create room</button
@@ -147,7 +133,8 @@
 					try {
 						await get(socket)?.sendRequest("startRoom");
 					} catch (error) {
-						if (get(multiplayer)) showErrorPopup("Failed to start room", "Error occurred starting the room.", error.message);
+						if (get(multiplayer))
+							showErrorPopup("Failed to start room", "Error occurred starting the room.", error.message);
 						console.error("Error starting room:", error);
 					}
 					isCurrentlyStarting = false;

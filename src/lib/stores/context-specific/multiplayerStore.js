@@ -1,5 +1,6 @@
 import { get, writable } from "svelte/store";
 import { defaultRestriction } from "./restrictionStore";
+import { defaultMap } from "./officialMapsStore";
 
 // Client
 export const socket = writable();
@@ -38,7 +39,7 @@ export const guestNamePromise = writable();
 export const multiplayerStatus = writable(); // Status for Duel, Join, Linjoin etc.
 export const loadedFriendsData = writable();
 export const currentRound = writable(0);
-export const multiplayerMap = writable(null);
+export const multiplayerMap = writable(get(defaultMap));
 
 // UI - Host
 export const participantCount = writable(0);

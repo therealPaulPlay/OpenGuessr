@@ -1,10 +1,9 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, socket, clientToken, matchmakingEloRange } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, socket, clientToken, matchmakingEloRange } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { isAuthenticated } from "$lib/stores/accountStore";
-import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { showErrorPopup } from "openguessr-ui";
@@ -88,7 +87,6 @@ function createMatchmakingRoom(roomOptions) {
     // Set standard matchmaking room options
     multiplayerStyle.set("duel");
     roundLength.set(60);
-    multiplayerMap.set(get(defaultMap))
 
     // Set customizable options
     teamAmount.set(roomOptions.teamAmount);
@@ -144,7 +142,7 @@ async function attemptFindTeamDuel() {
     }
 }
 
-export async function submitRoomCode(type, map = get(defaultMap)) {
+export async function submitRoomCode(type) {
     if (!type) {
         console.error("Room type must be specified for submitting a code!");
         return false;
@@ -158,7 +156,6 @@ export async function submitRoomCode(type, map = get(defaultMap)) {
             clientId: get(socket)?.id,
             clientToken: get(clientToken),
             type,
-            map
         }
         if (localStorage.getItem("id") != null) requestBody.id = localStorage.getItem("id");
 

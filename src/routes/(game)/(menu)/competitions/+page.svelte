@@ -6,7 +6,7 @@
 	import { competitionData, dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { goto } from "$app/navigation";
+	import { goto, afterNavigate } from "$app/navigation";
 	import { Plus, Search } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -89,7 +89,7 @@
 	}
 
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
-	$effect(() => {
+	afterNavigate(() => {
 		const leaderboardIdFromLink = page.url.searchParams.get("leaderboard");
 		const competitionIdFromLink = page.url.searchParams.get("enter");
 
@@ -110,7 +110,7 @@
 			);
 		}
 
-		history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+		goto(window.location.pathname, { replaceState: true }); // reset query in the address bar
 	});
 
 	// Load competitions ----------------------------------------------------------------------------------------------------------------------------

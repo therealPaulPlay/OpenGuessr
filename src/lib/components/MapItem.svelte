@@ -15,6 +15,7 @@
 		cover,
 		children,
 		link = false,
+		disabled = false,
 		id,
 	} = $props();
 </script>
@@ -27,6 +28,7 @@
 	class:map-item-compact={compact}
 	class:map-item-load-more={loadMore}
 	class:selected-map-item={selected}
+	class:disabled
 	{id}
 	role="button"
 	tabindex="0"
@@ -222,5 +224,10 @@
 
 	.map-item-compact .play-map-cover {
 		border-radius: var(--content-margin);
+	}
+
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 </style>

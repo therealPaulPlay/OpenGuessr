@@ -45,7 +45,7 @@
 	let currentController;
 	let currentFavController;
 
-	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
+	let forMultiplayer = $derived(page.url.searchParams.get("for-multiplayer"));
 
 	const categoriesArray = [
 		"All",
@@ -174,7 +174,7 @@
 
 	function playMap(name, community = false) {
 		playSound("juicy_button");
-		selectMap(name, { community, returnToMultiplayer: returnAfterChange });
+		selectMap(name, { community, forMultiplayer });
 	}
 
 	function saveCommunityMap(name) {
@@ -281,7 +281,7 @@
 
 {#snippet liveChip()}
 	<Chip
-		mutedOpacity={!isMapSelected($defaultMap)}
+		mutedOpacity={!isMapSelected($defaultMap, false, forMultiplayer)}
 		onclick={(e) => {
 			e.stopPropagation();
 			showConfirmPopup(
@@ -302,7 +302,9 @@
 		animate={true}
 		onclick={() => {
 			playSound("basic_button");
-			goto("/maps/community/" + formatMapNameForUrl(map.name) + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
+			goto(
+				"/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""),
+			);
 		}}
 	>
 		<button
@@ -334,7 +336,7 @@
 				name={map}
 				{imgUrl}
 				slim={true}
-				selected={isMapSelected(map)}
+				selected={isMapSelected(map, false, forMultiplayer)}
 				chip={map === $defaultMap ? liveChip : undefined}
 				onclick={() => {
 					playMap(map);
@@ -366,7 +368,8 @@
 				name={map}
 				{imgUrl}
 				slim={true}
-				selected={isMapSelected(map)}
+				selected={isMapSelected(map, false, forMultiplayer)}
+				disabled={forMultiplayer && map === "Country Guessr"}
 				onclick={() => {
 					playMap(map);
 				}}
@@ -382,7 +385,7 @@
 			<MapItem
 				name={map}
 				slim={true}
-				selected={isMapSelected(map)}
+				selected={isMapSelected(map, false, forMultiplayer)}
 				onclick={() => {
 					playMap(map);
 				}}
@@ -414,7 +417,7 @@
 			<MapItem
 				name={map}
 				slim={true}
-				selected={isMapSelected(map)}
+				selected={isMapSelected(map, false, forMultiplayer)}
 				onclick={() => {
 					playMap(map);
 				}}
@@ -432,7 +435,7 @@
 					name={map}
 					slim={true}
 					animate={true}
-					selected={isMapSelected(map, true)}
+					selected={isMapSelected(map, true, forMultiplayer)}
 					onclick={() => {
 						playMap(map, true);
 					}}
