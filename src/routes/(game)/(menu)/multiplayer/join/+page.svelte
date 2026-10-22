@@ -95,8 +95,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin));
+		justify-content: end;
+		min-height: calc(50dvh - var(--menu-padding-top) - var(--layout-margin) + 151px);
 	}
 
 	.open-room-title {
