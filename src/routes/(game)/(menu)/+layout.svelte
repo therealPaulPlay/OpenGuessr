@@ -129,9 +129,10 @@
 	}
 
 	.container {
+		--menu-padding-top: 100px;
 		max-width: 1100px;
 		padding: var(--layout-margin);
-		padding-top: 100px;
+		padding-top: var(--menu-padding-top);
 		width: 100%;
 	}
 

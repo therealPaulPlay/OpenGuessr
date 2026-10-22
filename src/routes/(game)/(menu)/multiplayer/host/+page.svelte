@@ -163,7 +163,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		min-height: calc(100dvh - 120px);
+		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin));
 	}
 
 	.multiplayer-creation-area {
