@@ -63,7 +63,7 @@
 	.main-container {
 		display: flex;
 		align-items: center;
-		height: calc(100dvh - 120px);
+		height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin));
 		justify-content: center;
 	}
 
