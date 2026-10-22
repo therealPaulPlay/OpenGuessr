@@ -17,6 +17,7 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip, Chip, showConfirmPopup } from "openguessr-ui";
 	import { page } from "$app/state";
+	import { browser } from "$app/environment";
 	import MapItem from "$lib/components/MapItem.svelte";
 	import { get } from "svelte/store";
 	import { formatMapNameForUrl } from "$lib/utils/idToMapName";
@@ -45,7 +46,7 @@
 	let currentController;
 	let currentFavController;
 
-	let forMultiplayer = $derived(page.url.searchParams.get("for-multiplayer"));
+	let forMultiplayer = $derived(browser && page.url.searchParams.get("for-multiplayer"));
 
 	const categoriesArray = [
 		"All",
