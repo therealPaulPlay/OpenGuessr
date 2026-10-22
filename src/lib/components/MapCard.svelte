@@ -6,7 +6,7 @@
 	import { blur } from "svelte/transition";
 	import { formatMapNameForUrl } from "$lib/utils/idToMapName";
 
-	let { map, showAuthor = true, returnToMultiplayer = false } = $props();
+	let { map, showAuthor = true, forMultiplayer = false } = $props();
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -16,7 +16,7 @@
 	onclick={() => {
 		playSound("basic_button");
 		goto(
-			"/maps/community/" + formatMapNameForUrl(map.name) + (returnToMultiplayer ? "?return-to-multiplayer=true" : ""),
+			"/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""),
 		);
 	}}
 	role="menu"

@@ -81,7 +81,7 @@
 		const params = new URLSearchParams(window.location.search);
 		const googleCode = params.get("code");
 		if (googleCode) {
-			history.replaceState({}, document.title, window.location.pathname);
+			goto(window.location.pathname, { replaceState: true }); // Remove query from address bar (and history)
 			handleGoogleCallback(googleCode);
 		} else if (params.has("error")) {
 			window.close();
@@ -250,10 +250,10 @@
 
 		if (resetBearerToken) {
 			formType = "new-password";
-			history.replaceState({}, document.title, window.location.pathname); // Reset url to remove query
+			goto(window.location.pathname, { replaceState: true }); // Reset url to remove query
 		} else if (resetPresent) {
 			formType = "reset";
-			history.replaceState({}, document.title, window.location.pathname);
+			goto(window.location.pathname, { replaceState: true });
 		}
 	});
 

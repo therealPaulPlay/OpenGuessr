@@ -42,6 +42,7 @@
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { censor } from "fast-profanity-filter";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -65,7 +66,7 @@
 		if (profileFromURL == null) return;
 
 		showProfile(profileFromURL);
-		history.replaceState({}, document.title, window.location.pathname);
+		goto(window.location.pathname, { replaceState: true });
 	});
 
 	// Reset statistics tab selection when closed

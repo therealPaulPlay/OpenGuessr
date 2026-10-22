@@ -5,6 +5,7 @@
 		shopPurchaseAnimationTitle,
 	} from "$lib/stores/context-specific/shopStore";
 	import { showConfirmPopup } from "openguessr-ui";
+	import { goto } from "$app/navigation";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
@@ -20,7 +21,7 @@
 					"Thank you!",
 					"Thank you for your purchase. People like you keep the game free and open for everyone.",
 				);
-				history.replaceState({}, document.title, window.location.pathname); // Reset query in the address bar
+				goto(window.location.pathname, { replaceState: true }); // Reset query in the address bar
 			}
 		} catch {}
 	});

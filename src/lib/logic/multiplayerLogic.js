@@ -43,6 +43,7 @@ import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { page } from "$app/state";
+import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 export function getTeamFromClientId(id) {
     const playerArray = get(socket)?.storage?.players?.find(item => item.clientId === id);
@@ -242,9 +243,7 @@ export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("join");
     if (code) {
-        // Use native history API instead of SvelteKit's replaceState, which crashes
-        // if the root layout component hasn't been assigned yet (race condition on page load)
-        history.replaceState(history.state, "", window.location.pathname);
+        goto(window.location.pathname, { replaceState: true }); // Remove query (goto instead of SvelteKit's replaceState, which crashes if the root layout isn't assigned yet on page load)
         return joinFromAnywhere(code);
     }
 }
@@ -355,7 +354,7 @@ export function leaveMultiplayer(destroy = true) {
     chatMutedPlayers.set([]);
     roomLocked.set(false);
     currentRound.set(0);
-    multiplayerMap.set(null);
+    multiplayerMap.set(get(defaultMap));
     mobileChatLastOpenedMsgCount.set(0);
 
     // Hide linkjoin popup if open
