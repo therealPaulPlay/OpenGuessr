@@ -344,7 +344,7 @@
 								{@attach tooltip({ text: "Discord" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open($discordInviteUrl, "_blank").focus();
+									window.open($discordInviteUrl, "_blank");
 								}}
 							>
 								<img src="/img/discord.png" alt="Discord logo" class="navigation-icon" />
@@ -355,7 +355,7 @@
 								{@attach tooltip({ text: "Reddit" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+									window.open("https://www.reddit.com/r/OpenGuessr/", "_blank");
 								}}
 							>
 								<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
@@ -366,7 +366,7 @@
 								{@attach tooltip({ text: "YouTube" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank").focus();
+									window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank");
 								}}
 							>
 								<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
@@ -377,7 +377,7 @@
 								{@attach tooltip({ text: "Twitter" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://x.com/PaulPlayStudio", "_blank").focus();
+									window.open("https://x.com/PaulPlayStudio", "_blank");
 								}}
 							>
 								<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />

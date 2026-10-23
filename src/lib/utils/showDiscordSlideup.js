@@ -10,7 +10,7 @@ const XP_AMOUNT = 7500;
 export function discordSlideupProbability() {
     if (Math.random() < 0.05 && localStorage.getItem("discordSlideup") === null) {
         showResultScreenSlideup("Join our Discord", null, "Join", () => {
-            window.open(get(discordInviteUrl), "_blank")?.focus();
+            window.open(get(discordInviteUrl), "_blank");
 
             setTimeout(function () {
                 localStorage.setItem("discordSlideup", "true");

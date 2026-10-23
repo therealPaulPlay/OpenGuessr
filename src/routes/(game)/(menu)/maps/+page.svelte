@@ -366,7 +366,7 @@
 			link={true}
 			onclick={() => {
 				playSound("juicy_button");
-				window.open("https://education.openguessr.com/quiz", "_blank").focus();
+				window.open("https://education.openguessr.com/quiz", "_blank");
 			}}
 		>
 			{#snippet chip()}
