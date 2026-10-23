@@ -1,10 +1,10 @@
 import { browser } from "$app/environment";
 import { sounds as uiSounds } from "openguessr-ui";
 
-let Howl;
+let Howl, Howler;
 
 // Howler references browser globals at module eval, which crashes SSR in some JS runtimes
-if (browser) import("howler").then((module) => (Howl = module.Howl));
+if (browser) import("howler").then((module) => ({ Howl, Howler } = module));
 
 const sounds = {};
 let currentVariant = null;
@@ -51,6 +51,9 @@ export function playSound(fileName, tag) {
     if (!Howl) return;
     const haptic = haptics[fileName];
     if (haptic) window.Capacitor?.Plugins?.Haptics?.[haptic[0]](haptic[1]).catch(() => { });
+
+    // Some browsers (Safari) like to pause audio sometimes (e.g. when tab goes into bg), ensure it is running
+    if (Howler.ctx && Howler.ctx.state !== "running") Howler.ctx.resume();
 
     try {
         const sound = new Howl({
