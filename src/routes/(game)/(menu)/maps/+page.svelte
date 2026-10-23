@@ -35,6 +35,7 @@
 	let showLoadMore = $state(false);
 	let showNothingFound = $state(false);
 	let errorMessageText = $state("Loading...");
+	let spotlightErrorMessageText = $state("Loading...");
 	let errorMessageShown = $state(true);
 	let loadedCommunityMaps = $state([]);
 	let loadedSpotlightMaps = $state([]);
@@ -123,9 +124,16 @@
 				currentFavController = new AbortController();
 			}
 
-			showLoadMore = false;
-			showNothingFound = false;
-			errorMessageText = "Loading...";
+			// Reset load more and nothing found
+			if (!fav) {
+				showLoadMore = false;
+				showNothingFound = false;
+			}
+
+			// Set loading text
+			if (!fav) errorMessageText = "Loading...";
+			else spotlightErrorMessageText = "Loading...";
+
 			errorMessageShown = true;
 
 			// Reset current community maps on nullish index
@@ -150,7 +158,8 @@
 			if (!response.ok) throw new Error(response.status);
 			if (response.ok) {
 				const data = await response.json();
-				errorMessageShown = false;
+				if (!fav) errorMessageShown = false;
+
 				if (index != null) currentFetchIndex = index;
 				if (data.communityMaps.length == 50 && !fav) showLoadMore = true;
 
@@ -163,11 +172,13 @@
 		} catch (error) {
 			if (error.name !== "AbortError") {
 				console.error("Error loading community maps:", error);
-				errorMessageShown = true;
-				errorMessageText = "Error: " + error.message;
-			} else {
-				errorMessageShown = false;
-			}
+				if (!fav) {
+					errorMessageShown = true;
+					errorMessageText = "Error: " + error.message;
+				} else {
+					spotlightErrorMessageText = "Error: " + error.message;
+				}
+			} else errorMessageShown = false;
 		} finally {
 			fav ? (currentFavController = null) : (currentController = null);
 		}
@@ -303,9 +314,7 @@
 		animate={true}
 		onclick={() => {
 			playSound("basic_button");
-			goto(
-				"/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""),
-			);
+			goto("/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""));
 		}}
 	>
 		<button
@@ -474,7 +483,7 @@
 				{@render communityMapItem(map)}
 			{/each}
 		{:else}
-			<p class="nothing-found">Loading...</p>
+			<p class="nothing-found">{spotlightErrorMessageText}</p>
 		{/if}
 	</div>
 	<!-- All Community Maps -->
