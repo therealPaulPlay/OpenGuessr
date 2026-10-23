@@ -634,9 +634,6 @@
 	.about-section {
 		width: 100%;
 		border-radius: var(--box-margin);
-		margin-bottom: var(--layout-margin);
-		transition: background-color 250ms ease;
-		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		overflow: hidden;
@@ -645,7 +642,7 @@
 	.profile-about {
 		resize: none;
 		width: 100%;
-		min-height: 85px;
+		min-height: 90px;
 		color: white;
 		padding: var(--layout-margin);
 		scrollbar-width: none;
@@ -773,10 +770,6 @@
 	}
 
 	@media all and (max-width: 800px) {
-		.about-section {
-			max-height: 85px;
-		}
-
 		.flag-container {
 			width: 18px;
 		}
