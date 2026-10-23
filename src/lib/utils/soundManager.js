@@ -30,9 +30,6 @@ const haptics = {
     start_button: ["impact", { style: "LIGHT" }],
     leave_round: ["impact", { style: "LIGHT" }],
     reload: ["impact", { style: "LIGHT" }],
-    win_sound: ["notification", { type: "SUCCESS" }],
-    shop_purchase: ["notification", { type: "SUCCESS" }],
-    lose_sound: ["notification", { type: "WARNING" }],
 };
 
 export function setSoundsVolume(volume) {
