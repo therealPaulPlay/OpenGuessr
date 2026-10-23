@@ -29,6 +29,7 @@ const haptics = {
     change_value: ["impact", { style: "LIGHT" }],
     start_button: ["impact", { style: "LIGHT" }],
     leave_round: ["impact", { style: "LIGHT" }],
+    reload: ["impact", { style: "LIGHT" }],
     match_countdown: ["impact", { style: "MEDIUM" }],
     match_countdown_start: ["impact", { style: "HEAVY" }],
     win_sound: ["notification", { type: "SUCCESS" }],
