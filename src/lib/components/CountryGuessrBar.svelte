@@ -17,7 +17,7 @@
 
 {#if $countryGuessr && !$inMenu}
 	<div
-		class="country-guessr-selector bar-menu"
+		class="country-guessr-selector bar-menu safe-margin-bottom"
 		role="menu"
 		tabindex="0"
 		class:country-guessr-selector-ad-shift={!$adsDisabled}

@@ -177,7 +177,7 @@
 
 <!-- Display: none to ensure ads are not rendered, but kept mounted to avoid constant re-registration -->
 <div class="end-bottom-area" class:display-hidden={!$resultScreenEnabled || $inMenu} class:bottom-area-fade={fadeBottomArea}>
-	<div class="end-bottom-bar">
+	<div class="end-bottom-bar safe-margin-bottom">
 		<!-- No transition since it would awkwardly trigger on the first result-open -->
 		{#if showResultAd}
 			<div class="result-ad-area bar-menu">
@@ -252,7 +252,7 @@
 		</div>
 	</div>
 	{#if $resultScreenEnabled}
-		<div class="bar-menu next-round-area">
+		<div class="bar-menu next-round-area safe-margin-bottom">
 			<button
 				class="standard-button bright"
 				{@attach tooltip({ text: "View panorama" })}
@@ -378,15 +378,7 @@
 
 	.end-bottom-area {
 		position: fixed;
-		display: flex;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		top: 0;
-		flex-direction: column;
-		overflow: hidden;
 		z-index: 13;
-		pointer-events: none;
 	}
 
 	.bottom-area-fade {

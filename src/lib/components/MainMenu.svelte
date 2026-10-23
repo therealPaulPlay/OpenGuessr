@@ -86,7 +86,7 @@
 		{#if $tutorialStep > 0}
 			<Tutorial />
 		{:else if $tutorialStep === 0}
-			<div class="logo-visualization-container">
+			<div class="logo-visualization-container safe-margin-top">
 				<div class="logo-visualization-area">
 					<img
 						class="logo-icon"
@@ -560,8 +560,9 @@
 	}
 
 	.link-box {
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
+		border-bottom-left-radius: min(var(--layout-margin), calc(env(safe-area-inset-bottom) * 1000));
+		border-bottom-right-radius: min(var(--layout-margin), calc(env(safe-area-inset-bottom) * 1000));
+		padding-bottom: max(var(--panel-margin), env(safe-area-inset-bottom));
 		width: fit-content;
 		margin-top: var(--box-margin);
 		max-width: 100%;

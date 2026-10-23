@@ -96,7 +96,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: end;
-		min-height: calc(50dvh - var(--menu-padding-top) - var(--layout-margin) + 151px);
+		min-height: calc(50dvh - env(safe-area-inset-top) / 2 - var(--menu-padding-top) - var(--layout-margin) + 151px);
 	}
 
 	.open-room-title {

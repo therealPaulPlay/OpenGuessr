@@ -46,7 +46,7 @@
 	let showHomeButton = $derived(historyStack.length > 0 && new URL(historyStack.at(-1), page.url.origin).pathname !== "/");
 </script>
 
-<nav class="menu-nav-bar">
+<nav class="menu-nav-bar safe-margin-top">
 	<div class="navigation-button-container bar-menu">
 		<button
 			class="standard-button bright large"
@@ -78,7 +78,7 @@
 
 <div class="background"></div>
 
-<main class="content">
+<main class="content safe-margin-top">
 	<div class="container">
 		{@render children?.()}
 	</div>

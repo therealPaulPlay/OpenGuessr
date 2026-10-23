@@ -1,5 +1,5 @@
 <script>
-	import { Popup, Tabs, TitleSeparator, InfoBanner, showNotification, tooltip } from "openguessr-ui";
+	import { Popup, Tabs, TitleSeparator, InfoBanner, tooltip } from "openguessr-ui";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -41,6 +41,7 @@
 	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
+	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
 	import { showProfile } from "$lib/utils/showProfile";
@@ -244,14 +245,7 @@
 					{@attach tooltip({ text: "Share link" })}
 					onclick={() => {
 						playSound("basic_button");
-						navigator.clipboard
-							.writeText(page.url.origin + "?profile-id=" + $profileId)
-							.then(function () {
-								showNotification("Copied!");
-							})
-							.catch(function (error) {
-								showNotification("Error: " + error);
-							});
+						copyShareLink(page.url.origin + "?profile-id=" + $profileId);
 					}}
 				>
 					<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />

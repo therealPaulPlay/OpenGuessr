@@ -30,7 +30,7 @@
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { externalLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { purchasesDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { InfoBanner } from "openguessr-ui";
 
 	// Tween the token value for a nicer look
@@ -139,6 +139,7 @@
 
 	function getSupporterTierPrice(tier) {
 		if ($supporterLevel >= tier) return "Unlocked";
+		if ($purchasesDisabled) return "Unavailable";
 		const basePrice = supporterTiers[tier - 1].price;
 		if ($supporterLevel == 0) return "$ " + basePrice;
 		return "$ " + Math.round(Math.max(basePrice - $supportedAmount - 0.01, 0) * 100) / 100;
@@ -189,10 +190,10 @@
 		<h1 class="header">Offers</h1>
 	</div>
 	<!-- Split container with token offers and bundle -->
-	{#if $externalLinksDisabled}
+	{#if $purchasesDisabled}
 		<InfoBanner
 			inPage={true}
-			text="Real-money purchases are currently not supported on this platform."
+			text="Real-money purchases are currently not available on this platform."
 			style="margin-bottom: var(--layout-margin);"
 		/>
 	{/if}
@@ -270,7 +271,7 @@
 						</div>
 						<button
 							class="standard-button shop-offer-button bright"
-							disabled={(offer.price == 0 && $freeDailyTokensClaimed) || (offer.price != 0 && $externalLinksDisabled)}
+							disabled={(offer.price == 0 && $freeDailyTokensClaimed) || (offer.price != 0 && $purchasesDisabled)}
 							onclick={() => {
 								playSound("basic_button");
 
@@ -283,8 +284,10 @@
 								action();
 							}}
 						>
-							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
-							{#if offer.savingsPercentage}
+							{offer.price != 0 && $purchasesDisabled
+								? "Unavailable"
+								: offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
+							{#if offer.savingsPercentage && !$purchasesDisabled}
 								<span class="token-savings">-{offer.savingsPercentage}%</span>
 							{/if}
 						</button>
@@ -364,7 +367,7 @@
 					class="standard-button tier-buy-button"
 					class:bright={!highlighted}
 					class:tier-buy-button-highlighted={highlighted}
-					disabled={$supporterLevel >= tier || $externalLinksDisabled}
+					disabled={$supporterLevel >= tier || $purchasesDisabled}
 					onclick={() => {
 						playSound("basic_button");
 						if (!$isAuthenticated) return signupPrompt(() => purchaseSupporterTier(tier));
@@ -607,6 +610,7 @@
 	.special-offer-button-container {
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
+		backdrop-filter: none;
 	}
 
 	.special-offer-button {

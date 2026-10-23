@@ -20,6 +20,22 @@ export function setMuted(muted) {
 }
 
 // SFX ---------------------------------------------------------------------------------------------
+// Haptic feedback played together with some sounds on mobile
+const haptics = {
+    basic_button: ["impact", { style: "LIGHT" }],
+    toggle_button: ["impact", { style: "LIGHT" }],
+    item_select: ["impact", { style: "LIGHT" }],
+    juicy_button: ["impact", { style: "LIGHT" }],
+    change_value: ["impact", { style: "LIGHT" }],
+    start_button: ["impact", { style: "LIGHT" }],
+    leave_round: ["impact", { style: "LIGHT" }],
+    match_countdown: ["impact", { style: "MEDIUM" }],
+    match_countdown_start: ["impact", { style: "HEAVY" }],
+    win_sound: ["notification", { type: "SUCCESS" }],
+    shop_purchase: ["notification", { type: "SUCCESS" }],
+    lose_sound: ["notification", { type: "WARNING" }],
+};
+
 export function setSoundsVolume(volume) {
     sfxVolume = Math.max(0, Math.min(volume, 1));
     localStorage.setItem("soundVolume", sfxVolume);
@@ -33,6 +49,9 @@ export function setSoundsVolume(volume) {
 
 export function playSound(fileName, tag) {
     if (!Howl) return;
+    const haptic = haptics[fileName];
+    if (haptic) window.Capacitor?.Plugins?.Haptics?.[haptic[0]](haptic[1]).catch(() => { });
+
     try {
         const sound = new Howl({
             src: [uiSounds[fileName] ?? `/sounds/${fileName}.ogg`],

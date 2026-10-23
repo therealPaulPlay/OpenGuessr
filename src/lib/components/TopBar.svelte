@@ -17,7 +17,7 @@
 	<TopLeftLogo />
 
 	<!-- Menu -->
-	<nav class="menu-button-area bar-menu" transition:blur={{ duration: 250 }}>
+	<nav class="menu-button-area bar-menu safe-margin-top" transition:blur={{ duration: 250 }}>
 		<button
 			class="standard-button bright"
 			{@attach tooltip({ text: "Settings" })}

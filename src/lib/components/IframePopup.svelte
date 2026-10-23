@@ -36,7 +36,7 @@
 
 	.page-browser-iframe {
 		width: 100%;
-		height: min(800px, calc(100dvh - 75px));
+		height: min(800px, calc(100dvh - 75px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
 		background: transparent;
 		border-radius: 20px;
 		opacity: 0;

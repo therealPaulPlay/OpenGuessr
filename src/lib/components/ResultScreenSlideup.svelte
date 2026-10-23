@@ -19,7 +19,7 @@
 </script>
 
 {#if $showSlideup && !$externalLinksDisabled}
-	<div class="endscreen-slideup-container bar-menu" in:slide|global out:slide>
+	<div class="endscreen-slideup-container bar-menu safe-margin-bottom" in:slide|global out:slide>
 		<div class="scrollable-content of-top of-bottom" style:margin-bottom="var(--panel-margin)">
 			<div class="text-box text-box-top">
 				<h3 id="slideup-title">{$slideupTitle}</h3>

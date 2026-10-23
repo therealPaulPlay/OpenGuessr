@@ -69,7 +69,7 @@
 </script>
 
 {#if !$inMenu}
-	<div id="bottom-bar" class="bottom-bar">
+	<div id="bottom-bar" class="bottom-bar safe-margin-bottom">
 		<div class="bottom-left-menu bar-menu" transition:blur={{ duration: 250 }}>
 			<button
 				class="standard-button bright"
@@ -137,7 +137,7 @@
 
 <!-- Display: none to ensure ads are kept mounted when hidden to avoid re-registration -->
 {#if showGameplayAd}
-	<div class="gameplay-ad-area bar-menu" class:display-hidden={$inMenu}>
+	<div class="gameplay-ad-area bar-menu safe-margin-bottom" class:display-hidden={$inMenu}>
 		<div class="gameplay-ad" id="gameplay-ad" data-fuse="Game_incontent_1"></div>
 		<p class="no-adverts-text">Ads keep OpenGuessr free.</p>
 	</div>
@@ -149,8 +149,6 @@
 		bottom: var(--box-margin);
 		left: var(--box-margin);
 		right: var(--box-margin);
-		border-radius: var(--box-margin);
-		width: calc(100% - 20px);
 		height: 95px;
 		gap: var(--box-margin);
 		display: flex;

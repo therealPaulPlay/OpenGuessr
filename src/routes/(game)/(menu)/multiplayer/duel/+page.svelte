@@ -19,7 +19,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin));
+		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin) - env(safe-area-inset-top));
 	}
 
 	.duel-center-box {
