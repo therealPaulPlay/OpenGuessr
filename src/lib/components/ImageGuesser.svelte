@@ -168,6 +168,7 @@
 		flex-direction: column;
 		color: white;
 		user-select: none;
+		touch-action: none;
 		background-color: rgb(22, 22, 22);
 		transition: scale 400ms cubic-bezier(0.25, 1, 0.5, 1);
 	}
