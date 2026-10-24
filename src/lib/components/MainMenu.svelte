@@ -180,27 +180,42 @@
 								{@render moreMaps()}
 							{/if}
 						</div>
-						<div class="navigation-row">
+						{#snippet multiplayerButton()}
+							<button
+								class="standard-button bright navigation-button large navigation-button-wide"
+								onclick={() => {
+									goto("/multiplayer");
+									playSound("basic_button");
+								}}
+							>
+								<span class="of-right">
+									Multiplayer {#if $newFriendRequest || $hasNewMessageOrInvite}
+										<div class="navigation-new-chip" transition:blur>
+											<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+										</div>
+									{/if}
+								</span>
+								<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
+							</button>
+						{/snippet}
+						{#snippet competitionsButton()}
+							<button
+								class="standard-button bright large navigation-button navigation-button-wide"
+								onclick={() => {
+									goto("/competitions");
+									playSound("basic_button");
+								}}
+							>
+								<span class="of-right">Competitions</span>
+								<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
+							</button>
+						{/snippet}
+						<div class="navigation-row comp-multiplayer-desktop">
 							<div
 								class="navigation-box navigation-box-half bar-menu navigation-box-stack"
 								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
 							>
-								<button
-									class="standard-button bright navigation-button large navigation-button-wide"
-									onclick={() => {
-										goto("/multiplayer");
-										playSound("basic_button");
-									}}
-								>
-									<span class="of-right">
-										Multiplayer {#if $newFriendRequest || $hasNewMessageOrInvite}
-											<div class="navigation-new-chip" transition:blur>
-												<Chip text="New" italic={true} red={true} mutedOpacity={false} />
-											</div>
-										{/if}
-									</span>
-									<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-								</button>
+								{@render multiplayerButton()}
 								<div class="navigation-inner-options">
 									<div class="multiplayer-quick-play">
 										<RoomCodeInput
@@ -217,20 +232,18 @@
 								class="navigation-box navigation-box-half bar-menu navigation-box-stack"
 								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
 							>
-								<button
-									class="standard-button bright large navigation-button navigation-button-wide"
-									onclick={() => {
-										goto("/competitions");
-										playSound("basic_button");
-									}}
-								>
-									<span class="of-right">Competitions</span>
-									<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
-								</button>
+								{@render competitionsButton()}
 								<div class="navigation-inner-options">
 									<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
 								</div>
 							</div>
+						</div>
+						<div
+							class="navigation-box comp-multiplayer-mobile bar-menu"
+							in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
+						>
+							{@render multiplayerButton()}
+							{@render competitionsButton()}
 						</div>
 						<div class="navigation-row navigation-row-mobile-column">
 							<div
@@ -596,6 +609,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: var(--layout-margin);
+		min-width: 0;
 	}
 
 	.navigation-button span {
@@ -785,6 +799,10 @@
 		animation: scrollText 5s ease-in-out infinite alternate;
 	}
 
+	.comp-multiplayer-mobile {
+		display: none;
+	}
+
 	@keyframes scrollText {
 		0% {
 			transform: translateX(var(--content-margin));
@@ -810,8 +828,12 @@
 			flex-basis: unset;
 		}
 
-		.navigation-inner-options {
+		.comp-multiplayer-desktop {
 			display: none;
+		}
+
+		.comp-multiplayer-mobile {
+			display: flex;
 		}
 
 		.logo-visualization-container {
