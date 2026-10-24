@@ -109,7 +109,11 @@
 			{/if}
 		</div>
 		{#if !$countryGuessr}
-			<div class="bottom-right-menu bar-menu" transition:blur|global={{ duration: 250 }}>
+			<div
+				class="bottom-right-menu bar-menu"
+				transition:blur|global={{ duration: 250 }}
+				class:bottom-right-menu-no-ads={$adsDisabled}
+			>
 				<button
 					class="standard-button confirm-button bright"
 					id="confirm-button"
@@ -300,6 +304,10 @@
 
 		.bottom-right-menu {
 			flex-grow: 1;
+		}
+
+		/* If ads are disabled, leave space to the SV controls, otherwise the ad block spans the full width covering them anyway */
+		.bottom-right-menu:not(.bottom-right-menu-no-ads) {
 			margin-right: 0;
 		}
 

@@ -1,5 +1,5 @@
 <script>
-	import { Popup, Tabs, TitleSeparator, InfoBanner, tooltip } from "openguessr-ui";
+	import { Popup, Tabs, TitleSeparator, InfoBanner, tooltip, showConfirmPopup } from "openguessr-ui";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -441,7 +441,12 @@
 		<InfoBanner style="margin-block: var(--layout-margin);">
 			For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
 		</InfoBanner>
-		<input class="account-prompt-input" type="password" placeholder="Password" bind:value={nameChangeOrDeletePopup.value} />
+		<input
+			class="account-prompt-input"
+			type="password"
+			placeholder="Password"
+			bind:value={nameChangeOrDeletePopup.value}
+		/>
 	{:else}
 		<p class="account-prompt-description">
 			Please input your new username. You can only change your username once per week.
@@ -461,7 +466,13 @@
 			onclick={() => {
 				playSound("basic_button");
 				nameChangeOrDeletePopup.open = false;
-				if (nameChangeOrDeletePopup.type === "delete") submitAccountDeletion(nameChangeOrDeletePopup.value);
+				if (nameChangeOrDeletePopup.type === "delete")
+					showConfirmPopup(
+						"Are you sure?",
+						"Your account will be permanently deleted with no way to recover its data.",
+						() => submitAccountDeletion(nameChangeOrDeletePopup.value),
+						"Yes, delete",
+					);
 				else updateProfileUsername(nameChangeOrDeletePopup.value);
 			}}>Confirm</button
 		>

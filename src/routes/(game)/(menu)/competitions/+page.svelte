@@ -326,7 +326,7 @@
 			}}
 		>
 			<div class="label bright-soft" role="button" tabindex="0">
-				<p>Description</p>
+				<p>About</p>
 			</div>
 			<p class="item-text desc-text">
 				{description}
