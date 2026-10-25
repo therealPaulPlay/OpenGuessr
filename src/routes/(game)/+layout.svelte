@@ -2,7 +2,6 @@
 	import { initializeAds } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
-	import { page } from "$app/state";
 	import initOverfade from "overfade";
 	import { playSound } from "$lib/utils/soundManager";
 	import { ConfirmPopup, ErrorPopup, Notification } from "openguessr-ui";
@@ -104,11 +103,7 @@
 
 <!-- Logo and Notification -->
 <TopBar />
-<Notification
-	top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}
-	onaccept={() => playSound("basic_button")}
-	ondismiss={() => playSound("basic_button")}
-/>
+<Notification onaccept={() => playSound("basic_button")} ondismiss={() => playSound("basic_button")} />
 
 <!-- Music -->
 <MusicController />
