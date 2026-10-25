@@ -31,7 +31,7 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="multiplayer-creation-area">
+	<div class="controls-area">
 		{#if !$multiplayer && !isCreatingRoom}
 			<div class="multiplayer-host-settings">
 				<p>Rounds</p>
@@ -153,13 +153,14 @@
 		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin) - env(safe-area-inset-top));
 	}
 
-	.multiplayer-creation-area {
+	.controls-area {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
 		max-width: 400px;
 		gap: var(--layout-margin);
+		margin-block: var(--layout-spacer);
 	}
 
 	.multiplayer-host-settings {

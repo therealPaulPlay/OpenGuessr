@@ -241,6 +241,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin) - env(safe-area-inset-top));
 	}
 
@@ -250,8 +251,7 @@
 		align-items: center;
 		width: 100%;
 		max-width: 900px;
-		margin-top: auto;
-		margin-bottom: auto;
+		margin-block: var(--layout-spacer);
 	}
 
 	.section-title {

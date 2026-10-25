@@ -46,5 +46,6 @@
 		width: 100%;
 		max-width: 400px;
 		gap: var(--layout-margin);
+		margin-block: var(--layout-spacer);
 	}
 </style>

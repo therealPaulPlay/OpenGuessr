@@ -36,7 +36,7 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="input-center-box">
+	<div class="controls-area">
 		<div class="multiplayer-join-field">
 			<p class="multiplayer-input-info">{$multiplayerStatus || ""}</p>
 			<RoomCodeInput bind:segments />
@@ -96,14 +96,14 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: end;
-		min-height: calc(50dvh - env(safe-area-inset-top) / 2 - var(--menu-padding-top) - var(--layout-margin) + 151px);
+		min-height: calc(50dvh - env(safe-area-inset-top) / 2 - var(--menu-padding-top) - var(--layout-margin) + 201px);
 	}
 
 	.open-room-title {
-		max-width: 390px;
+		max-width: calc(400px - var(--box-margin));
 		margin-inline: auto;
-		width: calc(100% - 10px);
-		margin-top: 100px;
+		width: calc(100% - var(--box-margin));
+		margin-top: var(--layout-spacer);
 		opacity: 0.5;
 	}
 
@@ -155,12 +155,13 @@
 		opacity: 1;
 	}
 
-	.input-center-box {
+	.controls-area {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
 		max-width: 320px;
+		margin-block: var(--layout-spacer);
 	}
 
 	.multiplayer-join-field {
