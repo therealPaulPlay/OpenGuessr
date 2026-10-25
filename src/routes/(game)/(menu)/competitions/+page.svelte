@@ -7,7 +7,7 @@
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { goto, afterNavigate } from "$app/navigation";
-	import { Plus, Search } from "@lucide/svelte";
+	import { Clock, Plus, Search, Timer } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
@@ -282,38 +282,43 @@
 				<div class="label bright-soft">
 					<p>Plays</p>
 				</div>
-				<p class="item-text of-left of-right">{playercount.toLocaleString()}</p>
+				<div class="item-content of-left of-right">
+					<p>{playercount.toLocaleString()}</p>
+				</div>
 			</div>
 			<div class="property-item">
 				<div class="label bright-soft">
 					<p>Restriction</p>
 				</div>
-				<p class="item-text of-left of-right">{$restrictionNames?.[restriction] || "Invalid"}</p>
+				<div class="item-content of-left of-right">
+					<p>{$restrictionNames?.[restriction] || "Invalid"}</p>
+				</div>
 			</div>
 			<div class="property-item">
 				<div class="label bright-soft">
 					<p>Duration</p>
 				</div>
-				<p class="item-text of-left of-right">
-					{formatDuration(duration)}
+				<div class="item-content of-left of-right">
+					<p style:margin-right="var(--box-margin)">
+						{formatDuration(duration)}
+					</p>
 					{#if remainingDuration > 0}
-						<span class="remaining-duration-text">
-							({formatDuration(remainingDuration)} left)
+						<span class="inner-item-label">
+							<p>
+								<Clock size={18} strokeWidth={2.5} style="margin-right: 1px;" />{formatDuration(remainingDuration)} left
+							</p>
 						</span>
 					{/if}
-				</p>
+				</div>
 			</div>
 			<div class="property-item">
 				<div class="label bright-soft">
 					<p>Rounds</p>
 				</div>
-				<p class="item-text of-left of-right">{locationAmount}</p>
-			</div>
-			<div class="property-item">
-				<div class="label bright-soft">
-					<p>Round length</p>
+				<div class="item-content of-left of-right">
+					<p style:margin-right="var(--box-margin)">{locationAmount}</p>
+					<span class="inner-item-label"><p><Timer size={20} strokeWidth={2.25} /> {roundLength}s</p></span>
 				</div>
-				<p class="item-text of-left of-right">{roundLength}s</p>
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -328,7 +333,7 @@
 			<div class="label bright-soft" role="button" tabindex="0">
 				<p>About</p>
 			</div>
-			<p class="item-text desc-text">
+			<p class="desc-text">
 				{description}
 			</p>
 		</div>
@@ -409,7 +414,9 @@
 						<CompetitionStreakCalendar streakDays={$dailyStreakDays} />
 						<div class="mobile-streak-display">
 							<div class="inner-mobile-streak-display">
-								<p style:opacity={streakNumber <= 0 ? "0.5" : ""}>{streakNumber > 0 ? streakNumber.toLocaleString() : "-"}</p>
+								<p style:opacity={streakNumber <= 0 ? "0.5" : ""}>
+									{streakNumber > 0 ? streakNumber.toLocaleString() : "-"}
+								</p>
 								<img alt="daily competition streak flame" src="/img/streak_icon.png" class="streak-flame-small" />
 							</div>
 						</div>
@@ -600,7 +607,7 @@
 
 	.competition-button-box {
 		margin-top: auto !important;
-		padding-top: 60px;
+		padding-top: var(--layout-spacer);
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: flex-end;
@@ -657,19 +664,39 @@
 		font-size: 20px;
 	}
 
-	.item-text {
-		margin: var(--content-margin);
-		margin-right: var(--panel-margin);
-		overflow-x: auto;
+	.inner-item-label {
+		background-color: var(--box-color-dark-soft);
+		border-radius: var(--content-margin);
+		box-shadow: var(--box-shadow);
+		padding: 3px;
+		padding-inline: var(--panel-margin);
+		margin-right: auto;
 		text-wrap: nowrap;
-		min-width: 55px;
-		scrollbar-width: none;
+		font-size: 20px;
 	}
 
-	.remaining-duration-text {
-		opacity: 0.5;
-		display: inline-block;
-		vertical-align: bottom;
+	.inner-item-label p {
+		gap: var(--content-margin);
+		display: flex;
+		align-items: center;
+		opacity: 0.75;
+		font-size: 20px;
+	}
+
+	.item-content {
+		overflow-x: auto;
+		text-wrap: nowrap;
+		scrollbar-width: none;
+		display: flex;
+		align-items: center;
+		border-radius: var(--content-margin);
+		margin-inline: 3px;
+		height: 37px;
+		min-width: 60px;
+	}
+
+	.item-content > p {
+		margin-right: var(--content-margin);
 		margin-left: 2px;
 	}
 
@@ -697,20 +724,18 @@
 		border-radius: var(--box-margin);
 		padding: 3px;
 		overflow: hidden;
-		text-overflow: ellipsis;
-		max-height: 45px;
 		display: flex;
 		align-items: center;
 		background-color: var(--box-color);
 	}
 
 	.desc-text {
+		margin: var(--content-margin);
 		margin-top: var(--panel-margin);
-		overflow: hidden;
-		max-height: 60px;
 		margin-inline: var(--panel-margin);
-		text-overflow: ellipsis;
 		overflow: hidden;
+		text-wrap: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	.competition-author {
