@@ -6,6 +6,10 @@
 	import "../app.css";
 	import barlowFont from "openguessr-ui/fonts/barlow-condensed-medium.woff2";
 	import Analytics from "$lib/components/Analytics.svelte";
+	import CrazyGames from "$lib/components/CrazyGames.svelte";
+	import Y8Games from "$lib/components/Y8Games.svelte";
+	import Playgama from "$lib/components/Playgama.svelte";
+	import NativeApp from "$lib/components/NativeApp.svelte";
 	import { onNavigate } from "$app/navigation";
 
 	let { children } = $props();
@@ -23,6 +27,12 @@
 		});
 	});
 </script>
+
+<!-- Platforms -->
+<CrazyGames />
+<Y8Games />
+<Playgama />
+<NativeApp />
 
 {@render children?.()}
 

@@ -437,7 +437,7 @@
 			<div class="container" transition:slide={{ axis: "y", duration: 150 }}>
 				<div transition:blur={{ duration: 150 }} class="signup-options-container">
 					<button
-						class="standard-button bright signup-button large"
+						class="standard-button bright signup-button google-login-button large"
 						onclick={() => {
 							playSound("basic_button");
 							startGoogleLogin();
@@ -502,6 +502,11 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--box-margin);
+	}
+
+	/* Google blocks its login in web views */
+	:global(html.native) .google-login-button {
+		display: none;
 	}
 
 	.logo {

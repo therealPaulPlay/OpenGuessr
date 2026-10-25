@@ -13,6 +13,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification, tooltip, showErrorPopup } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
+	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { Eye, Link } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
@@ -179,15 +180,7 @@
 				? window.CrazyGames.SDK.game.inviteLink({ join: roomId })
 				: page.url.origin + "/?join=" + roomId;
 
-			// Copy to Clipboard
-			navigator.clipboard
-				.writeText(link)
-				.then(function () {
-					showNotification("Copied!");
-				})
-				.catch(function (error) {
-					showNotification("Error: " + error);
-				});
+			copyShareLink(link);
 		}}
 	>
 		<Link strokeWidth={2.25} size={20} style="margin-bottom: -2px;" />
@@ -354,6 +347,8 @@
 		font-size: 40px;
 		min-width: 75%;
 		text-align: center;
+		user-select: text;
+		-webkit-user-select: text;
 	}
 
 	.no-gap {

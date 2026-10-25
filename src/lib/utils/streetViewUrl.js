@@ -3,7 +3,7 @@ const streetViewEmbedUrlPrefix = "https://www.google.com/maps/embed/v1/streetvie
 const key = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
 
 export function openLocationOnMaps(lat, long, { heading = null, pitch = null, panoramaId = null } = {}) {
-    window.open(buildUrl(lat, long, heading, pitch, panoramaId, false), '_blank').focus();
+    window.open(buildUrl(lat, long, heading, pitch, panoramaId, false), '_blank');
 }
 
 export function getMapsEmbedUrl(lat, long, { heading = null, pitch = null, panoramaId = null } = {}) {

@@ -3,7 +3,7 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { competition, countryGuessr, multiplayer, singleplayer } from "$lib/stores/modeStore";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-	import { BookAlert, Route, Timer } from "@lucide/svelte";
+	import { BookAlert, Layers, Route, Timer } from "@lucide/svelte";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
@@ -59,11 +59,11 @@
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
 			<Chip class="info-tag">
-				<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
+				<Layers size={16} strokeWidth={2.5} style="margin-right: 4px; margin-left: 1px;" />{mapCategoryName}
 			</Chip>
 			{#if currentRoundText != null}
 				<Chip class="info-tag">
-					<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
+					<Route size={16} strokeWidth={2.5} style="margin-right: 4px; margin-left: 1px;" />{currentRoundText} / {roundAmountText}
 				</Chip>
 			{/if}
 			{#if $selectedRestriction !== $defaultRestriction}
@@ -106,15 +106,6 @@
 
 	.mobile #mode-name {
 		margin-right: auto;
-	}
-
-	.map-icon {
-		width: 20px;
-		height: 20px;
-		margin-right: 3px;
-		margin-bottom: -0.5px;
-		user-select: none;
-		pointer-events: none;
 	}
 
 	:global(.info-tag) {

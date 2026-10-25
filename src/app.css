@@ -45,6 +45,21 @@
     /* Important since often positioned insight of pointer-events-none containers */
 }
 
+/* Native */
+.safe-margin-bottom {
+    margin-bottom: env(safe-area-inset-bottom) !important;
+}
+
+.safe-margin-top {
+    margin-top: env(safe-area-inset-top) !important;
+}
+
+html.native {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 @media (orientation: portrait) and (max-width: 800px) {
     .header {
         font-size: 35px;

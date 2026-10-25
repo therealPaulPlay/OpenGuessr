@@ -18,12 +18,10 @@
 		isResizing = true;
 		startY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY; // Handle both mouse and touch events
 		startHeight = chatHeight;
-		if (e.type === "touchstart") e.preventDefault(); // Prevent default to stop scrolling during touch
 	}
 
 	function handleResize(e) {
 		if (!isResizing) return;
-		if (e.type === "touchmove") e.preventDefault(); // Prevent default to stop scrolling during touch
 
 		// Get current position from either mouse or touch event
 		const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
@@ -84,6 +82,7 @@
 		right: 0;
 		height: 36px;
 		cursor: ns-resize;
+		touch-action: none;
 		display: flex;
 		justify-content: center;
 		align-items: center;

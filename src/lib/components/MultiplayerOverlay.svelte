@@ -67,7 +67,7 @@
 									>
 										<div class="multiplayer-entry-player-info">
 											<div
-												class="multiplayer-entry-player-name"
+												class="multiplayer-entry-player-name of-left of-right"
 												class:entry-not-clickable={!userId}
 												role="cell"
 												tabindex="0"
@@ -105,7 +105,7 @@
 						>
 							<div class="multiplayer-entry-player-info">
 								<div
-									class="multiplayer-entry-player-name"
+									class="multiplayer-entry-player-name of-left of-right"
 									class:entry-not-clickable={!userId}
 									role="cell"
 									tabindex="0"
@@ -334,7 +334,7 @@
 		justify-content: space-between;
 		align-items: center;
 		gap: var(--box-margin);
-		padding-inline: 20px;
+		padding-inline: var(--layout-margin);
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -351,8 +351,8 @@
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		padding-left: 0;
-		mask-image: linear-gradient(to right, black 95%, transparent 100%);
-		overflow: hidden;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.multiplayer-entry-player-name:hover {

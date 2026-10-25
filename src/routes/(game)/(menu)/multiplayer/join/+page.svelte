@@ -2,7 +2,7 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
-	import { Unplug, User } from "@lucide/svelte";
+	import { Layers, Unplug, User } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
@@ -36,7 +36,7 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="input-center-box">
+	<div class="controls-area">
 		<div class="multiplayer-join-field">
 			<p class="multiplayer-input-info">{$multiplayerStatus || ""}</p>
 			<RoomCodeInput bind:segments />
@@ -62,7 +62,7 @@
 			<div class="open-room-item bright-soft" transition:blur>
 				<div class="room-item-info-container of-left of-right">
 					<Chip mutedOpacity={false}>
-						<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />
+						<Layers size={18} strokeWidth={2.5} style="margin-right: var(--content-margin); margin-left: 3px;" />
 						{idToMapName(room?.map)}
 					</Chip>
 					<Chip mutedOpacity={false} onclick={() => showProfile(room?.user_id)}>
@@ -96,14 +96,14 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: end;
-		min-height: calc(50dvh - var(--menu-padding-top) - var(--layout-margin) + 151px);
+		min-height: calc(50dvh - env(safe-area-inset-top) / 2 - var(--menu-padding-top) - var(--layout-margin) + 201px);
 	}
 
 	.open-room-title {
-		max-width: 390px;
+		max-width: calc(400px - var(--box-margin));
 		margin-inline: auto;
-		width: calc(100% - 10px);
-		margin-top: 100px;
+		width: calc(100% - var(--box-margin));
+		margin-top: var(--layout-spacer);
 		opacity: 0.5;
 	}
 
@@ -155,12 +155,13 @@
 		opacity: 1;
 	}
 
-	.input-center-box {
+	.controls-area {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
 		max-width: 320px;
+		margin-block: var(--layout-spacer);
 	}
 
 	.multiplayer-join-field {
@@ -190,11 +191,5 @@
 		width: calc(100% - 10px);
 		text-overflow: ellipsis;
 		opacity: 0.5;
-	}
-
-	.map-icon {
-		width: 20px;
-		height: 20px;
-		margin-right: 3px;
 	}
 </style>

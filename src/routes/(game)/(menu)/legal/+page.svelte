@@ -10,8 +10,8 @@
 		} catch (error) {
 			console.error("TCF API error:", error);
 			showErrorPopup(
-				"TCF API not loaded",
-				"The consent management system is not loaded. This is common when using an ad blocker.",
+				"TCF unavailable",
+				"The consent management system is not loaded. This is normal when ads are disabled, in which case no data for advertising purposes is collected.",
 			);
 		}
 	}

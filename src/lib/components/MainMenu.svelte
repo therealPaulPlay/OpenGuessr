@@ -9,7 +9,7 @@
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Bug, InfinityIcon, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
+	import { Bug, InfinityIcon, Layers, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
@@ -86,7 +86,7 @@
 		{#if $tutorialStep > 0}
 			<Tutorial />
 		{:else if $tutorialStep === 0}
-			<div class="logo-visualization-container">
+			<div class="logo-visualization-container safe-margin-top">
 				<div class="logo-visualization-area">
 					<img
 						class="logo-icon"
@@ -142,7 +142,7 @@
 									{const imgUrl = $specialMaps.find((e) => e.map === localStorage.getItem("selectedMap"))?.imgUrl}
 									{#snippet cover()}
 										<div class="generic-map-cover">
-											<img alt="Generic map icon" src="/img/maps_icon.png" class="map-map-icon" />
+											<span class="map-map-icon"><Layers size={28} strokeWidth={2} style="opacity: 0.5;" /></span>
 											<span class="map-play-icon"> <Play size={28} strokeWidth={2} style="opacity: 0.5;" /></span>
 										</div>
 									{/snippet}
@@ -180,27 +180,42 @@
 								{@render moreMaps()}
 							{/if}
 						</div>
-						<div class="navigation-row">
+						{#snippet multiplayerButton()}
+							<button
+								class="standard-button bright navigation-button large navigation-button-wide"
+								onclick={() => {
+									goto("/multiplayer");
+									playSound("basic_button");
+								}}
+							>
+								<span class="of-right">
+									Multiplayer {#if $newFriendRequest || $hasNewMessageOrInvite}
+										<div class="navigation-new-chip" transition:blur>
+											<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+										</div>
+									{/if}
+								</span>
+								<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
+							</button>
+						{/snippet}
+						{#snippet competitionsButton()}
+							<button
+								class="standard-button bright large navigation-button navigation-button-wide"
+								onclick={() => {
+									goto("/competitions");
+									playSound("basic_button");
+								}}
+							>
+								<span class="of-right">Competitions</span>
+								<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
+							</button>
+						{/snippet}
+						<div class="navigation-row comp-multiplayer-desktop">
 							<div
 								class="navigation-box navigation-box-half bar-menu navigation-box-stack"
 								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
 							>
-								<button
-									class="standard-button bright navigation-button large navigation-button-wide"
-									onclick={() => {
-										goto("/multiplayer");
-										playSound("basic_button");
-									}}
-								>
-									<span class="of-right">
-										Multiplayer {#if $newFriendRequest || $hasNewMessageOrInvite}
-											<div class="navigation-new-chip" transition:blur>
-												<Chip text="New" italic={true} red={true} mutedOpacity={false} />
-											</div>
-										{/if}
-									</span>
-									<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
-								</button>
+								{@render multiplayerButton()}
 								<div class="navigation-inner-options">
 									<div class="multiplayer-quick-play">
 										<RoomCodeInput
@@ -217,20 +232,18 @@
 								class="navigation-box navigation-box-half bar-menu navigation-box-stack"
 								in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
 							>
-								<button
-									class="standard-button bright large navigation-button navigation-button-wide"
-									onclick={() => {
-										goto("/competitions");
-										playSound("basic_button");
-									}}
-								>
-									<span class="of-right">Competitions</span>
-									<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
-								</button>
+								{@render competitionsButton()}
 								<div class="navigation-inner-options">
 									<CompetitionStreakCalendar streakDays={$dailyStreakDays} compact={true} />
 								</div>
 							</div>
+						</div>
+						<div
+							class="navigation-box comp-multiplayer-mobile bar-menu"
+							in:rowScale|global={{ duration: 250, start: 0.85, delay: 75 }}
+						>
+							{@render multiplayerButton()}
+							{@render competitionsButton()}
 						</div>
 						<div class="navigation-row navigation-row-mobile-column">
 							<div
@@ -344,7 +357,7 @@
 								{@attach tooltip({ text: "Discord" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open($discordInviteUrl, "_blank").focus();
+									window.open($discordInviteUrl, "_blank");
 								}}
 							>
 								<img src="/img/discord.png" alt="Discord logo" class="navigation-icon" />
@@ -355,7 +368,7 @@
 								{@attach tooltip({ text: "Reddit" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+									window.open("https://www.reddit.com/r/OpenGuessr/", "_blank");
 								}}
 							>
 								<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
@@ -366,7 +379,7 @@
 								{@attach tooltip({ text: "YouTube" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank").focus();
+									window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank");
 								}}
 							>
 								<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
@@ -377,7 +390,7 @@
 								{@attach tooltip({ text: "Twitter" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://x.com/PaulPlayStudio", "_blank").focus();
+									window.open("https://x.com/PaulPlayStudio", "_blank");
 								}}
 							>
 								<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />
@@ -453,20 +466,11 @@
 		border-radius: var(--content-margin);
 	}
 
-	.map-map-icon {
-		width: 28px;
-		height: 28px;
-		opacity: 0.5;
-	}
-
+	.map-map-icon,
 	.map-play-icon {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-
-	.map-map-icon,
-	.map-play-icon {
 		transition:
 			scale 250ms ease,
 			opacity 250ms ease;
@@ -560,8 +564,9 @@
 	}
 
 	.link-box {
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
+		border-bottom-left-radius: min(var(--layout-margin), calc(env(safe-area-inset-bottom) * 1000));
+		border-bottom-right-radius: min(var(--layout-margin), calc(env(safe-area-inset-bottom) * 1000));
+		padding-bottom: max(var(--panel-margin), env(safe-area-inset-bottom));
 		width: fit-content;
 		margin-top: var(--box-margin);
 		max-width: 100%;
@@ -595,6 +600,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: var(--layout-margin);
+		min-width: 0;
 	}
 
 	.navigation-button span {
@@ -784,6 +790,10 @@
 		animation: scrollText 5s ease-in-out infinite alternate;
 	}
 
+	.comp-multiplayer-mobile {
+		display: none;
+	}
+
 	@keyframes scrollText {
 		0% {
 			transform: translateX(var(--content-margin));
@@ -809,8 +819,12 @@
 			flex-basis: unset;
 		}
 
-		.navigation-inner-options {
+		.comp-multiplayer-desktop {
 			display: none;
+		}
+
+		.comp-multiplayer-mobile {
+			display: flex;
 		}
 
 		.logo-visualization-container {

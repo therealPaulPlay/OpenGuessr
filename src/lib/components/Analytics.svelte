@@ -1,7 +1,9 @@
 <script>
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
-	import { analyticsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { analyticsDisabled, native } from "$lib/stores/context-specific/platformSettingsStore";
+
+	const GOOGLE_TAG_CODE = "G-DXD64B7ZDX";
 
 	onMount(initAnalytics);
 
@@ -19,14 +21,20 @@
 
 			gtag("js", new Date());
 
-			gtag("config", "G-DXD64B7ZDX", {
-				cookie_domain: location.hostname,
-				cookie_flags: "SameSite=None; Secure",
-			});
+			// Native uses GA4 cookieless
+			if (get(native)) {
+				gtag("consent", "default", { ad_storage: "denied", ad_personalization: "denied", ad_user_data: "denied" });
+				gtag("config", GOOGLE_TAG_CODE, { client_storage: "none" });
+			} else {
+				gtag("config", GOOGLE_TAG_CODE, {
+					cookie_domain: window.location.hostname,
+					cookie_flags: "SameSite=None; Secure",
+				});
+			}
 
 			// Load script dynamically
 			const script = document.createElement("script");
-			script.src = "https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX";
+			script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_TAG_CODE}`;
 			script.async = true;
 			document.head.appendChild(script);
 		} catch (error) {

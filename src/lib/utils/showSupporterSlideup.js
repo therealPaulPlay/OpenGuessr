@@ -2,13 +2,14 @@ import { monthlySupportAmount } from "$lib/stores/context-specific/resultScreenS
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
+import { purchasesDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 import { showResultScreenSlideup } from "./resultScreenSlideup";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "./signupPrompt";
 import { showConfirmPopup } from "openguessr-ui";
 
 export function supporterSlideupProbability() {
-    if (Math.random() < 0.05 && get(supporterLevel) == 0 && localStorage.getItem("supporterSlideup") === null) {
+    if (Math.random() < 0.05 && get(supporterLevel) == 0 && !get(purchasesDisabled) && localStorage.getItem("supporterSlideup") === null) {
         getMonthlySupportedAmount();
         showResultScreenSlideup("Enjoy playing?", "Consider supporting to unlock awesome perks including ad-free!", "Support", () => {
             // supporterSlideup in the success path is not set to true since the user is not guaranteed to support

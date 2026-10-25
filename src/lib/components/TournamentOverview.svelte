@@ -88,9 +88,13 @@
 
 <Collapsible title="Recently finished" bind:isOpen={showOlder} ontoggle={() => playSound("toggle_button")}>
 	<div class="tournament-scroll-container of-top of-bottom">
-		{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
-			{@render tournamentItem(tournament)}
-		{/each}
+		{#if $tournamentData?.length}
+			{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
+				{@render tournamentItem(tournament)}
+			{/each}
+		{:else}
+			<p class="no-recently-finished-text">No finished tournaments.</p>
+		{/if}
 	</div>
 </Collapsible>
 
@@ -203,6 +207,12 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.no-recently-finished-text {
+		opacity: 0.5;
+		text-align: center;
+		padding-block: var(--box-margin);
 	}
 
 	@media (max-width: 1200px) {

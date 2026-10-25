@@ -1,7 +1,8 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
+	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { Copy } from "@lucide/svelte";
-	import { showNotification, showConfirmPopup, showErrorPopup, Popup, Collapsible } from "openguessr-ui";
+	import { showConfirmPopup, showErrorPopup, Popup, Collapsible } from "openguessr-ui";
 	import { extractCoordinates } from "$lib/utils/extractMapCoords";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
@@ -44,7 +45,11 @@
 			leaderboardLink = window.location.origin + "/competitions?leaderboard=" + competitionCreationId;
 			successPopup = true;
 		} else {
-			showErrorPopup("Error submitting competition", "An error occurred submitting your competition.", operationMessage);
+			showErrorPopup(
+				"Error submitting competition",
+				"An error occurred submitting your competition.",
+				operationMessage,
+			);
 		}
 	}
 
@@ -169,10 +174,7 @@
 				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
-					navigator.clipboard
-						.writeText(enterLink)
-						.then(() => showNotification("Copied!"))
-						.catch((error) => showNotification("Error: " + error));
+					copyShareLink(enterLink);
 				}}><Copy size="18" strokeWidth={2.5} /></button
 			>
 		</div>
@@ -183,10 +185,7 @@
 				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
-					navigator.clipboard
-						.writeText(leaderboardLink)
-						.then(() => showNotification("Copied!"))
-						.catch((error) => showNotification("Error: " + error));
+					copyShareLink(leaderboardLink);
 				}}><Copy size="18" strokeWidth={2.5} /></button
 			>
 		</div>
@@ -312,7 +311,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin));
+		justify-content: center;
+		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin) - env(safe-area-inset-top));
 	}
 
 	.content-area {
@@ -321,8 +321,7 @@
 		align-items: center;
 		width: 100%;
 		max-width: 900px;
-		margin-top: auto;
-		margin-bottom: auto;
+		margin-block: var(--layout-spacer);
 	}
 
 	.link-title {

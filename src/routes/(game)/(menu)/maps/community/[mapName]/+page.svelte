@@ -18,6 +18,7 @@
 		Pencil,
 	} from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
+	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import { onMount, untrack } from "svelte";
 	import { goto } from "$app/navigation";
@@ -429,15 +430,7 @@
 					class="standard-button bright map-button large"
 					onclick={() => {
 						playSound("basic_button");
-						navigator.clipboard
-							.writeText(window.location)
-							.then(function () {
-								showNotification("Copied!");
-							})
-							.catch(function (error) {
-								showNotification("Error: " + error);
-								console.error("Copy error: " + error);
-							});
+						copyShareLink(window.location.href);
 					}}
 				>
 					<Link strokeWidth={2.25} size={22} style="margin-top: 1px;" />

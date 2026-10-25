@@ -1,5 +1,5 @@
 <script>
-	import { Popup, TitleSeparator, showErrorPopup, showNotification } from "openguessr-ui";
+	import { Popup, TitleSeparator, showErrorPopup } from "openguessr-ui";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { competitionResultPopup } from "$lib/stores/uiStore";
 	import { competitionResultId, competitionResultRating } from "$lib/stores/context-specific/competitionStore";
@@ -7,6 +7,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
+	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { Frown, Link, Smile, TriangleAlert } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { get } from "svelte/store";
@@ -156,10 +157,7 @@
 				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
-					navigator.clipboard
-						.writeText(window.location.origin + "/competitions?enter=" + $competitionResultId)
-						.then(() => showNotification("Copied!"))
-						.catch((error) => showNotification("Error: " + error));
+					copyShareLink(window.location.origin + "/competitions?enter=" + $competitionResultId);
 				}}
 				>Copy link<Link
 					size={20}

@@ -36,7 +36,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin));
+		min-height: calc(100dvh - var(--menu-padding-top) - var(--layout-margin) - env(safe-area-inset-top));
 	}
 
 	.controls-area {
@@ -46,5 +46,6 @@
 		width: 100%;
 		max-width: 400px;
 		gap: var(--layout-margin);
+		margin-block: var(--layout-spacer);
 	}
 </style>

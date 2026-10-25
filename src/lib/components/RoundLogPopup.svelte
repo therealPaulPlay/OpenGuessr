@@ -19,7 +19,7 @@
 
 <Popup verySlim={true} bind:open={$roundLogPopup}>
 	<div class="popup-title">
-		<h1>Rounds</h1>
+		<h1>Panoramas</h1>
 	</div>
 	<div class="round-log-container">
 		<div class="round-log-box of-top of-bottom of-length-1.5">

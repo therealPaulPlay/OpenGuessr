@@ -129,6 +129,7 @@
 		margin-top: 58px;
 		margin-bottom: var(--box-margin);
 		user-select: none;
+		touch-action: none;
 	}
 
 	.range-texture {

@@ -35,9 +35,6 @@
 	import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 	import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
-	import CrazyGames from "$lib/components/CrazyGames.svelte";
-	import Y8Games from "$lib/components/Y8Games.svelte";
-	import Playgama from "$lib/components/Playgama.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
 	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
@@ -67,8 +64,15 @@
 </script>
 
 <svelte:head>
-	<!-- Ad script -->
-	<script src="https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js" async></script>
+	<!-- Ad script (inlined to bake it into the html, skips load on native) -->
+	{@html `<script>
+		if (!window.Capacitor?.isNativePlatform() && !window.electronApp) {
+			const script = document.createElement("script");
+			script.src = "https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js";
+			script.async = true;
+			document.head.appendChild(script);
+		}
+	</script>`}
 </svelte:head>
 
 <!-- Prevent automatic "last button press" on space bar or enter key press -->
@@ -94,11 +98,6 @@
 	and uses Google Street View. Can you guess the country, or even guess where you are? Travel across the world map today
 	and become the next Rainbolt.
 </h2>
-
-<!-- 3rd party -->
-<CrazyGames />
-<Y8Games />
-<Playgama />
 
 <!-- Log user in -->
 <Authentication />

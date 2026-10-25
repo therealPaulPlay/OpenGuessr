@@ -35,8 +35,9 @@
 	}
 
 	.page-browser-iframe {
+		display: block; /* Inline iframes leave a gap below due to the line height, like other inline-by-default elements e.g. images*/
 		width: 100%;
-		height: min(800px, calc(100dvh - 75px));
+		height: min(800px, calc(100dvh - 75px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
 		background: transparent;
 		border-radius: 20px;
 		opacity: 0;

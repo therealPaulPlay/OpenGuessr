@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, viewport-fit=cover, initial-scale=1" />
 
 	<meta name="description"
 		content="Free GeoGuessr alternative with unlimited playtime and multiplayer. Play GeoGuessr free of charge and learn geography by guessing where you are!">
@@ -39,6 +39,15 @@
 			"alternateName": "OpenGuessr",
 			"url": "https://openguessr.com"
 		}
+	</script>
+
+	<!-- pre-paint script for native app -->
+	<script>
+		try {
+			if (window.Capacitor ?? window.parent.Capacitor ?? window.electronApp ?? window.parent.electronApp) {
+				document.documentElement.classList.add("native");
+			}
+		} catch { }
 	</script>
 
 	%sveltekit.head%

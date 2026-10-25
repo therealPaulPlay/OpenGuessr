@@ -1,5 +1,5 @@
 <script>
-	import { Popup, Tabs, TitleSeparator, InfoBanner, showNotification, tooltip } from "openguessr-ui";
+	import { Popup, Tabs, TitleSeparator, InfoBanner, tooltip, showConfirmPopup } from "openguessr-ui";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -41,6 +41,7 @@
 	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
+	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
 	import { showProfile } from "$lib/utils/showProfile";
@@ -244,14 +245,7 @@
 					{@attach tooltip({ text: "Share link" })}
 					onclick={() => {
 						playSound("basic_button");
-						navigator.clipboard
-							.writeText(page.url.origin + "?profile-id=" + $profileId)
-							.then(function () {
-								showNotification("Copied!");
-							})
-							.catch(function (error) {
-								showNotification("Error: " + error);
-							});
+						copyShareLink(page.url.origin + "?profile-id=" + $profileId);
 					}}
 				>
 					<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />
@@ -447,7 +441,12 @@
 		<InfoBanner style="margin-block: var(--layout-margin);">
 			For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
 		</InfoBanner>
-		<input class="account-prompt-input" type="password" placeholder="Password" bind:value={nameChangeOrDeletePopup.value} />
+		<input
+			class="account-prompt-input"
+			type="password"
+			placeholder="Password"
+			bind:value={nameChangeOrDeletePopup.value}
+		/>
 	{:else}
 		<p class="account-prompt-description">
 			Please input your new username. You can only change your username once per week.
@@ -467,7 +466,13 @@
 			onclick={() => {
 				playSound("basic_button");
 				nameChangeOrDeletePopup.open = false;
-				if (nameChangeOrDeletePopup.type === "delete") submitAccountDeletion(nameChangeOrDeletePopup.value);
+				if (nameChangeOrDeletePopup.type === "delete")
+					showConfirmPopup(
+						"Are you sure?",
+						"Your account will be permanently deleted with no way to recover its data.",
+						() => submitAccountDeletion(nameChangeOrDeletePopup.value),
+						"Yes, delete",
+					);
 				else updateProfileUsername(nameChangeOrDeletePopup.value);
 			}}>Confirm</button
 		>
@@ -640,9 +645,6 @@
 	.about-section {
 		width: 100%;
 		border-radius: var(--box-margin);
-		margin-bottom: var(--layout-margin);
-		transition: background-color 250ms ease;
-		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		overflow: hidden;
@@ -651,7 +653,7 @@
 	.profile-about {
 		resize: none;
 		width: 100%;
-		min-height: 85px;
+		min-height: 90px;
 		color: white;
 		padding: var(--layout-margin);
 		scrollbar-width: none;
@@ -779,10 +781,6 @@
 	}
 
 	@media all and (max-width: 800px) {
-		.about-section {
-			max-height: 85px;
-		}
-
 		.flag-container {
 			width: 18px;
 		}

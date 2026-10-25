@@ -2,7 +2,7 @@
 	import { blur } from "svelte/transition";
 </script>
 
-<div class="logo" transition:blur={{ duration: 250 }}>
+<div class="logo safe-margin-top" transition:blur={{ duration: 250 }}>
 	<img class="image" src="/img/openguessr.svg" alt="OpenGuessr logo - the free geography location-guessing game" />
 </div>
 

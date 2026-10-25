@@ -2,12 +2,12 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { showErrorPopup, showConfirmPopup, Tabs, Collapsible } from "openguessr-ui";
+	import { showErrorPopup, showConfirmPopup, Tabs, Collapsible, Chip } from "openguessr-ui";
 	import { competitionData, dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { goto, afterNavigate } from "$app/navigation";
-	import { Plus, Search } from "@lucide/svelte";
+	import { Plus, Search, Timer } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
@@ -282,38 +282,41 @@
 				<div class="label bright-soft">
 					<p>Plays</p>
 				</div>
-				<p class="item-text of-left of-right">{playercount.toLocaleString()}</p>
-			</div>
-			<div class="property-item">
-				<div class="label bright-soft">
-					<p>Restriction</p>
+				<div class="item-content of-left of-right">
+					<p>{playercount.toLocaleString()}</p>
 				</div>
-				<p class="item-text of-left of-right">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
+			{#if restriction !== "none"}
+				<div class="property-item">
+					<div class="label bright-soft">
+						<p>Restriction</p>
+					</div>
+					<div class="item-content of-left of-right">
+						<p>{$restrictionNames?.[restriction] || "Invalid"}</p>
+					</div>
+				</div>
+			{/if}
 			<div class="property-item">
 				<div class="label bright-soft">
 					<p>Duration</p>
 				</div>
-				<p class="item-text of-left of-right">
-					{formatDuration(duration)}
+				<div class="item-content of-left of-right">
+					<p style:margin-right="var(--box-margin)">
+						{formatDuration(duration)}
+					</p>
 					{#if remainingDuration > 0}
-						<span class="remaining-duration-text">
-							({formatDuration(remainingDuration)} left)
-						</span>
+						<Chip>{formatDuration(remainingDuration)} left</Chip>
 					{/if}
-				</p>
+				</div>
 			</div>
 			<div class="property-item">
 				<div class="label bright-soft">
 					<p>Rounds</p>
 				</div>
-				<p class="item-text of-left of-right">{locationAmount}</p>
-			</div>
-			<div class="property-item">
-				<div class="label bright-soft">
-					<p>Round length</p>
+				<div class="item-content of-left of-right">
+					<p style:margin-right="var(--box-margin)">{locationAmount}</p>
+					<Chip><Timer size={18} strokeWidth={2.35} style="margin-right: 3px;" />{roundLength}s</Chip>
 				</div>
-				<p class="item-text of-left of-right">{roundLength}s</p>
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -326,9 +329,9 @@
 			}}
 		>
 			<div class="label bright-soft" role="button" tabindex="0">
-				<p>Description</p>
+				<p>About</p>
 			</div>
-			<p class="item-text desc-text">
+			<p class="desc-text">
 				{description}
 			</p>
 		</div>
@@ -409,7 +412,9 @@
 						<CompetitionStreakCalendar streakDays={$dailyStreakDays} />
 						<div class="mobile-streak-display">
 							<div class="inner-mobile-streak-display">
-								<p style:opacity={streakNumber <= 0 ? "0.5" : ""}>{streakNumber > 0 ? streakNumber.toLocaleString() : "-"}</p>
+								<p style:opacity={streakNumber <= 0 ? "0.5" : ""}>
+									{streakNumber > 0 ? streakNumber.toLocaleString() : "-"}
+								</p>
 								<img alt="daily competition streak flame" src="/img/streak_icon.png" class="streak-flame-small" />
 							</div>
 						</div>
@@ -600,7 +605,7 @@
 
 	.competition-button-box {
 		margin-top: auto !important;
-		padding-top: 60px;
+		padding-top: var(--layout-spacer);
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: flex-end;
@@ -657,20 +662,20 @@
 		font-size: 20px;
 	}
 
-	.item-text {
-		margin: var(--content-margin);
-		margin-right: var(--panel-margin);
+	.item-content {
 		overflow-x: auto;
 		text-wrap: nowrap;
-		min-width: 55px;
 		scrollbar-width: none;
+		display: flex;
+		align-items: center;
+		border-radius: var(--content-margin);
+		padding-inline: var(--content-margin);
+		height: 37px;
+		min-width: 60px;
 	}
 
-	.remaining-duration-text {
-		opacity: 0.5;
-		display: inline-block;
-		vertical-align: bottom;
-		margin-left: 2px;
+	.item-content > p {
+		margin-right: var(--content-margin);
 	}
 
 	.competition-item-header {
@@ -697,20 +702,18 @@
 		border-radius: var(--box-margin);
 		padding: 3px;
 		overflow: hidden;
-		text-overflow: ellipsis;
-		max-height: 45px;
 		display: flex;
 		align-items: center;
 		background-color: var(--box-color);
 	}
 
 	.desc-text {
+		margin: var(--content-margin);
 		margin-top: var(--panel-margin);
-		overflow: hidden;
-		max-height: 60px;
 		margin-inline: var(--panel-margin);
-		text-overflow: ellipsis;
 		overflow: hidden;
+		text-wrap: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	.competition-author {
@@ -818,7 +821,6 @@
 		display: none;
 		flex-direction: column;
 		position: relative;
-		overflow: hidden;
 		flex-grow: 1;
 	}
 
@@ -853,7 +855,7 @@
 		left: 50%;
 		top: calc(50% - var(--box-margin));
 		translate: -50% -50%;
-		width: 285px;
+		width: 250px;
 		pointer-events: none;
 		user-select: none;
 	}

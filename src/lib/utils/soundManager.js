@@ -1,10 +1,10 @@
 import { browser } from "$app/environment";
 import { sounds as uiSounds } from "openguessr-ui";
 
-let Howl;
+let Howl, Howler;
 
 // Howler references browser globals at module eval, which crashes SSR in some JS runtimes
-if (browser) import("howler").then((module) => (Howl = module.Howl));
+if (browser) import("howler").then((module) => ({ Howl, Howler } = module));
 
 const sounds = {};
 let currentVariant = null;
@@ -20,6 +20,18 @@ export function setMuted(muted) {
 }
 
 // SFX ---------------------------------------------------------------------------------------------
+// Haptic feedback played together with some sounds on mobile
+const haptics = {
+    basic_button: ["impact", { style: "LIGHT" }],
+    toggle_button: ["impact", { style: "LIGHT" }],
+    item_select: ["impact", { style: "LIGHT" }],
+    juicy_button: ["impact", { style: "LIGHT" }],
+    change_value: ["impact", { style: "LIGHT" }],
+    start_button: ["impact", { style: "LIGHT" }],
+    leave_round: ["impact", { style: "LIGHT" }],
+    reload: ["impact", { style: "LIGHT" }],
+};
+
 export function setSoundsVolume(volume) {
     sfxVolume = Math.max(0, Math.min(volume, 1));
     localStorage.setItem("soundVolume", sfxVolume);
@@ -33,6 +45,12 @@ export function setSoundsVolume(volume) {
 
 export function playSound(fileName, tag) {
     if (!Howl) return;
+    const haptic = haptics[fileName];
+    if (haptic) window.Capacitor?.Plugins?.Haptics?.[haptic[0]](haptic[1]).catch(() => { });
+
+    // Some browsers (Safari) like to pause audio sometimes (e.g. when tab goes into bg), ensure it is running
+    if (Howler.ctx && Howler.ctx.state !== "running") Howler.ctx.resume();
+
     try {
         const sound = new Howl({
             src: [uiSounds[fileName] ?? `/sounds/${fileName}.ogg`],
