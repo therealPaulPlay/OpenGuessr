@@ -654,8 +654,7 @@
 		padding-inline: var(--panel-margin);
 		width: fit-content;
 		border-radius: var(--content-margin);
-		margin-right: var(--content-margin);
-		margin-left: 4px;
+		margin-inline: var(--content-margin);
 	}
 
 	.label p {
@@ -670,7 +669,7 @@
 		align-items: center;
 		border-radius: var(--content-margin);
 		padding-inline: var(--content-margin);
-		height: 37px;
+		height: 40px;
 		min-width: 60px;
 	}
 
