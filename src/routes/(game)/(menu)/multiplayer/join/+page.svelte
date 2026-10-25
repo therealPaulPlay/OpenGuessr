@@ -2,7 +2,7 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
-	import { Unplug, User } from "@lucide/svelte";
+	import { Layers, Unplug, User } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
@@ -62,7 +62,7 @@
 			<div class="open-room-item bright-soft" transition:blur>
 				<div class="room-item-info-container of-left of-right">
 					<Chip mutedOpacity={false}>
-						<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />
+						<Layers size={18} strokeWidth={2.5} style="margin-right: var(--content-margin); margin-left: 3px;" />
 						{idToMapName(room?.map)}
 					</Chip>
 					<Chip mutedOpacity={false} onclick={() => showProfile(room?.user_id)}>
@@ -191,11 +191,5 @@
 		width: calc(100% - 10px);
 		text-overflow: ellipsis;
 		opacity: 0.5;
-	}
-
-	.map-icon {
-		width: 20px;
-		height: 20px;
-		margin-right: 3px;
 	}
 </style>

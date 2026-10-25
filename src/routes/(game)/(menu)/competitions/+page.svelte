@@ -7,7 +7,7 @@
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { goto, afterNavigate } from "$app/navigation";
-	import { Clock, Plus, Search, Timer } from "@lucide/svelte";
+	import { Plus, Search, Timer } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
@@ -286,14 +286,16 @@
 					<p>{playercount.toLocaleString()}</p>
 				</div>
 			</div>
-			<div class="property-item">
-				<div class="label bright-soft">
-					<p>Restriction</p>
+			{#if restriction !== "none"}
+				<div class="property-item">
+					<div class="label bright-soft">
+						<p>Restriction</p>
+					</div>
+					<div class="item-content of-left of-right">
+						<p>{$restrictionNames?.[restriction] || "Invalid"}</p>
+					</div>
 				</div>
-				<div class="item-content of-left of-right">
-					<p>{$restrictionNames?.[restriction] || "Invalid"}</p>
-				</div>
-			</div>
+			{/if}
 			<div class="property-item">
 				<div class="label bright-soft">
 					<p>Duration</p>
@@ -303,9 +305,7 @@
 						{formatDuration(duration)}
 					</p>
 					{#if remainingDuration > 0}
-						<Chip>
-							<Clock size={16} strokeWidth={2.5} style="margin-right: 3px;" />{formatDuration(remainingDuration)} left
-						</Chip>
+						<Chip>{formatDuration(remainingDuration)} left</Chip>
 					{/if}
 				</div>
 			</div>
@@ -315,7 +315,7 @@
 				</div>
 				<div class="item-content of-left of-right">
 					<p style:margin-right="var(--box-margin)">{locationAmount}</p>
-					<Chip><Timer size={18} strokeWidth={2.25} style="margin-right: 3px;" />{roundLength}s</Chip>
+					<Chip><Timer size={18} strokeWidth={2.35} style="margin-right: 3px;" />{roundLength}s</Chip>
 				</div>
 			</div>
 		</div>
@@ -821,7 +821,6 @@
 		display: none;
 		flex-direction: column;
 		position: relative;
-		overflow: hidden;
 		flex-grow: 1;
 	}
 
@@ -856,7 +855,7 @@
 		left: 50%;
 		top: calc(50% - var(--box-margin));
 		translate: -50% -50%;
-		width: 285px;
+		width: 250px;
 		pointer-events: none;
 		user-select: none;
 	}

@@ -9,7 +9,7 @@
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Bug, InfinityIcon, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
+	import { Bug, InfinityIcon, Layers, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
@@ -142,7 +142,7 @@
 									{const imgUrl = $specialMaps.find((e) => e.map === localStorage.getItem("selectedMap"))?.imgUrl}
 									{#snippet cover()}
 										<div class="generic-map-cover">
-											<img alt="Generic map icon" src="/img/maps_icon.png" class="map-map-icon" />
+											<span class="map-map-icon"><Layers size={28} strokeWidth={2} style="opacity: 0.5;" /></span>
 											<span class="map-play-icon"> <Play size={28} strokeWidth={2} style="opacity: 0.5;" /></span>
 										</div>
 									{/snippet}
@@ -466,20 +466,11 @@
 		border-radius: var(--content-margin);
 	}
 
-	.map-map-icon {
-		width: 28px;
-		height: 28px;
-		opacity: 0.5;
-	}
-
+	.map-map-icon,
 	.map-play-icon {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-
-	.map-map-icon,
-	.map-play-icon {
 		transition:
 			scale 250ms ease,
 			opacity 250ms ease;
