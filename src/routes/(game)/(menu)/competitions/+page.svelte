@@ -2,7 +2,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { showErrorPopup, showConfirmPopup, Tabs, Collapsible } from "openguessr-ui";
+	import { showErrorPopup, showConfirmPopup, Tabs, Collapsible, Chip } from "openguessr-ui";
 	import { competitionData, dailyStreakDays } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -303,11 +303,9 @@
 						{formatDuration(duration)}
 					</p>
 					{#if remainingDuration > 0}
-						<span class="inner-item-label">
-							<p>
-								<Clock size={18} strokeWidth={2.5} style="margin-right: 1px;" />{formatDuration(remainingDuration)} left
-							</p>
-						</span>
+						<Chip>
+							<Clock size={16} strokeWidth={2.5} style="margin-right: 3px;" />{formatDuration(remainingDuration)} left
+						</Chip>
 					{/if}
 				</div>
 			</div>
@@ -317,7 +315,7 @@
 				</div>
 				<div class="item-content of-left of-right">
 					<p style:margin-right="var(--box-margin)">{locationAmount}</p>
-					<span class="inner-item-label"><p><Timer size={20} strokeWidth={2.25} /> {roundLength}s</p></span>
+					<Chip><Timer size={18} strokeWidth={2.25} style="margin-right: 3px;" />{roundLength}s</Chip>
 				</div>
 			</div>
 		</div>
@@ -664,25 +662,6 @@
 		font-size: 20px;
 	}
 
-	.inner-item-label {
-		background-color: var(--box-color-dark-soft);
-		border-radius: var(--content-margin);
-		box-shadow: var(--box-shadow);
-		padding: 3px;
-		padding-inline: var(--panel-margin);
-		margin-right: auto;
-		text-wrap: nowrap;
-		font-size: 20px;
-	}
-
-	.inner-item-label p {
-		gap: var(--content-margin);
-		display: flex;
-		align-items: center;
-		opacity: 0.75;
-		font-size: 20px;
-	}
-
 	.item-content {
 		overflow-x: auto;
 		text-wrap: nowrap;
@@ -690,14 +669,13 @@
 		display: flex;
 		align-items: center;
 		border-radius: var(--content-margin);
-		margin-inline: 3px;
+		padding-inline: var(--content-margin);
 		height: 37px;
 		min-width: 60px;
 	}
 
 	.item-content > p {
 		margin-right: var(--content-margin);
-		margin-left: 2px;
 	}
 
 	.competition-item-header {
