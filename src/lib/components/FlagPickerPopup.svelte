@@ -93,7 +93,7 @@
 		padding-bottom: 1000px;
 	}
 
-	.continent-section {
+	.continent-section:not(:last-child) {
 		margin-bottom: var(--layout-margin);
 	}
 

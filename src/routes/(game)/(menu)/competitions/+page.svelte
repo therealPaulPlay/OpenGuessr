@@ -623,8 +623,8 @@
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
-		padding: 7px;
-		padding-inline: 4px;
+		padding: 3px;
+		padding-top: var(--panel-margin);
 		font-size: 22px;
 		transition: filter 250ms ease;
 	}
