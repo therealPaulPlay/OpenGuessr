@@ -193,7 +193,7 @@
 	{#if $purchasesDisabled}
 		<InfoBanner
 			inPage={true}
-			text="Real-money purchases are currently not available on this platform."
+			text="Real-money purchases are currently not offered on this platform."
 			style="margin-bottom: var(--layout-margin);"
 		/>
 	{/if}
