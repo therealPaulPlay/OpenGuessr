@@ -32,7 +32,7 @@
 	#timer-countdown h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px var(--dark-shadow-color);
-		margin-bottom: var(--layout-margin);
+		text-align: center;
 	}
 
 	@media all and (max-width: 1200px) {
