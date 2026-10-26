@@ -138,7 +138,8 @@
 					<div class="host-button-container bar-menu">
 						<button
 							disabled={currentlyStartingRematch}
-							class="standard-button bright large round-end-button"
+							style:min-width="130px"
+							class="standard-button bright large"
 							onclick={async () => {
 								playSound("basic_button");
 								currentlyStartingRematch = true;
@@ -158,7 +159,8 @@
 				{#if $leaveMatchButtonVisible}
 					<div class="host-button-container bar-menu">
 						<button
-							class="standard-button large round-end-button"
+							style:min-width="130px"
+							class="standard-button large"
 							onclick={() => {
 								playSound("basic_button");
 								leaveMultiplayer();
@@ -239,7 +241,6 @@
 
 	.username-span {
 		margin-right: 3px;
-		font-size: 25px;
 	}
 
 	.elo-display {
@@ -271,10 +272,6 @@
 		flex-wrap: wrap;
 	}
 
-	.round-end-button {
-		min-width: 130px;
-	}
-
 	.multiplayer-title {
 		overflow: hidden;
 		white-space: nowrap;
@@ -283,14 +280,14 @@
 			transform 250ms ease,
 			color 250ms ease;
 		color: white;
-		max-width: 750px;
-		width: 75%;
+		width: 750px;
+		max-width: 100%;
+		padding-inline: calc(var(--layout-margin) + var(--box-margin));
 		text-overflow: ellipsis;
 		text-align: center;
 	}
 
 	.multiplayer-overlay h1 {
-		font-size: 50px;
 		text-shadow: 2px 2px 15px var(--dark-shadow-color);
 	}
 
@@ -303,8 +300,7 @@
 		display: flex;
 		justify-content: safe center;
 		align-items: safe flex-start;
-		width: calc(75% + 50px);
-		min-width: 400px;
+		width: 100%;
 		max-width: 800px;
 		max-height: calc(55dvh - 100px);
 		overflow-x: hidden;
@@ -365,13 +361,5 @@
 
 	.multiplayer-entry-player-score {
 		margin-left: var(--box-margin);
-		font-size: 25px;
-	}
-
-	/* Shift up table on mobile where the indicator bar spans across the device width */
-	@media (orientation: portrait) and (max-width: 800px) {
-		.multiplayer-overlay {
-			padding-bottom: 150px;
-		}
 	}
 </style>

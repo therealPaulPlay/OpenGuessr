@@ -37,15 +37,16 @@
 		color: white;
 		pointer-events: none;
 		user-select: none;
+		padding: var(--layout-margin);
 	}
 
 	.duels-time-reduced h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px var(--dark-shadow-color);
-		margin-bottom: 20px;
 		opacity: 0.75;
 		text-align: center;
 		margin-bottom: var(--box-margin);
+		padding-inline: var(--box-margin);
 	}
 
 	.duels-time-reduced p {
@@ -54,6 +55,7 @@
 		margin-bottom: 20px;
 		opacity: 0.75;
 		text-align: center;
+		padding-inline: var(--box-margin);
 	}
 
 	@media all and (max-width: 1200px) {

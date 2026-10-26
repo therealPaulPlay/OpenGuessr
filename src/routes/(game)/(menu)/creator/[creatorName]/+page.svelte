@@ -103,9 +103,7 @@
 		width: 100%;
 		text-align: center;
 		font-size: 75px;
-		mask-size: 100% 100%;
-		mask-repeat: no-repeat;
-		padding-inline: calc(var(--layout-margin) * 2);
+		padding-inline: var(--box-margin);
 	}
 
 	@media (max-width: 800px) {
