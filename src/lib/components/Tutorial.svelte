@@ -205,7 +205,7 @@
 
 	.subtitle {
 		opacity: 0.75;
-		padding-inline: var(--layout-margin);
+		padding-inline: var(--box-margin);
 		padding-bottom: calc(var(--layout-margin) + var(--layout-margin) + var(--box-margin));
 		text-align: center;
 		margin-inline: auto;
@@ -225,7 +225,7 @@
 		text-shadow: 0 0 30px var(--dark-shadow-color);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
-		padding-inline: var(--layout-margin);
+		padding-inline: var(--box-margin);
 		width: fit-content;
 	}
 
