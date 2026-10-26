@@ -302,7 +302,7 @@
 			);
 		}}
 	>
-		<Info size={17} strokeWidth={2.25} style="margin-right: var(--content-margin); margin-bottom: -2px;" />
+		<Info size={17} strokeWidth={2.25} style="margin-right: var(--content-margin); margin-bottom: -1px;" />
 		Live
 	</Chip>
 {/snippet}
