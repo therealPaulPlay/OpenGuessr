@@ -95,4 +95,10 @@
 			flex-direction: column-reverse;
 		}
 	}
+
+	@media (orientation: portrait) and (max-width: 800px) {
+		.spotr-promo {
+			display: none;
+		}
+	}
 </style>

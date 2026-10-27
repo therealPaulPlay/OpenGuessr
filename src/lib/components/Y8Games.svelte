@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 	import { y8Games } from "$lib/stores/context-specific/platformSettingsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
@@ -8,7 +9,7 @@
 
 	onMount(async () => {
 		try {
-			let urlParams = new URLSearchParams(window.location.search);
+			let urlParams = page.url.searchParams;
 			let y8GamesEnabled = urlParams.get("y8-games");
 
 			if (y8GamesEnabled) {

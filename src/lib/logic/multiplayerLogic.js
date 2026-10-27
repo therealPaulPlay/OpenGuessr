@@ -240,10 +240,10 @@ export async function createMultiplayerInstance() {
 // Joining via Links or from other places ----------------------------------------------------------------------------------------------------------------
 // Called in accountLogic after account data was loaded
 export function attemptJoinViaLink() {
-    let urlParams = new URLSearchParams(window.location.search);
+    let urlParams = page.url.searchParams;
     const code = urlParams.get("join");
     if (code) {
-        goto(window.location.pathname, { replaceState: true }); // Remove query (goto instead of SvelteKit's replaceState, which crashes if the root layout isn't assigned yet on page load)
+        goto(page.url.pathname, { replaceState: true }); // Remove query (goto instead of SvelteKit's replaceState, which crashes if the root layout isn't assigned yet on page load)
         return joinFromAnywhere(code);
     }
 }

@@ -110,7 +110,7 @@
 			);
 		}
 
-		goto(window.location.pathname, { replaceState: true }); // reset query in the address bar
+		goto(page.url.pathname, { replaceState: true }); // reset query in the address bar
 	});
 
 	// Load competitions ----------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 	import { get } from "svelte/store";
 	import { analyticsDisabled, native } from "$lib/stores/context-specific/platformSettingsStore";
 
@@ -27,7 +28,7 @@
 				gtag("config", GOOGLE_TAG_CODE, { client_storage: "none" });
 			} else {
 				gtag("config", GOOGLE_TAG_CODE, {
-					cookie_domain: window.location.hostname,
+					cookie_domain: page.url.hostname,
 					cookie_flags: "SameSite=None; Secure",
 				});
 			}

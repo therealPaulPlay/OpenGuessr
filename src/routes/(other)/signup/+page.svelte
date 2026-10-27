@@ -4,88 +4,160 @@
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
 	import { blur, fade, scale, slide } from "svelte/transition";
-	import { apiUrl, googleOauthClientId } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, googleOauthClientId, appleOauthServicesId } from "$lib/stores/context-specific/apiConfigStore";
+	import { nativePlatform } from "$lib/stores/context-specific/platformSettingsStore";
 	import { goto } from "$app/navigation";
-	import { Notification, showNotification } from "openguessr-ui";
+	import { page } from "$app/state";
+	import { Notification, showNotification, InfoBanner } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
+	import { signOut } from "$lib/logic/accountLogic";
 
 	let actionButtonBusy = $state(false);
 
+	// If the signup page is embedded, these values will be sent to the top page
 	function notifyIframeParent(id, token) {
-		window.parent.postMessage(`id ${id}`, "*");
-		window.parent.postMessage(`token ${token}`, "*");
+		window.parent.postMessage(`id ${id}`, "*"); // OpenGuessr user ID
+		window.parent.postMessage(`token ${token}`, "*"); // Bearer token
 		window.parent.postMessage("close", "*");
 	}
 
-	// Google OAuth --------------------------------------------------------------------------------------------------------
-	function startGoogleLogin() {
-		const params = new URLSearchParams({
-			client_id: $googleOauthClientId,
-			redirect_uri: window.location.origin + window.location.pathname,
-			response_type: "code",
-			scope: "openid email profile",
-			prompt: "select_account",
-		});
-		window.open(`https://accounts.google.com/o/oauth2/v2/auth?${params}`, "google-oauth", "width=500,height=600");
-
-		// Listen for success message from the popup after Google callback completes
-		window.addEventListener("message", function onGoogleSuccess(event) {
-			if (event.data?.type !== "google-oauth-success") return;
-			window.removeEventListener("message", onGoogleSuccess);
-
-			// Token/id are already in localStorage (written by the popup, same origin)
-			if (inIframe()) notifyIframeParent(localStorage.getItem("id"), localStorage.getItem("bearer"));
-			else goto("/");
-		});
-	}
-
-	async function handleGoogleCallback(code) {
+	// Provider-agnostic function for sending the OAuth tokens to the server
+	async function authenticateWith(provider, body) {
 		actionButtonBusy = true;
 
 		try {
-			const response = await fetch(`${$apiUrl}/accounts/google-authenticate`, {
+			const response = await fetch(`${$apiUrl}/accounts/${provider}-authenticate`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ code, redirectUri: window.location.origin + window.location.pathname }),
+				body: JSON.stringify(body),
 			});
 
-			if (response.ok) {
-				const data = await response.json();
+			const data = await response.json().catch(() => ({}));
+			if (!response.ok) throw new Error(data.error ?? response.status);
+			if (!data.token || data.id == null) throw new Error("Token or ID missing from successful response"); // To avoid overriding potential local account data with nullish values
 
-				if (data["token"] && data["id"]) {
-					localStorage.setItem("bearer", data["token"]);
-					localStorage.setItem("id", data["id"]);
-				}
+			localStorage.setItem("bearer", data.token);
+			localStorage.setItem("id", data.id);
 
-				// This page loads inside a popup opened by startGoogleLogin()
-				// The opener may be the /signup page directly, or an iframe embedding it
-				if (window.opener) window.opener.postMessage({ type: "google-oauth-success" }, "*");
-				window.close();
-			} else {
-				let responseError = response.status;
-				try {
-					const data = await response.json();
-					if (data.error) responseError = data.error;
-				} catch {}
-				throw new Error(responseError);
-			}
+			if (inIframe()) notifyIframeParent(data.id, data.token);
+			else goto("/");
 		} catch (error) {
-			console.error("Google login failed:", error);
+			console.error(`${provider} login failed:`, error);
 			showNotification(error.message);
 		} finally {
 			actionButtonBusy = false;
 		}
 	}
 
-	onMount(() => {
-		const params = new URLSearchParams(window.location.search);
-		const googleCode = params.get("code");
-		if (googleCode) {
-			goto(window.location.pathname, { replaceState: true }); // Remove query from address bar (and history)
-			handleGoogleCallback(googleCode);
-		} else if (params.has("error")) {
-			window.close();
+	// Google OAuth --------------------------------------------------------------------------------------------------------
+	let googleCodeListener;
+
+	async function startGoogleLogin() {
+		try {
+			// App path
+			const GoogleSignIn = window.Capacitor?.Plugins?.GoogleSignIn;
+			if (GoogleSignIn) {
+				await GoogleSignIn.initialize({ clientId: $googleOauthClientId });
+				const { idToken } = await GoogleSignIn.signIn();
+				return authenticateWith("google", { idToken });
+			}
+
+			// Web path
+			const redirectUri = page.url.origin + page.url.pathname;
+
+			// Listen for a message with the code from the Google window/popup
+			// This code is sent via the onMount() callback that triggers after the redirect from Google back to /signup
+			if (!googleCodeListener) {
+				googleCodeListener = (event) => {
+					if (event.origin !== page.url.origin || event.data?.type !== "google-oauth-code") return;
+					window.removeEventListener("message", googleCodeListener);
+					googleCodeListener = undefined;
+					authenticateWith("google", { code: event.data.code, redirectUri });
+				};
+				window.addEventListener("message", googleCodeListener);
+			}
+
+			// Open the Google popup (redirects back to OpenGuessr once completed)
+			const params = new URLSearchParams({
+				client_id: $googleOauthClientId,
+				redirect_uri: redirectUri,
+				response_type: "code",
+				scope: "openid email profile",
+				prompt: "select_account",
+			});
+			window.open(`https://accounts.google.com/o/oauth2/v2/auth?${params}`, "google-oauth", "width=500,height=600");
+		} catch (error) {
+			if (error.code == "SIGN_IN_CANCELED") return console.warn("Google signin canceled:", error.message);
+			console.error("Google signin failed:", error);
+			showNotification(error.message);
 		}
+	}
+
+	// Apple OAuth ---------------------------------------------------------------------------------------------------------
+	async function startAppleLogin() {
+		const redirectUri = page.url.origin + page.url.pathname; // Must be registered for the Services ID, iOS signs in natively without one
+
+		try {
+			// App path
+			const AppleSignIn = window.Capacitor?.Plugins?.AppleSignIn;
+			if (AppleSignIn) {
+				const ios = $nativePlatform == "ios";
+				if (!ios) await AppleSignIn.initialize({ clientId: $appleOauthServicesId });
+
+				const result = await AppleSignIn.signIn({
+					scopes: ["EMAIL", "FULL_NAME"],
+					...(!ios && { redirectUrl: redirectUri }),
+				});
+				return authenticateWith("apple", {
+					authorizationCode: result.authorizationCode,
+					redirectUri: ios ? undefined : redirectUri,
+					name: [result.givenName, result.familyName].filter(Boolean).join(" "),
+				});
+			}
+
+			// Web path
+			// Apple's own SDK on the web, its popup works inside the signup iframe too
+			if (!window.AppleID) throw new Error("Failed to load Apple signin.");
+
+			window.AppleID.auth.init({
+				clientId: $appleOauthServicesId,
+				scope: "name email",
+				redirectURI: redirectUri,
+				usePopup: true,
+			});
+			const { authorization, user } = await window.AppleID.auth.signIn();
+			authenticateWith("apple", {
+				authorizationCode: authorization.code,
+				redirectUri,
+				name: [user?.name?.firstName, user?.name?.lastName].filter(Boolean).join(" "), // Only included on the first signin
+			});
+		} catch (error) {
+			if (
+				error.code == "SIGN_IN_CANCELED" ||
+				["popup_closed_by_user", "user_cancelled_authorize"].includes(error.error)
+			)
+				return;
+			console.error("Apple signin failed:", error);
+			showNotification(error.message ?? error.error);
+		}
+	}
+
+	// Load Apple SDK upfront to ensure it opens without delay, unless already loaded or in the app
+	onMount(() => {
+		if (window.Capacitor?.Plugins?.AppleSignIn || window.AppleID) return;
+		const script = document.createElement("script");
+		script.src = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
+		script.async = true;
+		document.head.appendChild(script);
+	});
+
+	// Once Google signin is completed, it redirects back to OpenGuessr's signup
+	// Since this is in a new window, we only want that additional window for Google's signin, so we close it, and post the code to the top /signup page that spawned the window
+	onMount(() => {
+		const params = page.url.searchParams;
+		if (params.has("code"))
+			window.opener?.postMessage({ type: "google-oauth-code", code: params.get("code") }, page.url.origin);
+		if (params.has("code") || params.has("error")) window.close();
 	});
 
 	// API requests -------------------------------------------------------------------------------------------------------
@@ -237,28 +309,67 @@
 		}
 	}
 
-	// Toggle between login, signup, newPassword and reset ---------------------------------------------------------------------------------------------
+	// Delete account with token from confirmation email
+	async function deleteAccount(token) {
+		actionButtonBusy = true;
+
+		try {
+			const response = await fetch(`${$apiUrl}/accounts/delete`, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ token }),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				if (data.userId == localStorage.getItem("id")) signOut(); // The deleted account is signed in here, sign it out
+				showNotification("Your account has been deleted.");
+				formType = "login";
+			} else {
+				let responseError = response.status;
+				try {
+					const data = await response.json();
+					if (data.error) responseError = data.error;
+				} catch {}
+				throw new Error(responseError);
+			}
+		} catch (error) {
+			console.error("Account deletion failed:", error);
+			showNotification(error.message);
+		} finally {
+			actionButtonBusy = false;
+		}
+	}
+
+	// Toggle between login, signup, newPassword, reset and delete ---------------------------------------------------------------------------------------
 	let formType = $state("login");
 
-	// Password reset ----------------------------------------------------------------------------------------------------------------------------------
-	let resetBearerToken;
+	// Password reset and account deletion links -------------------------------------------------------------------------------------------------------
+	let resetToken;
+	let deletionToken;
 
 	onMount(() => {
-		let urlParams = new URLSearchParams(window.location.search);
-		resetBearerToken = urlParams.get("token");
+		let urlParams = page.url.searchParams;
+		resetToken = urlParams.get("reset-token");
+		deletionToken = urlParams.get("deletion-token");
 		const resetPresent = urlParams.get("reset");
 
-		if (resetBearerToken) {
+		if (resetToken) {
 			formType = "new-password";
-			goto(window.location.pathname, { replaceState: true }); // Reset url to remove query
+			goto(page.url.pathname, { replaceState: true }); // Reset url to remove query
+		} else if (deletionToken) {
+			formType = "delete";
+			goto(page.url.pathname, { replaceState: true });
 		} else if (resetPresent) {
 			formType = "reset";
-			goto(window.location.pathname, { replaceState: true });
+			goto(page.url.pathname, { replaceState: true });
 		}
 	});
 
 	function changePasswordIfValuesProvided(newPassword) {
-		if (newPassword) changePassword(resetBearerToken, newPassword);
+		if (newPassword) changePassword(resetToken, newPassword);
 		else showNotification("Please input a new password.");
 	}
 
@@ -299,6 +410,9 @@
 				break;
 			case "new-password":
 				changePasswordIfValuesProvided(password);
+				break;
+			case "delete":
+				deleteAccount(deletionToken);
 				break;
 		}
 	}
@@ -413,6 +527,13 @@
 							</button>
 						</div>
 					{/if}
+					{#if formType == "delete"}
+						<InfoBanner
+							text="This will immediately delete your account and data."
+							transition={true}
+							style="margin-bottom: var(--layout-margin);"
+						/>
+					{/if}
 					<button
 						class="standard-button action-button"
 						onclick={() => {
@@ -425,6 +546,7 @@
 							if (formType == "signup") return "Sign up";
 							if (formType == "reset") return "Send link";
 							if (formType == "new-password") return "Set password";
+							if (formType == "delete") return "Delete account";
 						})()}</button
 					>
 				</div>
@@ -437,11 +559,12 @@
 			<div class="container" transition:slide={{ axis: "y", duration: 150 }}>
 				<div transition:blur={{ duration: 150 }} class="signup-options-container">
 					<button
-						class="standard-button bright signup-button google-login-button large"
+						class="standard-button bright signup-button large"
 						onclick={() => {
 							playSound("basic_button");
 							startGoogleLogin();
 						}}
+						disabled={actionButtonBusy}
 					>
 						<img
 							src="/img/google_logo.png"
@@ -449,6 +572,21 @@
 							alt="Google logo"
 						/>
 						Continue with Google
+					</button>
+					<button
+						class="standard-button bright signup-button large"
+						onclick={() => {
+							playSound("basic_button");
+							startAppleLogin();
+						}}
+						disabled={actionButtonBusy}
+					>
+						<img
+							src="/img/apple_logo.png"
+							style="width: 26px; height: 26px; scale: 1.25; clip-path: circle(calc(50% / 1.25)); user-select: none; pointer-events: none;"
+							alt="Apple logo"
+						/>
+						Continue with Apple
 					</button>
 					<button
 						class="standard-button bright signup-button large"
@@ -502,11 +640,6 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--box-margin);
-	}
-
-	/* Google blocks its login in web views */
-	:global(html.native) .google-login-button {
-		display: none;
 	}
 
 	.logo {

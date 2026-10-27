@@ -1,5 +1,5 @@
 <script>
-	import { Popup, Tabs, TitleSeparator, InfoBanner, tooltip, showConfirmPopup } from "openguessr-ui";
+	import { Popup, Tabs, TitleSeparator, tooltip } from "openguessr-ui";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -7,7 +7,7 @@
 	import { experienceCalculations } from "$lib/utils/experienceCalculations";
 	import { formatDateTime } from "$lib/utils/formatJoinedDate";
 	import { updateProfileUsername } from "$lib/utils/updateUsername";
-	import { submitAccountDeletion } from "$lib/utils/deleteAccount";
+	import { requestAccountDeletion } from "$lib/utils/requestAccountDeletion";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { signOut } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup, divisionMatchHistoryPopup } from "$lib/stores/uiStore";
@@ -67,7 +67,7 @@
 		if (profileFromURL == null) return;
 
 		showProfile(profileFromURL);
-		goto(window.location.pathname, { replaceState: true });
+		goto(page.url.pathname, { replaceState: true });
 	});
 
 	// Reset statistics tab selection when closed
@@ -437,16 +437,9 @@
 		<h1>{nameChangeOrDeletePopup.type === "delete" ? "Delete account" : "Update username"}</h1>
 	</div>
 	{#if nameChangeOrDeletePopup.type === "delete"}
-		<p>Please input your password to confirm the account deletion.</p>
-		<InfoBanner style="margin-block: var(--layout-margin);">
-			For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
-		</InfoBanner>
-		<input
-			class="account-prompt-input"
-			type="password"
-			placeholder="Password"
-			bind:value={nameChangeOrDeletePopup.value}
-		/>
+		<p class="account-prompt-description">
+			A link will be sent to you via email. To delete your account, click this link and confirm the deletion.
+		</p>
 	{:else}
 		<p class="account-prompt-description">
 			Please input your new username. You can only change your username once per week.
@@ -462,19 +455,13 @@
 	<div class="account-prompt-button-area">
 		<button
 			class="standard-button popup-bottom-button large"
-			disabled={!nameChangeOrDeletePopup.value}
+			disabled={nameChangeOrDeletePopup.type !== "delete" && !nameChangeOrDeletePopup.value}
 			onclick={() => {
 				playSound("basic_button");
 				nameChangeOrDeletePopup.open = false;
-				if (nameChangeOrDeletePopup.type === "delete")
-					showConfirmPopup(
-						"Are you sure?",
-						"Your account will be permanently deleted with no way to recover its data.",
-						() => submitAccountDeletion(nameChangeOrDeletePopup.value),
-						"Yes, delete",
-					);
+				if (nameChangeOrDeletePopup.type === "delete") requestAccountDeletion();
 				else updateProfileUsername(nameChangeOrDeletePopup.value);
-			}}>Confirm</button
+			}}>{nameChangeOrDeletePopup.type === "delete" ? "Send link" : "Confirm"}</button
 		>
 	</div>
 </Popup>

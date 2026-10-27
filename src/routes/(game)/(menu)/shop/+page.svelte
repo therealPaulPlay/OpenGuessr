@@ -588,7 +588,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		flex-wrap: wrap;
 		width: 100%;
 		margin-bottom: var(--layout-spacer);
 		gap: var(--layout-margin);
@@ -896,6 +895,22 @@
 	@media (max-width: 800px) {
 		.supporter-perks-image {
 			margin-bottom: -80px;
+		}
+	}
+
+	@media (max-width: 1000px) {
+		.split-container {
+			flex-wrap: wrap;
+		}
+
+		.left-side {
+			height: 375px;
+			flex-basis: 100%;
+		}
+
+		:global(.special-offer-items > div) {
+			min-width: 60px !important;
+			min-height: 60px !important;
 		}
 	}
 </style>
