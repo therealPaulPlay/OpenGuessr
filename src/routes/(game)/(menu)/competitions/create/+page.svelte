@@ -1,5 +1,6 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
+	import { page } from "$app/state";
 	import { copyShareLink } from "$lib/utils/copyShareLink";
 	import { Copy } from "@lucide/svelte";
 	import { showConfirmPopup, showErrorPopup, Popup, Collapsible } from "openguessr-ui";
@@ -41,8 +42,8 @@
 
 		if (operationMessage.includes("success")) {
 			// Create links
-			enterLink = window.location.origin + "/competitions?enter=" + competitionCreationId;
-			leaderboardLink = window.location.origin + "/competitions?leaderboard=" + competitionCreationId;
+			enterLink = page.url.origin + "/competitions?enter=" + competitionCreationId;
+			leaderboardLink = page.url.origin + "/competitions?leaderboard=" + competitionCreationId;
 			successPopup = true;
 		} else {
 			showErrorPopup(

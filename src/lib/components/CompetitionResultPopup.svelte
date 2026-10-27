@@ -1,5 +1,6 @@
 <script>
 	import { Popup, TitleSeparator, showErrorPopup } from "openguessr-ui";
+	import { page } from "$app/state";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { competitionResultPopup } from "$lib/stores/uiStore";
 	import { competitionResultId, competitionResultRating } from "$lib/stores/context-specific/competitionStore";
@@ -157,7 +158,7 @@
 				class="standard-button bright"
 				onclick={() => {
 					playSound("basic_button");
-					copyShareLink(window.location.origin + "/competitions?enter=" + $competitionResultId);
+					copyShareLink(page.url.origin + "/competitions?enter=" + $competitionResultId);
 				}}
 				>Copy link<Link
 					size={20}

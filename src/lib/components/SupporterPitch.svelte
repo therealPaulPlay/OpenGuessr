@@ -5,23 +5,26 @@
 	import { supporterLevel } from "$lib/stores/accountStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
+	import { purchasesDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 </script>
 
-<div class="supporter-area">
-	<div class="supporter-pitch-text">
-		<p id="supporter-pitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
-		<span id="supporter-text-secondary">Contributions keep the game free.</span>
+{#if !$purchasesDisabled}
+	<div class="supporter-area">
+		<div class="supporter-pitch-text">
+			<p id="supporter-pitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
+			<span id="supporter-text-secondary">Contributions keep the game free.</span>
+		</div>
+		<button
+			id="view-supporter-benefits"
+			class="standard-button"
+			onclick={() => {
+				playSound("basic_button");
+				$profilePopup = false;
+				goto("/shop#supporter");
+			}}>View benefits</button
+		>
 	</div>
-	<button
-		id="view-supporter-benefits"
-		class="standard-button"
-		onclick={() => {
-			playSound("basic_button");
-			$profilePopup = false;
-			goto("/shop#supporter");
-		}}>View benefits</button
-	>
-</div>
+{/if}
 
 <style>
 	#view-supporter-benefits {

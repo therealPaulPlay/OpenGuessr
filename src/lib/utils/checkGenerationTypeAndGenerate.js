@@ -8,6 +8,7 @@ import { changeMap, selectMap } from "$lib/utils/changeMapUtils";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
+import { page } from "$app/state";
 
 // Check for ?play-map= URLs ---------------------------------------------------------------------------
 let checkedForMapLink = false;
@@ -16,7 +17,7 @@ function checkLinkMap() {
   checkedForMapLink = true; // Only executes this once for the first generation
 
   try {
-    let urlParams = new URLSearchParams(window.location.search);
+    let urlParams = page.url.searchParams;
     let mapFromLink = urlParams.get("play-map").replaceAll("-", " ").replaceAll("_", " ");
 
     if (mapFromLink) {

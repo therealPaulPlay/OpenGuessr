@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 	import { roomCode, roomLocked, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -14,7 +15,7 @@
 
 	onMount(async () => {
 		try {
-			let urlParams = new URLSearchParams(window.location.search);
+			let urlParams = page.url.searchParams;
 			let crazyGamesEnabled = urlParams.get("crazy-games");
 
 			if (crazyGamesEnabled) {

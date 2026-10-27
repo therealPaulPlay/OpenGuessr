@@ -430,7 +430,7 @@
 					class="standard-button bright map-button large"
 					onclick={() => {
 						playSound("basic_button");
-						copyShareLink(window.location.href);
+						copyShareLink(page.url.href);
 					}}
 				>
 					<Link strokeWidth={2.25} size={22} style="margin-top: 1px;" />

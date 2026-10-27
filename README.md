@@ -14,7 +14,7 @@ Please refer to the `README.md` of `openguessr-ui`.
 
 ## Developing
 
-Once you've installed the dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server using `npm run dev`.
+Once you've installed the dependencies with `npm install` (or `pnpm install`), start a development server using `npm run dev`.
 
 ## Linting
 

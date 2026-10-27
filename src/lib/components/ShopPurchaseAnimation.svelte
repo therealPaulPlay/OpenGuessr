@@ -6,13 +6,14 @@
 	} from "$lib/stores/context-specific/shopStore";
 	import { showConfirmPopup } from "openguessr-ui";
 	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
 
 	// Thank you window after purchase (shows when users return after successful checkout)
 	onMount(() => {
-		let urlParams = new URLSearchParams(window.location.search);
+		let urlParams = page.url.searchParams;
 
 		try {
 			const stripeSessionFinished = urlParams.get("payment-completed");
@@ -21,7 +22,7 @@
 					"Thank you!",
 					"Thank you for your purchase. People like you keep the game free and open for everyone.",
 				);
-				goto(window.location.pathname, { replaceState: true }); // Reset query in the address bar
+				goto(page.url.pathname, { replaceState: true }); // Reset query in the address bar
 			}
 		} catch {}
 	});

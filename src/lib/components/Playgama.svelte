@@ -48,12 +48,13 @@
 
 <script>
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 	import { playgama } from "$lib/stores/context-specific/platformSettingsStore";
 	import { setMuted } from "$lib/utils/soundManager";
 
 	onMount(async () => {
 		try {
-			let urlParams = new URLSearchParams(window.location.search);
+			let urlParams = page.url.searchParams;
 			let playgamaEnabled = urlParams.get("playgama");
 
 			if (playgamaEnabled) {

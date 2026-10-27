@@ -32,7 +32,7 @@
 	tabindex={0}
 	bind:this={pinHolderElement}
 	style:scale={shop ? "1" : ""}
-	class:bigger-size={shop}
+	class:shop-size={shop}
 	class:selected-pin={$selectedPinIndex == pinId && !shop}
 	class:disabled
 	style:border-radius={shop ? "var(--box-margin)" : ""}
@@ -126,7 +126,7 @@
 		scale: 0.97;
 	}
 
-	.bigger-size {
+	.shop-size {
 		min-width: 120px;
 		min-height: 100px;
 	}
