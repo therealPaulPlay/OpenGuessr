@@ -43,7 +43,7 @@ export function signOut() {
   // Reset local OpenGuessr auth data
   resetLocalSave();
   checkAuthentication();
-  
+
   // Y8 supports logout, trigger it on their platform
   if (get(y8Games)) {
     try {
@@ -119,10 +119,7 @@ async function loadUserInfo() {
   } catch (error) {
     console.error("Error getting user data in loadUserInfo:", error);
     if (error.message === "404") {
-      showConfirmPopup("Account removed", "This account was removed. Delete locally saved data?", () => {
-        resetLocalSave();
-        window.location.reload();
-      });
+      showConfirmPopup("Unknown account", "This account was seemingly removed. Delete locally saved account data?", signOut);
     } else {
       showErrorPopup("Error getting user data", "An error occurred trying to fetch user info.", error.message);
     }

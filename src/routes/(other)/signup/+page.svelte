@@ -530,7 +530,6 @@
 					{#if formType == "delete"}
 						<InfoBanner
 							text="This will immediately delete your account and data."
-							transition={true}
 							style="margin-bottom: var(--layout-margin);"
 						/>
 					{/if}
@@ -564,7 +563,6 @@
 							playSound("basic_button");
 							startGoogleLogin();
 						}}
-						disabled={actionButtonBusy}
 					>
 						<img
 							src="/img/google_logo.png"
@@ -579,7 +577,6 @@
 							playSound("basic_button");
 							startAppleLogin();
 						}}
-						disabled={actionButtonBusy}
 					>
 						<img
 							src="/img/apple_logo.png"
@@ -697,9 +694,19 @@
 		position: absolute;
 		width: 1500px;
 		height: 1200px;
+		box-sizing: content-box;
+		padding: 200px;
+		margin: -200px;
 		border-radius: 50%;
-		background: radial-gradient(rgba(255, 59, 48, 0.15), rgba(0, 0, 0, 0));
-		filter: blur(300px);
+		background: radial-gradient(
+			closest-side,
+			rgba(255, 59, 48, 0.14),
+			rgba(255, 59, 48, 0.126) 20%,
+			rgba(255, 59, 48, 0.095) 40%,
+			rgba(255, 59, 48, 0.053) 60%,
+			rgba(255, 59, 48, 0.021) 80%,
+			rgba(255, 59, 48, 0)
+		);
 		z-index: -1;
 		top: 20%;
 		overflow: hidden;
