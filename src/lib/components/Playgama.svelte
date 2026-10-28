@@ -101,7 +101,9 @@
 				// Playgama treats window blur (happens too on iFrame focus) as hidden,
 				// so we gate behind document.hasFocus which is true even when the iFrame is focused
 				function updateMute() {
-					setMuted(!document.hasFocus());
+					const { _audioStateAggregator: audio, _pauseStateAggregator: pause } = window.bridge.platform._platformBridge ?? {};
+					const platformMuted = ["interstitial", "rewarded", "platform", "rate"].some((source) => audio?.getState(source) || pause?.getState(source));
+					setMuted(!document.hasFocus() || platformMuted);
 				}
 
 				// Mute when the platform pauses the game (Playgama requirement)
