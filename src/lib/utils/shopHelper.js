@@ -4,6 +4,8 @@ import { signupPrompt } from "./signupPrompt";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, shopPurchaseAnimationTitle, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
+import { playgama } from "$lib/stores/context-specific/platformSettingsStore";
+import { playgamaRewardedTokenAd } from "$lib/components/Playgama.svelte";
 
 export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
     const action = () => {
@@ -17,6 +19,13 @@ export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
 }
 
 export async function handleShopFreeTokens() {
+
+    // Show rewarded ad on Playgama first
+    if (get(playgama)) {
+        const status = await playgamaRewardedTokenAd();
+        if (!status.granted) return status.error ? showNotification(status.error) : showNotification("Ad dismissed.");
+    }
+
     try {
         const response = await fetch(get(apiUrl) + "/shop/claim-free-tokens",
             {

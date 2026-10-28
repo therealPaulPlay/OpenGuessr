@@ -12,7 +12,7 @@
 
 	export async function authenticateWithPlaygama() {
 		if (get(isAuthenticated)) return; // Exit if user is already authenticated (e.g. with bearer token from OpenGuessr)
-		if (!window.bridge.player.isAuthorized) return; // User isn't authenticated
+		if (!window.bridge?.player?.isAuthorized) return; // User isn't authenticated
 		if (!playgamaLoginSupported()) return;
 
 		try {
@@ -43,6 +43,27 @@
 			console.error("Error occurred authenticating with Playgama:", error);
 			showErrorPopup("Error authenticating", "An error occurred trying to authenticate with Playgama.", error.message);
 		}
+	}
+
+	let rewardedPromise;
+
+	export async function playgamaRewardedTokenAd() {
+		if (rewardedPromise) return { granted: false, error: "Already showing ad." };
+		if (!window.bridge?.advertisement?.isRewardedSupported) return { granted: true, error: null }; // Give reward without ad since ad isn't supported
+		try {
+			await new Promise((resolve, reject) => {
+				rewardedPromise = { resolve, reject };
+				window.bridge.advertisement.showRewarded("free_tokens"); // Show the default ad (free_tokens)
+			});
+		} catch (error) {
+			console.error("Error showing Playgama rewarded ad:", error);
+			return { granted: false, error: error.message };
+		} finally {
+			rewardedPromise = null;
+		}
+
+		if (window.bridge?.advertisement?.rewardedPlacement === "free_tokens") return { granted: true, error: null };
+		else return { granted: false, error: null };
 	}
 </script>
 
@@ -95,6 +116,21 @@
 
 				// Automatic signup / login (if user is not authenticated)
 				authenticateWithPlaygama();
+
+				// Register rewarded ad listener
+				window.bridge.advertisement.on(window.bridge.EVENT_NAME.REWARDED_STATE_CHANGED, (state) => {
+					switch (state) {
+						case "closed":
+							rewardedPromise?.reject(new Error("Dismissed."));
+							break;
+						case "rewarded":
+							rewardedPromise?.resolve();
+							break;
+						case "failed":
+							rewardedPromise?.reject(new Error("An error occurred."));
+							break;
+					}
+				});
 			}
 		} catch (error) {
 			console.error("Error loading and starting Playgama Bridge SDK:", error);
