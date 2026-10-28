@@ -1,3 +1,9 @@
 {
-	"disableLoadingLogo": true
+	"disableLoadingLogo": true,
+	"advertisement": {
+		"rewarded": {
+			"disable": false,
+			"preloadOnStart": "free_tokens"
+		}
+	}
 }
