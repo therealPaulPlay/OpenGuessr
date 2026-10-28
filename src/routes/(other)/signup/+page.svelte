@@ -8,6 +8,7 @@
 	import { nativePlatform } from "$lib/stores/context-specific/platformSettingsStore";
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
+	import { browser } from "$app/environment";
 	import { Notification, showNotification, InfoBanner } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 	import { signOut } from "$lib/logic/accountLogic";
@@ -464,7 +465,11 @@
 	}}
 />
 
-<Notification onaccept={() => playSound("basic_button")} ondismiss={() => playSound("basic_button")} />
+<Notification
+	offsetSafeArea={!(browser && inIframe())}
+	onaccept={() => playSound("basic_button")}
+	ondismiss={() => playSound("basic_button")}
+/>
 
 {#snippet backToLogin()}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->

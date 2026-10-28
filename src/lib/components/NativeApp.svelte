@@ -6,8 +6,8 @@
 	onMount(() => {
 		// Iframes don't get the electron and capacitor globals, so pass them
 		try {
-			window.Capacitor ??= window.parent.Capacitor;
-			window.electronApp ??= window.parent.electronApp;
+			window.Capacitor = window.parent.Capacitor ?? window.Capacitor; // Plugin calls on Android only work on the parent, so prefer that when available
+			window.electronApp ??= window.parent.electronApp; // If electronApp is undefined or null, assign right
 		} catch {}
 
 		try {
