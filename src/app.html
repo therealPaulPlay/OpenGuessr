@@ -44,7 +44,7 @@
 	<!-- pre-paint script for native app -->
 	<script>
 		try {
-			if (window.Capacitor ?? window.parent.Capacitor ?? window.electronApp ?? window.parent.electronApp) {
+			if (window.Capacitor ?? window.parent.Capacitor ?? window.Desktop ?? window.parent.Desktop) {
 				document.documentElement.classList.add("native");
 			}
 		} catch { }
