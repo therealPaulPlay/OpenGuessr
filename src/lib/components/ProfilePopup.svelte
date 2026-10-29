@@ -531,9 +531,8 @@
 		opacity: 1;
 	}
 
-	:global(.flag-container svg) {
-		height: 100%;
-		width: auto;
+	.flag-container :global(.flag-icon) {
+		width: 100%;
 	}
 
 	#badge-button {

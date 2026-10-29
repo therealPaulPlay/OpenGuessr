@@ -56,7 +56,9 @@
 		height: 38px;
 		width: 100%;
 		margin-top: 3px;
-		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.country-guessr-holder:hover {
