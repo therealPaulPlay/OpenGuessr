@@ -140,8 +140,8 @@
 		transform: scale(1.1);
 	}
 
-	:global(.flag-button svg) {
-		width: 100%;
+	.flag-button :global(.flag-icon) {
+		width: auto;
 		height: 100%;
 	}
 </style>

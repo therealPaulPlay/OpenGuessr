@@ -10,7 +10,31 @@
 </script>
 
 {#if showTooltip}
-	<FlagIcon {size} {@attach tooltip({ text: getCountryName(code) || "Unknown" })} />
+	<span
+		class="flag-icon"
+		style:width={size ? `${size}px` : null}
+		{@attach tooltip({ text: getCountryName(code) || "Unknown" })}
+	>
+		<FlagIcon />
+	</span>
 {:else}
-	<FlagIcon {size} />
+	<span class="flag-icon" style:width={size ? `${size}px` : null}>
+		<FlagIcon />
+	</span>
 {/if}
+
+<style>
+	.flag-icon {
+		display: inline-flex;
+		flex-shrink: 0;
+		width: 24px;
+		aspect-ratio: 4 / 3;
+		border-radius: 3px;
+		overflow: hidden;
+	}
+
+	.flag-icon :global(svg) {
+		width: 100%;
+		height: 100%;
+	}
+</style>

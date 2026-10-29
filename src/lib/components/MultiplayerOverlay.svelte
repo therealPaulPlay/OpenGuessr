@@ -12,6 +12,7 @@
 		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
+	import Flag from "$lib/components/Flag.svelte";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
@@ -58,7 +59,7 @@
 										>{(team.score ?? 0).toLocaleString()} Pts.
 									</p>
 								</div>
-								{#each team.players as { username, elo, score, userId, badge, spectator }}
+								{#each team.players as { username, elo, score, userId, badge, flag, spectator }}
 									<div
 										transition:slide
 										class="multiplayer-overlay-entry"
@@ -75,7 +76,9 @@
 													if (userId) showProfile(userId);
 												}}
 											>
-												<span class="username-span">{username}</span>
+												<span class="username-span"
+													>{username}{#if flag}<Flag code={flag} />{/if}</span
+												>
 												{#if badge}
 													<Badge interactive={false} display={true} id={badge} />
 												{/if}
@@ -95,7 +98,7 @@
 					{/each}
 				{:else}
 					<!-- No teams version -->
-					{#each $multiplayerTableArray as { clientId, username, elo, score, userId, badge, spectator }}
+					{#each $multiplayerTableArray as { clientId, username, elo, score, userId, badge, flag, spectator }}
 						<div
 							transition:slide
 							class="multiplayer-overlay-entry"
@@ -113,7 +116,9 @@
 										if (userId) showProfile(userId);
 									}}
 								>
-									<span class="username-span">{username}</span>
+									<span class="username-span"
+										>{username}{#if flag}<Flag code={flag} />{/if}</span
+									>
 									{#if badge}
 										<Badge interactive={false} display={true} id={badge} />
 									{/if}
@@ -241,6 +246,9 @@
 
 	.username-span {
 		margin-right: 3px;
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
 	}
 
 	.elo-display {
