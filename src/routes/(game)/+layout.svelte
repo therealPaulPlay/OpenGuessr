@@ -65,7 +65,7 @@
 <svelte:head>
 	<!-- Ad script (inlined to bake it into the html, skips load on native) -->
 	{@html `<script>
-		if (!window.Capacitor?.isNativePlatform() && !window.electronApp) {
+		if (!window.Capacitor?.isNativePlatform() && !window.Desktop) {
 			const script = document.createElement("script");
 			script.src = "https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js";
 			script.async = true;
