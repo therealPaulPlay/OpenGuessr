@@ -73,6 +73,7 @@
 
 	function handlePointerDown(event) {
 		if (isDragging) return;
+		if (event.pointerType === "touch") return; // Disallow dragging with touch
 
 		isDragging = true;
 		pointerId = event.pointerId;
