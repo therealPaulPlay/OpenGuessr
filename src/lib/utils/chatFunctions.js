@@ -5,7 +5,7 @@ import { censor } from "fast-profanity-filter";
 
 export function sendChat(text, forTeamindex = null) {
     if (!text) return;
-    get(socket)?.updateStorage("chats", "array-add", { username: get(username) || get(guestName), clientId: get(socket)?.id, text, teamIndex: forTeamindex });
+    get(socket)?.updateStorage("chats", "array-add", { username: get(username) || get(guestName), clientId: get(socket)?.id, userId: localStorage.getItem("id") ? Number(localStorage.getItem("id")) : null, text, teamIndex: forTeamindex });
 }
 
 export function loadAndProfanityCheckChat(chats) {
