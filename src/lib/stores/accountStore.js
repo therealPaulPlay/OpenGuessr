@@ -8,7 +8,7 @@ export const supportedAmount = writable(0);
 // Account Data
 export const experience = writable(0);
 export const supporterLevel = writable(0);
-export const username = writable("Guest");
+export const username = writable(null);
 export const elo = writable(1000);
 
 // State

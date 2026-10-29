@@ -8,6 +8,7 @@
 	import { moderationPopup } from "$lib/stores/uiStore";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 	import { get } from "svelte/store";
+	import { showProfile } from "$lib/utils/showProfile";
 
 	let { inPanel = true, isTeamChat = false } = $props();
 
@@ -36,8 +37,17 @@
 	<p>
 		{#if displayedChatArray.length}
 			{#each displayedChatArray as chat}
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<span style="overflow-wrap: break-word;"
-					><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}:</span>
+					><span
+						style:opacity={chat.clientId == "server" ? 0.75 : 1}
+						class:username-clickable={chat.userId != null}
+						onclick={() => {
+							if (chat.userId == null) return;
+							showProfile(chat.userId);
+						}}>{chat.username}:</span
+					>
 					<span style:opacity={0.75}>{chat.text}</span></span
 				>
 				<br />
@@ -129,5 +139,14 @@
 		width: 0;
 		overflow-x: auto;
 		text-wrap: wrap;
+	}
+
+	.username-clickable {
+		cursor: pointer;
+		transition: opacity 250ms ease;
+	}
+
+	.username-clickable:hover {
+		opacity: 0.5 !important;
 	}
 </style>

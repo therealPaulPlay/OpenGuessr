@@ -60,7 +60,7 @@ function resetLocalSave() {
   localStorage.removeItem("id");
 
   // Store resets
-  username.set("Guest");
+  username.set(null);
   selectedPinIndex.set(0);
   selectedBadge.set(null);
   experience.set(0);
