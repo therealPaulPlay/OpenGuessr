@@ -33,17 +33,23 @@
 	}
 
 	// For-multiplayer pages (pages for the host settings) only count as multiplayer before multiplayer starts (bc afterwards, you can't change these settings anymore)
-	const isMultiplayerUrl = (url) => url?.pathname.startsWith("/multiplayer/") || (url?.searchParams.has("for-multiplayer") && !$multiplayer);
+	const isMultiplayerUrl = (url) =>
+		url?.pathname.startsWith("/multiplayer/") || (url?.searchParams.has("for-multiplayer") && !$multiplayer);
 
 	// Leave multiplayer when navigating out of multiplayer pages (except moving to "/" on game start, where the main menu is closed first)
 	beforeNavigate(({ from, to, complete }) => {
 		if (isMultiplayerUrl(from?.url) && !isMultiplayerUrl(to?.url) && !(to?.url.pathname === "/" && !$mainMenu)) {
 			// After completion to avoid value resets changing the UI during nav (also if cancelled by a newer navigation)
-			complete.then(() => leaveMultiplayer(), () => leaveMultiplayer()); // The second arg here is the cancellation callback
+			complete.then(
+				() => leaveMultiplayer(),
+				() => leaveMultiplayer(),
+			); // The second arg here is the cancellation callback
 		}
 	});
 
-	let showHomeButton = $derived(historyStack.length > 0 && new URL(historyStack.at(-1), page.url.origin).pathname !== "/");
+	let showHomeButton = $derived(
+		historyStack.length > 0 && new URL(historyStack.at(-1), page.url.origin).pathname !== "/",
+	);
 </script>
 
 <nav class="menu-nav-bar safe-margin-top">
@@ -123,7 +129,6 @@
 	}
 
 	.content {
-		overflow-y: auto;
 		overflow-x: hidden;
 		position: absolute;
 		top: 0;

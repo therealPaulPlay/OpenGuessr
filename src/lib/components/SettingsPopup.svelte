@@ -360,13 +360,15 @@
 	}
 
 	.slider-box p {
-		min-width: 45px;
+		min-width: 50px;
+		font-variant-numeric: tabular-nums;
 		margin-left: var(--box-margin);
 		opacity: 0.75;
 	}
 
 	.short-slider {
 		width: 150px;
+		min-width: 0;
 	}
 
 	.no-flex-wrap {
