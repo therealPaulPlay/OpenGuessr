@@ -122,7 +122,6 @@
 			<p class="friends-not-played" style:text-align="center">Sign up to compete with friends!</p>
 		</div>
 	{:else}
-		{const friendsPlayed = $derived(friendsEntries?.some((entry) => entry.id != localStorage.getItem("id")))}
 		{#if friendsEntries?.length > 0}
 			<div class="ranking-display" style:margin-bottom="var(--box-margin)">
 				<div class="ranking-display-scroll ranking-display-scroll-short of-top of-bottom">
@@ -148,11 +147,7 @@
 		{/if}
 		<div class="friends-not-played-container">
 			<p class="friends-not-played">
-				{!friendsEntries
-					? "Loading..."
-					: friendsPlayed
-						? "Invite more friends to enter this competition."
-						: "None of your friends entered yet, consider inviting them."}
+				{!friendsEntries ? "Loading..." : "Invite friends to enter this competition."}
 			</p>
 			<button
 				class="standard-button bright"
