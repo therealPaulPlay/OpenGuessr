@@ -390,7 +390,13 @@
 	<div class="header-container">
 		<h2 class="header">Countries</h2>
 	</div>
-	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
+	{let countrySectionHeight = $state(0)}
+	{let previousCountrySectionHeight = $state(0)}
+	<div
+		class="map-container map-container-expand"
+		bind:offsetHeight={countrySectionHeight}
+		class:map-container-expand-fadeout={!countrySectionExpanded}
+	>
 		{#each $countryMaps as map}
 			<MapItem
 				name={map}
@@ -407,6 +413,18 @@
 			class="standard-button bright expand-button large"
 			onclick={() => {
 				playSound("toggle_button");
+
+				// The country section is going to be collapsed
+				if (countrySectionExpanded) {
+					const el = document.documentElement;
+					const heightReduction = countrySectionHeight - previousCountrySectionHeight;
+					el.scrollTop = el.scrollTop - heightReduction;
+					previousCountrySectionHeight = 0;
+				} else {
+					// The country section is going to be enlarged (save current height)
+					previousCountrySectionHeight = countrySectionHeight;
+				}
+
 				countrySectionExpanded = !countrySectionExpanded;
 			}}
 			>{countrySectionExpanded ? "Show less" : "Show all"}
