@@ -13,7 +13,7 @@
 		try {
 			if (window.Capacitor?.isNativePlatform()) {
 				nativePlatform.set(window.Capacitor.getPlatform());
-				window.Capacitor.Plugins.SplashScreen?.hide(); // Hide the splash screen since the site is now loaded
+				setTimeout(() => window.Capacitor.Plugins.SplashScreen?.hide(), 100); // Hide native splash screen once site loaded (delayed as WK WebView sometimes applies safe-areas late)
 				document.addEventListener("visibilitychange", () => setMuted(document.hidden)); // Android keeps playing audio in the background
 			} else if (window.Desktop) nativePlatform.set(window.Desktop.platform);
 		} catch (error) {
