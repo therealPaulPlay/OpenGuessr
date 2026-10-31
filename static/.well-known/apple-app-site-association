@@ -1,0 +1,24 @@
+{
+	"applinks": {
+		"details": [
+			{
+				"appIDs": ["4UQ53MBSJL.com.paulplay.openguessr"],
+				"components": [
+					{ "/": "/signup*", "exclude": true },
+					{ "/": "/_app/*", "exclude": true },
+					{ "/": "/img/*", "exclude": true },
+					{ "/": "/fonts/*", "exclude": true },
+					{ "/": "/json/*", "exclude": true },
+					{ "/": "/music/*", "exclude": true },
+					{ "/": "/sounds/*", "exclude": true },
+					{ "/": "/.well-known/*", "exclude": true },
+					{ "/": "/favicon.ico", "exclude": true },
+					{ "/": "/robots.txt", "exclude": true },
+					{ "/": "/sitemap.xml", "exclude": true },
+					{ "/": "/playgama-bridge-config.json", "exclude": true },
+					{ "/": "*" }
+				]
+			}
+		]
+	}
+}

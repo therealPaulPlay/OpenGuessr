@@ -1,0 +1,29 @@
+[
+	{
+		"relation": ["delegate_permission/common.handle_all_urls"],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.paulplay.openguessr",
+			"sha256_cert_fingerprints": ["3B:A2:B8:36:52:30:53:C0:6A:D4:CB:8A:93:97:5E:55:B3:ED:BE:25:46:8F:57:DF:18:D5:53:5E:E8:EF:7A:DD"]
+		},
+		"relation_extensions": {
+			"delegate_permission/common.handle_all_urls": {
+				"dynamic_app_link_components": [
+					{ "/": "/signup*", "exclude": true },
+					{ "/": "/_app/*", "exclude": true },
+					{ "/": "/img/*", "exclude": true },
+					{ "/": "/fonts/*", "exclude": true },
+					{ "/": "/json/*", "exclude": true },
+					{ "/": "/music/*", "exclude": true },
+					{ "/": "/sounds/*", "exclude": true },
+					{ "/": "/.well-known/*", "exclude": true },
+					{ "/": "/favicon.ico", "exclude": true },
+					{ "/": "/robots.txt", "exclude": true },
+					{ "/": "/sitemap.xml", "exclude": true },
+					{ "/": "/playgama-bridge-config.json", "exclude": true },
+					{ "/": "*" }
+				]
+			}
+		}
+	}
+]
