@@ -31,7 +31,6 @@
 	import { cubicOut } from "svelte/easing";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { purchasesDisabled } from "$lib/stores/context-specific/platformSettingsStore";
-	import { InfoBanner } from "openguessr-ui";
 
 	// Tween the token value for a nicer look
 	const animatedTokens = tweened(0, {
@@ -139,7 +138,6 @@
 
 	function getSupporterTierPrice(tier) {
 		if ($supporterLevel >= tier) return "Unlocked";
-		if ($purchasesDisabled) return "Unavailable";
 		const basePrice = supporterTiers[tier - 1].price;
 		if ($supporterLevel == 0) return "$ " + basePrice;
 		return "$ " + Math.round(Math.max(basePrice - $supportedAmount - 0.01, 0) * 100) / 100;
@@ -190,13 +188,6 @@
 		<h1 class="header">Offers</h1>
 	</div>
 	<!-- Split container with token offers and bundle -->
-	{#if $purchasesDisabled}
-		<InfoBanner
-			inPage={true}
-			text="Real-money purchases are currently not offered on this platform."
-			style="margin-bottom: var(--layout-margin);"
-		/>
-	{/if}
 	<div class="split-container">
 		<div class="left-side" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if $specialOfferPins}
@@ -245,7 +236,11 @@
 				<p class="loading-text">{$specialOfferLoadingText}</p>
 			{/if}
 		</div>
-		<div class="right-side" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
+		<div
+			class="right-side"
+			class:right-side-purchases-disabled={$purchasesDisabled}
+			in:scale={{ start: 0.9, delay: 100, duration: 250 }}
+		>
 			<div class="token-display">
 				<div class="shop-info-section">
 					<Clock
@@ -261,36 +256,41 @@
 				</div>
 			</div>
 			<div class="token-shop">
-				{#each Object.values(tokenOffers) as offer}
+				<!-- All offers except for the free token one are removed if purchases are disabled -->
+				{#each Object.values(tokenOffers).filter((offer) => offer.price == 0 || !$purchasesDisabled) as offer}
 					<div class="shop-offer">
 						<div class="token-offer-title">
-							<h2>{offer.amount?.toLocaleString()} Tokens</h2>
+							<svelte:element this={$purchasesDisabled ? "h1" : "h2"}
+								>{offer.amount?.toLocaleString()} Tokens</svelte:element
+							>
 						</div>
 						<div class="shop-offer-graphic">
 							<img alt="token graphic" src={offer.imageSrc} class="token-graphic" />
 						</div>
-						<button
-							class="standard-button shop-offer-button bright"
-							disabled={(offer.price == 0 && $freeDailyTokensClaimed) || (offer.price != 0 && $purchasesDisabled)}
-							onclick={() => {
-								playSound("basic_button");
+						<div class="bar-menu special-offer-button-container shop-offer-button-container">
+							<button
+								class="standard-button shop-offer-button bright"
+								class:large={$purchasesDisabled}
+								class:wide={$purchasesDisabled}
+								disabled={offer.price == 0 && $freeDailyTokensClaimed}
+								onclick={() => {
+									playSound("basic_button");
 
-								const action = () => {
-									if (offer.price == 0) handleShopFreeTokens();
-									else purchaseTokenTier(offer.tier);
-								};
+									const action = () => {
+										if (offer.price == 0) handleShopFreeTokens();
+										else purchaseTokenTier(offer.tier);
+									};
 
-								if (!$isAuthenticated) return signupPrompt(action);
-								action();
-							}}
-						>
-							{offer.price != 0 && $purchasesDisabled
-								? "Unavailable"
-								: offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
-							{#if offer.savingsPercentage && !$purchasesDisabled}
-								<span class="token-savings">-{offer.savingsPercentage}%</span>
-							{/if}
-						</button>
+									if (!$isAuthenticated) return signupPrompt(action);
+									action();
+								}}
+							>
+								{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
+								{#if offer.savingsPercentage}
+									<span class="token-savings">-{offer.savingsPercentage}%</span>
+								{/if}
+							</button>
+						</div>
 					</div>
 				{/each}
 			</div>
@@ -333,54 +333,56 @@
 		{/each}
 	</div>
 	<!-- Supporter tiers -->
-	<div class="header-container">
-		<h1 class="header" id="supporter">Supporter</h1>
-	</div>
-	<div class="supporter-info-box">
-		<div class="supporter-info-content">
-			<h2>Limitless benefits</h2>
-			<p style:opacity="0.5">Purchase a supporter tier once and enjoy perks that never expire.</p>
-			<p style:opacity="0.35" style:margin-top="auto">
-				<a href="/legal" target="_blank">Terms and conditions</a> apply.
-			</p>
+	{#if !$purchasesDisabled}
+		<div class="header-container" style:margin-top="var(--layout-spacer)">
+			<h1 class="header" id="supporter">Supporter</h1>
 		</div>
-		<img alt="supporter perks" class="supporter-perks-image" src="/img/supporter_graphic.png" />
-	</div>
-	<div class="supporter-tier-container">
-		{#each supporterTiers as { tier, tagline, benefits, highlighted }}
-			<div class="tier-box">
-				<div class="tier-number-badge"><p>Tier {tier}</p></div>
-				<ul class="tier-benefits">
-					<li style="opacity: 50%;">{tagline}</li>
-					{#each benefits as benefit}
-						<li>
-							{#if !benefit.isUpgrade}
-								<CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
-							{:else}
-								<CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
-							{/if}
-							{benefit.text}
-						</li>
-					{/each}
-				</ul>
-				<button
-					class="standard-button tier-buy-button"
-					class:bright={!highlighted}
-					class:tier-buy-button-highlighted={highlighted}
-					disabled={$supporterLevel >= tier || $purchasesDisabled}
-					onclick={() => {
-						playSound("basic_button");
-						if (!$isAuthenticated) return signupPrompt(() => purchaseSupporterTier(tier));
-						purchaseSupporterTier(tier);
-					}}
-					>{getSupporterTierPrice(tier)}
-					{#if $supporterLevel >= 1 && $supporterLevel < tier}
-						<span class="discount-badge">Upgrade</span>
-					{/if}</button
-				>
+		<div class="supporter-info-box">
+			<div class="supporter-info-content">
+				<h2>Limitless benefits</h2>
+				<p style:opacity="0.5">Purchase a supporter tier once and enjoy perks that never expire.</p>
+				<p style:opacity="0.35" style:margin-top="auto">
+					<a href="/legal" target="_blank">Terms and conditions</a> apply.
+				</p>
 			</div>
-		{/each}
-	</div>
+			<img alt="supporter perks" class="supporter-perks-image" src="/img/supporter_graphic.png" />
+		</div>
+		<div class="supporter-tier-container">
+			{#each supporterTiers as { tier, tagline, benefits, highlighted }}
+				<div class="tier-box">
+					<div class="tier-number-badge"><p>Tier {tier}</p></div>
+					<ul class="tier-benefits">
+						<li style="opacity: 50%;">{tagline}</li>
+						{#each benefits as benefit}
+							<li>
+								{#if !benefit.isUpgrade}
+									<CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
+								{:else}
+									<CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
+								{/if}
+								{benefit.text}
+							</li>
+						{/each}
+					</ul>
+					<button
+						class="standard-button tier-buy-button"
+						class:bright={!highlighted}
+						class:tier-buy-button-highlighted={highlighted}
+						disabled={$supporterLevel >= tier}
+						onclick={() => {
+							playSound("basic_button");
+							if (!$isAuthenticated) return signupPrompt(() => purchaseSupporterTier(tier));
+							purchaseSupporterTier(tier);
+						}}
+						>{getSupporterTierPrice(tier)}
+						{#if $supporterLevel >= 1 && $supporterLevel < tier}
+							<span class="discount-badge">Upgrade</span>
+						{/if}</button
+					>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -388,7 +390,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		margin-bottom: 75px;
+		margin-bottom: var(--layout-spacer);
 	}
 
 	.free-social-pin-container {
@@ -555,7 +557,7 @@
 		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
-	.token-offer-title h2 {
+	.token-offer-title > * {
 		text-wrap: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -584,6 +586,29 @@
 		display: flex;
 	}
 
+	.shop-offer:only-child {
+		height: 100%;
+		background: var(--box-color) url("/img/token_stack_free_large.png") center calc(50% - var(--box-margin)) / contain
+			no-repeat;
+	}
+
+	.shop-offer:only-child .token-graphic {
+		display: none;
+	}
+
+	.shop-offer:only-child .token-offer-title {
+		top: calc(50% - 140px);
+	}
+
+	.shop-offer-button-container {
+		display: contents; /* Hides itself but shows its children */
+	}
+
+	.shop-offer:only-child .shop-offer-button-container {
+		display: flex;
+		margin-bottom: calc(var(--layout-margin) + var(--panel-margin));
+	}
+
 	.split-container {
 		display: flex;
 		justify-content: space-between;
@@ -603,7 +628,6 @@
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		gap: var(--box-margin);
-		margin-bottom: var(--layout-spacer);
 	}
 
 	.special-offer-button-container {
@@ -906,6 +930,14 @@
 		.left-side {
 			height: 375px;
 			flex-basis: 100%;
+		}
+
+		.right-side-purchases-disabled {
+			height: 375px;
+		}
+
+		.shop-offer:only-child .token-offer-title {
+			top: calc(50% - 105px);
 		}
 
 		:global(.special-offer-items > div) {
