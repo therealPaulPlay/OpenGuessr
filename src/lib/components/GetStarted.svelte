@@ -13,7 +13,7 @@
 
 	async function fetchMap(name) {
 		try {
-			const response = await fetch($apiUrl + "/maps/" + encodeURIComponent(name));
+			const response = await fetch($apiUrl + "/maps/community/" + encodeURIComponent(name));
 			if (!response.ok) throw new Error(response.status);
 			return await response.json();
 		} catch (error) {

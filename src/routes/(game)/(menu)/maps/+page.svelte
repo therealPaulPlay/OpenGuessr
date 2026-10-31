@@ -14,7 +14,7 @@
 		baseMaps,
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
-	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, educationUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip, Chip, showConfirmPopup } from "openguessr-ui";
 	import { page } from "$app/state";
 	import { browser } from "$app/environment";
@@ -296,6 +296,7 @@
 		mutedOpacity={!isMapSelected($defaultMap, false, forMultiplayer)}
 		onclick={(e) => {
 			e.stopPropagation();
+			e.preventDefault();
 			showConfirmPopup(
 				"Live-generated",
 				"The world map is continuously regenerated to feature a complete list of fresh locations every couple of hours.",
@@ -312,6 +313,7 @@
 		name={map.name || "Unnamed (error)"}
 		author={map.author || "Error"}
 		animate={true}
+		href={"/maps/community/" + formatMapNameForUrl(map.name)}
 		onclick={() => {
 			playSound("basic_button");
 			goto("/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""));
@@ -322,6 +324,7 @@
 			{@attach tooltip({ text: "Save" })}
 			onclick={(e) => {
 				e.stopPropagation();
+				e.preventDefault();
 				playSound("basic_button");
 				if (addedCommunityMapsArray.includes(map.name)) unsaveCommunityMap(map.name);
 				else saveCommunityMap(map.name);
@@ -348,6 +351,7 @@
 				slim={true}
 				selected={isMapSelected(map, false, forMultiplayer)}
 				chip={map === $defaultMap ? liveChip : undefined}
+				href={"/maps/official/" + formatMapNameForUrl(map)}
 				onclick={() => {
 					playMap(map);
 				}}
@@ -366,7 +370,7 @@
 			link={true}
 			onclick={() => {
 				playSound("juicy_button");
-				window.open("https://education.openguessr.com/quiz", "_blank");
+				window.open($educationUrl + "/quiz", "_blank");
 			}}
 		>
 			{#snippet chip()}
@@ -402,6 +406,7 @@
 				name={map}
 				slim={true}
 				selected={isMapSelected(map, false, forMultiplayer)}
+				href={"/maps/official/" + formatMapNameForUrl(map)}
 				onclick={() => {
 					playMap(map);
 				}}
@@ -446,6 +451,7 @@
 				name={map}
 				slim={true}
 				selected={isMapSelected(map, false, forMultiplayer)}
+				href={"/maps/official/" + formatMapNameForUrl(map)}
 				onclick={() => {
 					playMap(map);
 				}}
@@ -464,6 +470,7 @@
 					slim={true}
 					animate={true}
 					selected={isMapSelected(map, true, forMultiplayer)}
+					href={"/maps/community/" + formatMapNameForUrl(map)}
 					onclick={() => {
 						playMap(map, true);
 					}}
@@ -472,6 +479,7 @@
 						class="standard-button dark remove-button"
 						onclick={(e) => {
 							e.stopPropagation();
+							e.preventDefault();
 							playSound("basic_button");
 							unsaveCommunityMap(map);
 						}}

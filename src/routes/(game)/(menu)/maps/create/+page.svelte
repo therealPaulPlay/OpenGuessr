@@ -3,7 +3,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { goto } from "$app/navigation";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, educationUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Upload } from "@lucide/svelte";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -171,7 +171,7 @@
 									jsonPopup = true;
 								}}>OpenGuessr JSON format</span
 							>. Check out the official converter
-							<a target="_blank" href="https://education.openguessr.com/tools/map-converter">here</a>.
+							<a target="_blank" href={$educationUrl + "/tools/map-converter"}>here</a>.
 						</p>
 					</div>
 					<button
