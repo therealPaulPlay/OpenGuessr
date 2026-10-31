@@ -17,11 +17,13 @@
 		link = false,
 		disabled = false,
 		id,
+		href,
 	} = $props();
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<div
+<svelte:element
+	this={href ? "a" : "div"}
+	{href}
 	class="map-item standard-button bright-soft"
 	class:map-item-slim={slim}
 	class:map-item-animate={animate}
@@ -30,9 +32,12 @@
 	class:selected-map-item={selected}
 	class:disabled
 	{id}
-	role="button"
-	tabindex="0"
-	{onclick}
+	role={href ? "" : "button"}
+	tabindex={href ? undefined : 0}
+	onclick={(event) => {
+		if (href) event.preventDefault(); // Href is only for crawlers
+		onclick?.(event);
+	}}
 >
 	{#if imgUrl}
 		<div class="image-container">
@@ -56,7 +61,7 @@
 		{@render chip?.()}
 	</div>
 	{@render children?.()}
-</div>
+</svelte:element>
 
 <style>
 	@keyframes fadeIn {

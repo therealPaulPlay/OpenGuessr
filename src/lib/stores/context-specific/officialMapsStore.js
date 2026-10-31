@@ -4,6 +4,7 @@ export const defaultMap = readable("World");
 
 export const tutorialMap = readable("Tutorial");
 
+// When adding an official map, also add a description on the server + a sitemap.xml entry
 export const baseMaps = readable([
     { map: "World", imgUrl: "/img/map-covers/world_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/world_cover.jpg" },
     { map: "Capital Cities", imgUrl: "/img/map-covers/capital_cities_cover.jpg", imgUrlTiny: "/img/map-covers/map-covers-tiny/capital_cities_cover.jpg" },

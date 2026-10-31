@@ -10,7 +10,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Bug, InfinityIcon, Layers, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
-	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { discordInviteUrl, educationUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
 	import { loadStreakDays } from "$lib/utils/getCompetitions";
@@ -318,7 +318,7 @@
 									{@attach tooltip({ text: "Education" })}
 									onclick={() => {
 										playSound("basic_button");
-										window.open("https://education.openguessr.com", "_blank");
+										window.open($educationUrl, "_blank");
 									}}
 								>
 									<img src="/img/education_icon.png" alt="Learn" class="navigation-icon" />
