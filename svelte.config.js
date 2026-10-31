@@ -21,7 +21,8 @@ const config = {
 					'/favicon.ico',
 					'/sitemap.xml',
 					'/robots.txt',
-					'/playgama-bridge-config.json'
+					'/playgama-bridge-config.json',
+					'/.well-known/*'
 				]
 			}
 		})
