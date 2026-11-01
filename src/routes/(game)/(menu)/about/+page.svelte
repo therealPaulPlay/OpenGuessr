@@ -131,6 +131,7 @@
 		<li>Bugspot: The intelligent bug reporting system built for the game.</li>
 		<li>OpenReport: The report and moderation system that keeps OpenGuessr fair.</li>
 		<li>OpenGuessr Education: The educational offshoot of the game which includes articles and quizzes.</li>
+		<li>OpenGuessr-UI: The OpenGuessr user interface. While not open-source, it is source-available.</li>
 	</ul>
 	<br />
 	<br />
