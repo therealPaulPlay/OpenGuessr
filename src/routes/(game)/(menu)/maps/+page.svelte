@@ -368,6 +368,7 @@
 			imgUrl="/img/map-covers/quiz_cover.jpg"
 			slim={true}
 			link={true}
+			href={$educationUrl + "/quiz"}
 			onclick={() => {
 				playSound("juicy_button");
 				window.open($educationUrl + "/quiz", "_blank");
