@@ -176,7 +176,7 @@
 									{@render moreMaps()}
 								{/if}
 							</div>
-							{#if innerWidth.current > 550}
+							{#if innerWidth.current > 550 || !browser}
 								{@render moreMaps()}
 							{/if}
 						</div>

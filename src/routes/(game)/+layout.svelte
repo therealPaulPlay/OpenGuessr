@@ -46,7 +46,7 @@
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ModerationPopup from "$lib/components/Moderation.svelte";
-	import Navigation from "$lib/components/MainMenu.svelte";
+	import MainMenu from "$lib/components/MainMenu.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
@@ -110,7 +110,7 @@
 
 <LoadingOverlay />
 <ErrorPopup />
-<Navigation />
+<MainMenu />
 <ConfirmPopup onconfirm={() => playSound("basic_button")} />
 <ShopPurchaseAnimation />
 <MessagesPopup />
