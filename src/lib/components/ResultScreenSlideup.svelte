@@ -213,12 +213,11 @@
 	}
 
 	.discord-widget {
+		display: block;
 		width: 100%;
 		min-height: 250px;
 		border-radius: var(--box-margin);
 		margin-top: var(--panel-margin);
-		/* Discord iframe content has weird slight offset to the bottom */
-		margin-bottom: -3px;
 	}
 
 	@media (max-width: 500px) {
