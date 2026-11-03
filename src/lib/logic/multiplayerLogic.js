@@ -1,9 +1,10 @@
-import { showErrorPopup } from "openguessr-ui";
+import { showErrorPopup, showNotification } from "openguessr-ui";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
+import { safeCancel } from "$lib/logic/matchmakingLogic.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapInteractive } from "$lib/stores/context-specific/mapStore.js";
@@ -119,6 +120,13 @@ export async function createMultiplayerInstance() {
         // Someone disconnected...
         get(socket).onEvent('clientLeft', (_id) => {
             participantCount.set(get(socket)?.participantCount);
+
+            // For the team duel host (if they queue with a mate)
+            if (get(matchmakingActive) && get(matchmakingSubmitted)) {
+                showNotification("Teammate left, cancelling the matchmaking.");
+                cancellingMatchmaking.set(true);
+                safeCancel().finally(() => cancellingMatchmaking.set(false));
+            }
         });
 
         get(socket).onEvent('hostMigrated', async () => {
