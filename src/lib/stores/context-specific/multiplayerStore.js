@@ -21,6 +21,7 @@ export const matchmakingHosting = writable(false); // The room for matchmaking i
 export const matchmakingSubmitted = writable(false); // The room is submitted to the matchmaking queue (set to true after awaited submission)
 export const cancellingMatchmaking = writable(false);
 export const matchmakingEloRange = writable(null);
+export const movingTeammate = writable(false);
 
 // If matchmaking is disabled, also reset adjacent state
 matchmakingActive.subscribe((value) => {
@@ -51,12 +52,13 @@ export const timeReducedOverlay = writable(false);
 // UI - Multiplayer Overlay (Table Overlay)
 export const multiplayerOverlay = writable(false);
 export const multiplayerOverlayTitle = writable("Default Title");
-export const overlayTitleElement = writable(); // Used for animations
 export const multiplayerTableArray = writable([]); // Array used for the table in the overlay (with all players ranked by XP etc.)
 export const multiplayerSortedPlayersArray = writable([]);
 export const overlayShowSubtitle = writable(false);
+export const teamMoveClients = writable({});
 
 export const rematchButtonVisible = writable(false);
+export const playAnotherTeamDuelButtonVisible = writable(false);
 export const leaveMatchButtonVisible = writable(false);
 
 // UI - Chat

@@ -7,6 +7,7 @@
 		matchmakingActive,
 		matchmakingHosting,
 		participantCount,
+		movingTeammate,
 	} from "$lib/stores/context-specific/multiplayerStore";
 </script>
 
@@ -21,7 +22,7 @@
 			<MultiplayerHostDisplay
 				showOpenRoom={false}
 				startFunction={startFindTeamDuel}
-				startDisabledCondition={$participantCount > 2}
+				startDisabledCondition={$participantCount > 2 || $movingTeammate}
 				allowTeamControls={false}
 			/>
 		{:else}

@@ -29,7 +29,7 @@ export async function enableResultScreen() {
     distanceText.set(get(countryGuessr) ? (checkIfGuessWasCorrect() ? "Correct!" : "Wrong!") : formatDistance(distance));
 
     // Reset the map (without changing its size or resetting the user guess) before loading the result map
-    resetMap(true, true);
+    resetMap(true);
 
     // Save round to log
     saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude), { heading: get(currentLocationHeading), pitch: get(currentLocationPitch), panoramaId: get(currentLocationPanoramaId) }]);

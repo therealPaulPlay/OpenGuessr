@@ -31,11 +31,13 @@ import {
     cancellingMatchmaking,
     roomLocked,
     clientToken,
+    playAnotherTeamDuelButtonVisible,
+    teamMoveClients,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
+import { currentLocationLatitude, currentLocationLongitude, defaultBounds, mapBounds } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 import PlaySocket from "playsocketjs";
@@ -70,8 +72,8 @@ export async function createMultiplayerInstance() {
     if (!get(isAuthenticated) && !get(guestNamePromise)) {
         // If linkjoin popup is open, close it and open it again after the guest name popup was dismissed to avoid stacking popups
         let wasLinkJoinOpen = false;
-        if (get(linkJoinPopup)) { 
-            linkJoinPopup.set(false); 
+        if (get(linkJoinPopup)) {
+            linkJoinPopup.set(false);
             wasLinkJoinOpen = true;
         }
         guestNamePickerPopup.set(true);
@@ -81,15 +83,8 @@ export async function createMultiplayerInstance() {
 
     // Create the new instance
     try {
-        const generateRandomSecret = () => {
-            const characters = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789");
-            const randomNumbers = crypto.getRandomValues(new Uint8Array(16));
-            const randomNumbersNormalArray = Array.from(randomNumbers);
-            return randomNumbersNormalArray.map((number) => characters[number % characters.length]).join("");
-        }
-
         // Authed users additionally set the bearer, all clients set the clientToken
-        const customData = { clientToken: generateRandomSecret() };
+        const customData = { clientToken: crypto.randomUUID() };
         if (get(isAuthenticated)) customData.bearer = localStorage.getItem("bearer");
         clientToken.set(customData.clientToken);
 
@@ -100,6 +95,17 @@ export async function createMultiplayerInstance() {
 
         let playerDataAdded = false;
         let gameHasStarted = false;
+
+        // If player is not already in the room, add player info
+        const addPlayerIfMissing = () => {
+            if (get(socket)?.storage?.players?.findIndex((player) => player.clientId === get(socket)?.id) == -1 && !playerDataAdded) {
+                playerDataAdded = true;
+                get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
+                    if (get(multiplayer)) showErrorPopup("Failed to add player", "An error occurred trying to add this player's data.", error.message);
+                    console.error("Error adding player data in multiplayer:", error);
+                });
+            }
+        }
 
         // Register event listeners
         get(socket).onEvent('status', status => multiplayerStatus.set(status));
@@ -131,6 +137,10 @@ export async function createMultiplayerInstance() {
             playerDataAdded = false; // Reset so addPlayer is sent for the new room
             gameHasStarted = false;
             roomCode.set(newRoomId); // Update roomCode to the new room
+
+            // Refresh overlay if it's shown to reflect the new room (it otherwise only updates if the show state changes)
+            if (get(socket)?.storage?.overlay) showMultiplayerOverlay(true);
+            addPlayerIfMissing();
         });
 
         get(socket).onEvent('storageUpdated', (storage) => {
@@ -154,18 +164,12 @@ export async function createMultiplayerInstance() {
             }
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
-            // If player is not already in the room, add player info
-            if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerDataAdded) {
-                playerDataAdded = true;
-                get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
-                    if (get(multiplayer)) showErrorPopup("Failed to add player", "An error occurred trying to add this player's data.", error.message);
-                    console.error("Error adding player data in multiplayer:", error);
-                });
-            }
+            // Player data addition check
+            addPlayerIfMissing();
 
             if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
 
-            if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(Boolean(storage.overlay));
+            if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(storage.overlay);
 
             if (storage.chats) loadAndProfanityCheckChat(storage.chats || []);
 
@@ -194,9 +198,10 @@ export async function createMultiplayerInstance() {
                     continueText.set(`Wait ${continueTimeout / 1000}s...`);
                     setTimeout(() => continueText.set("Continue"), continueTimeout);
 
-                    // Ensure the coords are set, in case user joins during result screen
+                    // Set location & bounds directly, since players joining during the result screen receive this before the location re-generation
                     currentLocationLatitude.set(storage?.location?.[0]);
                     currentLocationLongitude.set(storage?.location?.[1]);
+                    mapBounds.set(storage?.mapBounds || get(defaultBounds));
                     enableResultScreen();
 
                 } else disableResultScreen();
@@ -214,6 +219,8 @@ export async function createMultiplayerInstance() {
                 if (storage.timeReducedOverlay && !storage?.confirmedArray?.includes(get(socket)?.id)) showTimeReducedOverlay();
                 else timeReducedOverlay.set(false);
             }
+
+            if (storage.teamMoveClients) teamMoveClients.set(storage.teamMoveClients);
         });
 
         get(socket).onEvent('instanceDestroyed', (reason) => {
@@ -356,6 +363,7 @@ export function leaveMultiplayer(destroy = true) {
     currentRound.set(0);
     multiplayerMap.set(get(defaultMap));
     mobileChatLastOpenedMsgCount.set(0);
+    teamMoveClients.set({});
 
     // Hide linkjoin popup if open
     linkJoinPopup.set(false);
@@ -377,9 +385,11 @@ function showEndscreenUI(show) {
     if (show) {
         if (!get(socket)?.storage?.tournamentRoom) leaveMatchButtonVisible.set(true); // Show large exit button
         if (!get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in matchmaking games, and only if host
+        if (get(socket)?.storage?.matchmakingRoom && get(socket)?.storage?.teamAmount === 2) playAnotherTeamDuelButtonVisible.set(true);
     } else {
-        rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);
+        rematchButtonVisible.set(false);
+        playAnotherTeamDuelButtonVisible.set(false);
     }
 }
 

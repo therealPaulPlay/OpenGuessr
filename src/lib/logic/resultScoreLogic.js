@@ -1,6 +1,6 @@
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { guessLat, guessLon } from "$lib/stores/context-specific/mapStore";
-import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
+import { currentLocationLatitude, currentLocationLongitude, mapBounds } from "$lib/stores/locationStore";
 import { updateProfileIfNewBestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
 import { streakCountText, lastExpCalculationSignedOut, earnedExperience, streakMultiplierText } from "$lib/stores/context-specific/resultScreenStore";
@@ -12,7 +12,6 @@ import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { get } from "svelte/store";
-import { getMapBounds } from "$lib/utils/getMapBounds";
 import { showResultScreenSlideup } from "$lib/utils/resultScreenSlideup";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { showErrorPopup } from "openguessr-ui";
@@ -58,10 +57,10 @@ async function calculateXPGain(distance, map, supporterLevelParam) {
     if (distance < 0.025) distance = 0; // Treat distances < 25m as 0 to be more friendly with 5ks
 
     // If the map is big enough to encompass many countries, calculate the country streak
-    const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && map !== "Country Guessr") ? await streakCalculation() : 1;
+    const streakMultiplier = (get(mapBounds).diameter > 250 && get(singleplayer) && get(isAuthenticated) && map !== "Country Guessr") ? await streakCalculation() : 1;
 
     if (map == "Country Guessr") returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
-    else returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * streakMultiplier);
+    else returnXP = Math.round(5000 * ((calculateExponentialModifier(get(mapBounds).diameter)) ** distance) * streakMultiplier);
 
     let supporterMultiplier = 1;
 
