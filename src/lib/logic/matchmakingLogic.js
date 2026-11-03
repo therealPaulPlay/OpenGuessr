@@ -1,12 +1,12 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, socket, clientToken, matchmakingEloRange } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, socket, clientToken, matchmakingEloRange, movingTeammate } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
-import { showErrorPopup } from "openguessr-ui";
+import { showErrorPopup, showNotification } from "openguessr-ui";
 import { multiplayer } from "$lib/stores/modeStore";
 
 // Logic -----------------------
@@ -16,8 +16,8 @@ const matchmakingRoomConfigs = {
     "team-duel": { teamAmount: 2, roundAmount: 5, sizeLimit: 4 },
 }
 
-// Safe cancel: remove from matchmaking queue - if removed, the server destroys the room
-// which triggers instanceDestroyed -> leaveMultiplayer -> matchmakingActive = false; If not removed, the game was already matched
+// Remove from matchmaking queue - if removed successfully, the server destroys the room (instanceDestroyed -> leaveMultiplayer -> matchmakingActive = false) 
+// If not removed, the game was already matched, and matchmaking cannot be cancelled
 export async function safeCancel() {
     const code = get(roomCode);
     if (!code) return showErrorPopup("Failed to cancel", "The room hasn't been created yet.");
@@ -77,6 +77,62 @@ export async function startFindTeamDuel() {
 
     // Submit room code and look for a match if successful
     if (await submitRoomCodeForMatchmaking("team-duel")) attemptFindTeamDuel();
+}
+
+export async function preparePlayAnotherTeamDuel() {
+    try {
+        const response = await fetch(get(apiUrl) + "/matchmaking/prepare-move-team-duel-teammate", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ currentCode: get(roomCode), clientId: get(socket)?.id, clientToken: get(clientToken) })
+        });
+        if (!response.ok) {
+            const error = await response.json().then((data) => data.error).catch(() => { });
+            throw new Error(error ?? response.status);
+        } else {
+            const data = await response.json();
+
+            if (data.create) {
+                leaveMultiplayer(); // Leave first
+                movingTeammate.set(true);
+                const created = await createTeamDuelRoom(); // Displays an error on failure
+                if (created) await performPlayAnotherTeamDuel(data.moveKey, data.moveToken, get(roomCode));
+                movingTeammate.set(false);
+            }
+            return true;
+        }
+
+    } catch (error) {
+        console.error("Error preparing team duel teammate move for play another:", error);
+        showNotification(error.message);
+        movingTeammate.set(false);
+        return false;
+    }
+}
+
+async function performPlayAnotherTeamDuel(moveKey, moveToken, newRoomCode) {
+    try {
+        const response = await fetch(get(apiUrl) + "/matchmaking/perform-move-team-duel-teammate", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ moveKey, moveToken, newRoomCode })
+        });
+        if (!response.ok) {
+            const error = await response.json().then((data) => data.error).catch(() => { });
+            throw new Error(error ?? response.status);
+        } else {
+            // Now that the teammate has been moved over successfully, start matchmaking
+            startFindTeamDuel();
+        }
+
+    } catch (error) {
+        console.error("Error performing team duel teammate move for play another:", error);
+        showNotification(error.message);
+    }
 }
 
 // Shared -----------------------

@@ -68,10 +68,10 @@ export async function checkGenerationTypeAndGenerate() {
       setSpecialModes(map);
 
       // Singleplayer
-      if (get(singleplayer)) await generateNewLocation("MAP");
+      if (get(singleplayer)) await generateNewLocation("SINGLEPLAYER");
 
       // Multiplayer
-      if (get(multiplayer)) generateNewLocation("MULTIPLAYER");
+      if (get(multiplayer)) await generateNewLocation("MULTIPLAYER");
 
       // Competition
       if (get(competition) && checkCompetitionRoundStatus()) await generateNewLocation("COMPETITION");

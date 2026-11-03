@@ -4,11 +4,11 @@ import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenSt
 import { playSound } from "$lib/utils/soundManager.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
 import { guessLat, guessLon, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
-import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 import { showErrorPopup } from "openguessr-ui";
+import { mapBounds } from "$lib/stores/locationStore";
 
 // Canonicalize a wrapped-world longitude back
 // For example, if lon is 185 degrees, lon/360 >= 0.5, so it wraps it back by 360, making that -175 in this case
@@ -79,7 +79,7 @@ let delayedMapReset = false;
 let multiplayerMiniMarkers = []; // team markers
 
 // Reset the map and the confirm button
-export function resetMap(keepSize = false, keepPlayerPinCoords = false) {
+export function resetMap(light = false) {
     if (!get(map)) return delayedMapReset = true;
 
     // Clear all markers
@@ -89,7 +89,7 @@ export function resetMap(keepSize = false, keepPlayerPinCoords = false) {
     addedMarkers.set([]);
 
     // Reset placed player pin location
-    if (!keepPlayerPinCoords) {
+    if (!light) {
         guessLat.set(0);
         guessLon.set(0);
     }
@@ -98,16 +98,11 @@ export function resetMap(keepSize = false, keepPlayerPinCoords = false) {
     confirmButtonActive.set(false);
 
     // Set map view to focus on current map
+    // Delayed since the transition from result map size to small map size otherwise shifts the view
     setTimeout(() => {
-        // Delayed since the result map transition can cause the view to shift
-        if (!keepSize) adjustMapToCountry();
+        const mapCenterAndZoom = get(mapBounds);
+        if (!light) get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
     }, 150);
-}
-
-// For most maps, adjust the boundaries to the map's locations
-async function adjustMapToCountry() {
-    const mapCenterAndZoom = getMapBounds();
-    get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
 }
 
 // Placing the marker on the minimap ------------------------------------------------------------------------

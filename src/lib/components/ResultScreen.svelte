@@ -24,7 +24,6 @@
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, MapPinned, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
-	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "openguessr-ui";
 	import { registerResultAds } from "$lib/utils/ads";
 	import { inMenu, roundLogPopup } from "$lib/stores/uiStore";
@@ -32,6 +31,7 @@
 	import { evolveTutorial } from "./Tutorial.svelte";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { countryGuessr } from "$lib/stores/modeStore";
+	import { mapBounds } from "$lib/stores/locationStore";
 
 	// Animate experience and level ----------------------------------------------------------------
 	const animatedExperience = tweened(0, {
@@ -78,7 +78,7 @@
 
 	// Trigger confetti
 	$effect(() => {
-		if ($resultScreenEnabled && $lastDistance < 1000 * (getMapBounds().diameter / 360)) showConfetti = true;
+		if ($resultScreenEnabled && $lastDistance < 1000 * ($mapBounds.diameter / 360)) showConfetti = true;
 		else showConfetti = false;
 	});
 
@@ -176,7 +176,11 @@
 />
 
 <!-- Display: none to ensure ads are not rendered, but kept mounted to avoid constant re-registration -->
-<div class="end-bottom-area" class:display-hidden={!$resultScreenEnabled || $inMenu} class:bottom-area-fade={fadeBottomArea}>
+<div
+	class="end-bottom-area"
+	class:display-hidden={!$resultScreenEnabled || $inMenu}
+	class:bottom-area-fade={fadeBottomArea}
+>
 	<div class="end-bottom-bar safe-margin-bottom">
 		<!-- No transition since it would awkwardly trigger on the first result-open -->
 		{#if showResultAd}

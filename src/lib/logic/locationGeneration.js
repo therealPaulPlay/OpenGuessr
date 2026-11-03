@@ -2,23 +2,26 @@ import { competitionData, competitionRound } from "$lib/stores/context-specific/
 import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { savedMapBounds } from "$lib/stores/locationStore";
-import { showConfirmPopup } from "openguessr-ui";
+import { defaultBounds, mapBounds } from "$lib/stores/locationStore";
+import { showConfirmPopup, showErrorPopup } from "openguessr-ui";
 import { changeMap } from "$lib/utils/changeMapUtils";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
-// This is THE function to get locations (all others here are NOT export) - not the function to start a new round!
+// This is THE function to get locations
+// All coordinate providers must also set bounds
 export async function getLocationCoordinates(type) {
-    if (type == "MAP") return await getCoordsFromServer();
-    else if (type == "MULTIPLAYER") return get(socket)?.storage?.location || [null, null, null];
+    if (type == "SINGLEPLAYER") return await getCoordinatesFromServer();
+    else if (type == "MULTIPLAYER") return getMultiplayerCoordinates();
     else if (type == "COMPETITION") return await getCompetitionCoordinates();
-    else throw new Error("Incorrect location type set in locationGeneration.js!");
+    else throw new Error("Incorrect location type passed to getLocationCoordinates() in locationGeneration.js!");
 }
 
-let loadedMap; // Exclusive to location generation, not a general variable!
+// For singleplayer (from-server) generation
+let loadedMap;
 let cachedLocations = [];
+let cachedBounds;
 
-async function getCoordsFromServer() {
+async function getCoordinatesFromServer() {
     const selectedMap = localStorage.getItem("selectedMap") || get(defaultMap);
 
     // Reset local cache if category was changed
@@ -39,7 +42,7 @@ async function getCoordsFromServer() {
 
         if (response.ok) {
             const data = await response.json();
-            savedMapBounds.set(data.bounds);
+            cachedBounds = data.bounds;
             cachedLocations = data.locations;
         } else {
             let errorMessage = response.status;
@@ -56,12 +59,21 @@ async function getCoordsFromServer() {
 
     // Return and remove one location from cache
     if (cachedLocations.length > 0) {
+        if (!cachedBounds) showErrorPopup("Singleplayer bounds error", "No singleplayer map bounds provided!", "No map bounds.");
+        mapBounds.set(cachedBounds || get(defaultBounds)); // SET BOUNDS --------------------<<
         return cachedLocations.shift(); // [lat: number, lon: number, additionalData?: object]
     } else {
         throw new Error("No locations available in cache!");
     }
 }
 
+function getMultiplayerCoordinates() {
+    if (!get(socket)?.storage?.mapBounds) showErrorPopup("Multiplayer bounds error", "No multiplayer map bounds provided!", "No map bounds.");
+    mapBounds.set(get(socket)?.storage?.mapBounds || get(defaultBounds)); // SET BOUNDS ------------------------<<
+    return get(socket)?.storage?.location || [null, null, null];
+}
+
 async function getCompetitionCoordinates() {
+    mapBounds.set(get(defaultBounds)); // SET BOUNDS ----------------<<
     return get(competitionData)?.locations[get(competitionRound)] ?? [];
 }

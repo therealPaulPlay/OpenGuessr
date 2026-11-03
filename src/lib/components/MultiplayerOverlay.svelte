@@ -5,15 +5,16 @@
 		multiplayerOverlayTitle,
 		rematchButtonVisible,
 		leaveMatchButtonVisible,
-		overlayTitleElement,
 		multiplayerTableArray,
 		teamAmount,
 		socket,
 		overlayShowSubtitle,
+		playAnotherTeamDuelButtonVisible,
+		teamMoveClients,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
 	import Flag from "$lib/components/Flag.svelte";
-	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
+	import { getTeamFromClientId, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
@@ -21,11 +22,12 @@
 	import { showErrorPopup, showConfirmPopup } from "openguessr-ui";
 	import { Info } from "@lucide/svelte";
 	import { multiplayer } from "$lib/stores/modeStore";
+	import { preparePlayAnotherTeamDuel } from "$lib/logic/matchmakingLogic";
 </script>
 
 {#if $multiplayerOverlay}
 	<div class="multiplayer-overlay" out:fade={{ duration: 150 }}>
-		<h1 class="multiplayer-title" bind:this={$overlayTitleElement}>{$multiplayerOverlayTitle}</h1>
+		<h1 class="multiplayer-title">{$multiplayerOverlayTitle}</h1>
 		{#if $overlayShowSubtitle}
 			<h2 class="multiplayer-title">1.5x Multiplier</h2>
 		{/if}
@@ -140,11 +142,10 @@
 			<div class="button-box" transition:slide={{ axis: "y" }}>
 				{#if $rematchButtonVisible}
 					{let currentlyStartingRematch = $state(false)}
-					<div class="host-button-container bar-menu">
+					<div class="overlay-button-container bar-menu">
 						<button
 							disabled={currentlyStartingRematch}
-							style:min-width="130px"
-							class="standard-button bright large"
+							class="standard-button overlay-button bright large"
 							onclick={async () => {
 								playSound("basic_button");
 								currentlyStartingRematch = true;
@@ -161,11 +162,26 @@
 						>
 					</div>
 				{/if}
-				{#if $leaveMatchButtonVisible}
-					<div class="host-button-container bar-menu">
+				{#if $playAnotherTeamDuelButtonVisible}
+					{const teamIndex = getTeamFromClientId(get(socket)?.id)}
+					{let playAnotherRequested = $state(false)}
+					{let preparedCount = $derived($teamMoveClients[teamIndex]?.length)}
+					<div class="overlay-button-container bar-menu">
 						<button
-							style:min-width="130px"
-							class="standard-button large"
+							class="standard-button overlay-button bright large"
+							disabled={playAnotherRequested}
+							onclick={async () => {
+								playSound("basic_button");
+								playAnotherRequested = true; // Set true to disable button during request flight
+								playAnotherRequested = await preparePlayAnotherTeamDuel(); // Returns true if the request returned success, if an error occurred it sets it back to false
+							}}>Play another{preparedCount ? ` (${preparedCount}/2)` : ""}</button
+						>
+					</div>
+				{/if}
+				{#if $leaveMatchButtonVisible}
+					<div class="overlay-button-container bar-menu">
+						<button
+							class="standard-button overlay-button large"
 							onclick={() => {
 								playSound("basic_button");
 								leaveMultiplayer();
@@ -238,10 +254,14 @@
 		align-items: stretch;
 	}
 
-	.host-button-container {
+	.overlay-button-container {
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		backdrop-filter: none !important;
+	}
+
+	.overlay-button {
+		min-width: 130px;
 	}
 
 	.username-span {
