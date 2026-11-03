@@ -56,7 +56,11 @@
 				</div>
 			</div>
 			<button
-				class="tournament-field-button standard-button {tournament.status == 'starting' ? '' : 'bright'}"
+				class="tournament-field-button standard-button {tournament.status == 'starting'
+					? ''
+					: tournament.status == 'upcoming'
+						? 'bright'
+						: 'dark'}"
 				{@attach tooltip({ text: "Details" })}
 				onclick={() => {
 					playSound("basic_button");
@@ -64,7 +68,7 @@
 					$tournamentInfoPopup = true;
 				}}
 			>
-				{#if tournament.status != "finished" && tournament.status != "ongoing"}
+				{#if tournament.status == "starting" || tournament.status == "upcoming"}
 					<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
 				{:else}
 					<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
