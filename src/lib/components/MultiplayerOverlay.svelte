@@ -166,10 +166,11 @@
 					{const teamIndex = getTeamFromClientId(get(socket)?.id)}
 					{let playAnotherRequested = $state(false)}
 					{let preparedCount = $derived($teamMoveClients[teamIndex]?.length)}
+					{let hasTeammate = $derived($multiplayerTableArray.find((team) => team.teamIndex === teamIndex)?.players?.length > 1)}
 					<div class="overlay-button-container bar-menu">
 						<button
 							class="standard-button overlay-button bright large"
-							disabled={playAnotherRequested}
+							disabled={playAnotherRequested || !hasTeammate}
 							onclick={async () => {
 								playSound("basic_button");
 								playAnotherRequested = true; // Set true to disable button during request flight
