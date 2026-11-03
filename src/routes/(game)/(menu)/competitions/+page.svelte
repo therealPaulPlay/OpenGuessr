@@ -15,6 +15,8 @@
 	import { page } from "$app/state";
 	import CompetitionStreakCalendar from "$lib/components/CompetitionStreakCalendar.svelte";
 	import { getCompetitions } from "$lib/utils/getCompetitions";
+	import Tray from "$lib/components/Tray.svelte";
+	import { innerWidth } from "svelte/reactivity/window";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
 
@@ -462,20 +464,22 @@
 				else signupPrompt(() => goto("/competitions/create"));
 			}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
 		>
-		<Tabs
-			tabs={["All", "Not entered"]}
-			class="hide-entered-comps-toggle"
-			disabled={!$isAuthenticated}
-			bind:selected={expiredTabsSelection}
-			onchange={(_, selectionIndex) => {
-				playSound("basic_button");
-				activeCompetitionsData = []; // Reset loaded data
-				searchQuery = ""; // Reset search query
-				hideEntered = Boolean(selectionIndex); // 0 = false, 1 = true
-				notExpiredIndex = 0;
-				getCompetitionsFromServer(false, false, false, hideEntered);
-			}}
-		/>
+		<Tray active={innerWidth.current <= 600}>
+			<Tabs
+				tabs={["All", "Not entered"]}
+				class="hide-entered-comps-toggle"
+				disabled={!$isAuthenticated}
+				bind:selected={expiredTabsSelection}
+				onchange={(_, selectionIndex) => {
+					playSound("basic_button");
+					activeCompetitionsData = []; // Reset loaded data
+					searchQuery = ""; // Reset search query
+					hideEntered = Boolean(selectionIndex); // 0 = false, 1 = true
+					notExpiredIndex = 0;
+					getCompetitionsFromServer(false, false, false, hideEntered);
+				}}
+			/>
+		</Tray>
 		<search style:gap="var(--panel-margin)">
 			<input
 				id="competition-search"
@@ -920,6 +924,7 @@
 
 		search {
 			max-width: none;
+			flex-basis: 100px;
 		}
 
 		.clock-mascot {
