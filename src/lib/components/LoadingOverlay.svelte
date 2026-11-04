@@ -6,19 +6,20 @@
 	import { LoadingSpinner } from "openguessr-ui";
 
 	let initialPageLoad = $state(true); // Only true for the first location that gets loaded with the page
-
 	$effect(() => {
 		if (!$loadingScreenVisible && initialPageLoad) initialPageLoad = false;
 	});
 </script>
 
 {#if $loadingScreenVisible || $resultScreenEnabled}
+	<!-- Only fade slowly when launched to the main menu (e.g.resultScreenEnabled not for ?play-map)-->
+	{const slowInitialFade = $derived(initialPageLoad && $inMenu)}
 	<div
 		class="loading-overlay"
 		transition:fade={{
-			duration: initialPageLoad ? 500 : 150,
-			delay: initialPageLoad ? 500 : undefined,
-			easing: initialPageLoad ? quadOut : undefined,
+			duration: slowInitialFade ? 500 : 150,
+			delay: slowInitialFade ? 500 : undefined,
+			easing: slowInitialFade ? quadOut : undefined,
 		}}
 	>
 		{#if !$inMenu}
