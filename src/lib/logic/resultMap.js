@@ -104,7 +104,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
         get(map).setView([guessLat, wrapBackLon(guessLon)], startZoom, { animate: false });
         setTimeout(() => flyToLocation(bounds, correctLat, correctLon), 250);
     } else {
-        // Start zoomed out, then zoom in on destination
+        // CountryGuessr: Start zoomed out, then zoom in on destination
         get(map).setView([correctLat, correctLon], 5, { animate: false });
         setTimeout(() => flyToLocation(null, correctLat, correctLon), 250);
     }

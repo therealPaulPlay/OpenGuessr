@@ -9,6 +9,7 @@ import { resetMap } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
 import { showErrorPopup } from "openguessr-ui";
 import { setMetaGuessrMeta } from './metaGuessrFunctions';
+import { MAP_SIZE_TRANSITION_DURATION } from '$lib/components/Map.svelte';
 
 // Load new location for a new panorama (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 export async function generateNewLocation(type) {
@@ -37,5 +38,8 @@ export async function generateNewLocation(type) {
         showErrorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
     }
 
-    if (!get(resultScreenEnabled)) resetMap(); // Reset minimap & re-adjust to potentially new map (only if result screen isn't enabled, since that'd clear it)
+    // Delayed since wiping the map during the shrink animation looks jarring
+    setTimeout(() => {
+        if (!get(resultScreenEnabled)) resetMap(); // Reset minimap & re-adjust to potentially new map (only if result screen isn't enabled, since that'd clear it)
+    }, MAP_SIZE_TRANSITION_DURATION);
 }

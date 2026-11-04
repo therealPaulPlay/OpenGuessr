@@ -1,3 +1,7 @@
+<script module>
+	export const MAP_SIZE_TRANSITION_DURATION = 150;
+</script>
+
 <script>
 	import {
 		mapExpanded,
@@ -68,6 +72,7 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
+	style:--size-transition-duration={MAP_SIZE_TRANSITION_DURATION + "ms"}
 	style:height={mapOpen ? (mobilePortrait.current || $mapHovered ? "55dvh" : "max(18dvh, 150px)") : "0"}
 	style:opacity={$mapHoveredImmediate ? "1" : ""}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
@@ -81,6 +86,12 @@
 {/if}
 
 <style>
+	@property --size-transition-duration {
+		syntax: "<time>";
+		inherits: false;
+		initial-value: 0s;
+	}
+
 	#map {
 		font-family: inherit;
 		cursor: crosshair;
@@ -96,9 +107,9 @@
 		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.15);
 		transition:
 			opacity 250ms ease,
-			border-radius 150ms ease,
-			top 150ms ease,
-			height 150ms ease;
+			border-radius var(--size-transition-duration) ease,
+			top var(--size-transition-duration) ease,
+			height var(--size-transition-duration) ease;
 		overflow: hidden;
 		outline: none;
 	}

@@ -76,7 +76,6 @@ export function initMap() {
 
 // Reset map ---------------------------------------------------------------------------------------
 let delayedMapReset = false;
-let multiplayerMiniMarkers = []; // team markers
 
 // Reset the map and the confirm button
 export function resetMap(light = false) {
@@ -98,11 +97,8 @@ export function resetMap(light = false) {
     confirmButtonActive.set(false);
 
     // Set map view to focus on current map
-    // Delayed since the transition from result map size to small map size otherwise shifts the view
-    setTimeout(() => {
-        const mapCenterAndZoom = get(mapBounds);
-        if (!light) get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
-    }, 150);
+    const mapCenterAndZoom = get(mapBounds);
+    if (!light) get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
 }
 
 // Placing the marker on the minimap ------------------------------------------------------------------------
@@ -164,11 +160,14 @@ function onMapClick(latLng) {
     }
 }
 
+let drawnTeamMarkers = []; // Team markers
+
 export function updateMinimapWithTeamMarkers(markerArray) {
     // Remove existing mini markers
-    multiplayerMiniMarkers.forEach(existingMarker => {
+    drawnTeamMarkers.forEach(existingMarker => {
         get(map)?.removeLayer(existingMarker);
     });
+    drawnTeamMarkers = [];
 
     try {
         // Add new markers from markerArray that belong to yourTeam
@@ -199,7 +198,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     return [...markers, marker]
                 });
 
-                multiplayerMiniMarkers.push(marker);
+                drawnTeamMarkers.push(marker);
             }
         });
 

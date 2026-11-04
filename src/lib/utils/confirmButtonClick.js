@@ -22,5 +22,5 @@ export function confirmButtonClicks() {
         });
     }
 
-    confirmButtonActive.set(false); // Disable confirm button (make it greyed out) – will be re-enabled when placing pin
+    confirmButtonActive.set(false); // Disable confirm button (make it greyed out, important for multiplayer where the result doesn't follow immediately)
 }
