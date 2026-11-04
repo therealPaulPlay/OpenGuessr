@@ -468,7 +468,7 @@ function showMultiplayerOverlay(show) {
         }
 
         overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.storage?.currentRound >= 3 && get(socket)?.storage?.currentRound < get(socket)?.storage?.roundAmount);
-        confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
+        confirmButtonActive.set(false); // Set the confirm button to the grey inactive state (e.g. for players that mid-join from singleplayer with a pin placed)
         mapInteractive.set(false); // Disable map
     } else mapInteractive.set(true);
 }
