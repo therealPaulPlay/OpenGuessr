@@ -622,10 +622,10 @@
 		left: 0;
 		right: 0;
 		margin: 0;
-		padding: 0;
+		padding: var(--layout-margin);
+		padding-block: calc(var(--box-margin) + var(--layout-margin));
 		display: flex;
-		justify-content: center;
-		align-items: center;
+		overflow-y: auto;
 	}
 
 	.captcha-header {
@@ -696,7 +696,8 @@
 	}
 
 	.orb {
-		position: absolute;
+		position: fixed;
+		pointer-events: none;
 		width: 1500px;
 		height: 1200px;
 		box-sizing: content-box;
@@ -719,7 +720,6 @@
 	}
 
 	#second-orb {
-		position: absolute;
 		width: 900px;
 		height: 1100px;
 		bottom: 20%;
@@ -794,8 +794,7 @@
 	}
 
 	.wrapper {
-		padding-top: var(--box-margin);
-		padding-bottom: var(--box-margin);
+		margin: auto;
 	}
 
 	.wrapper > :not(:first-child) {
