@@ -10,7 +10,6 @@ import { showErrorPopup, showNotification } from "openguessr-ui";
 import { multiplayer } from "$lib/stores/modeStore";
 
 // Logic -----------------------
-
 const matchmakingRoomConfigs = {
     "division-duel": { teamAmount: 1, roundAmount: 5, sizeLimit: 2 },
     "team-duel": { teamAmount: 2, roundAmount: 5, sizeLimit: 4 },
@@ -65,7 +64,6 @@ export function findDuel() {
 }
 
 // Team duel (2v2) -----------------------
-
 export function createTeamDuelRoom() {
     goto("/multiplayer/team-duel");
     return createMatchmakingRoom(matchmakingRoomConfigs["team-duel"]);
@@ -136,7 +134,6 @@ async function performPlayAnotherTeamDuel(moveKey, moveToken, newRoomCode) {
 }
 
 // Shared -----------------------
-
 function createMatchmakingRoom(roomOptions) {
     if (!roomOptions || !roomOptions.roundAmount || roomOptions.teamAmount == null) return console.error("Provided room options are lacking:", JSON.stringify(roomOptions));
 

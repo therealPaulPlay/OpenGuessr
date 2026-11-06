@@ -59,6 +59,17 @@
 					</p>
 				</div>
 			{/if}
+			{#if $slideupButtonText == "Rate app"}
+				<div class="solid-box" style:margin-top="var(--panel-margin)" style:text-align="center">
+					<img
+						alt="Stars"
+						style:width="100%"
+						style:max-width="300px"
+						style:aspect-ratio="15/7"
+						src="/img/stars_rating_illustration.png"
+					/>
+				</div>
+			{/if}
 			{#if $slideupButtonText == "Join"}
 				<iframe
 					class="discord-widget"

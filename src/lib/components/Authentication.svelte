@@ -4,7 +4,7 @@
 	import { disconnectSSE, initializeSSEConnection } from "$lib/logic/sseLogic";
 	import { selectedPinIndex } from "$lib/stores/accountStore";
 	import { autoAuthenticationDisabled } from "$lib/stores/context-specific/platformSettingsStore";
-	import { postSignupAction } from "$lib/stores/context-specific/signupStore";
+	import { postSignupAction } from "$lib/stores/accountStore";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 
