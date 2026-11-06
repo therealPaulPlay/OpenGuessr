@@ -8,7 +8,7 @@
 
 	let { children } = $props();
 
-	// Component Imports
+	// Component imports
 	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";

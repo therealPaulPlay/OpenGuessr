@@ -1,7 +1,7 @@
 import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl";
 import { writable, derived, readable, get } from "svelte/store";
 
-// Current coordinates (of the current Panorama, Image, etc.)
+// Current coordinates (of the current panorama, Image, etc.)
 export const currentLocationLatitude = writable(0);
 export const currentLocationLongitude = writable(0);
 
@@ -14,7 +14,7 @@ export const currentLocationPanoramaId = writable(null);
 export const defaultBounds = readable({ zoom: 2, lat: 0, lng: 0, diameter: 360 });
 export const mapBounds = writable(get(defaultBounds));
 
-// Round Log
+// Round log
 export const roundLog = writable([]);
 
 // Panorama

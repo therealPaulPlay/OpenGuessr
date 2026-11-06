@@ -2,7 +2,7 @@
 import { signupPopup } from "$lib/stores/uiStore";
 import { crazyGames, y8Games, playgama } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
-import { postSignupAction } from "$lib/stores/context-specific/signupStore";
+import { postSignupAction } from "$lib/stores/accountStore";
 import { authenticateWithPlaygama, playgamaLoginSupported } from "$lib/components/Playgama.svelte";
 
 export async function signupPrompt(triggerAfter = () => { }) {

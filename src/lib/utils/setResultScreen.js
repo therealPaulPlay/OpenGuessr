@@ -9,13 +9,12 @@ import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
 import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
-import { supporterSlideupProbability } from "./showSupporterSlideup";
+import { supporterSlideupProbability, discordSlideupProbability, appRatingSlideupProbability } from "./slideupProbabilities";
 import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId, currentLocationPitch } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, guessLat, guessLon, mapHoveredImmediate, mobilePortrait } from "$lib/stores/context-specific/mapStore";
 import { saveRoundToLog } from "./saveRoundToLog";
 import { tutorial } from "$lib/stores/context-specific/tutorialStore";
-import { discordSlideupProbability } from "./showDiscordSlideup";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { MAP_SIZE_TRANSITION_DURATION } from "$lib/components/Map.svelte";
 
@@ -40,8 +39,12 @@ export async function enableResultScreen() {
     playSound("confirm");
 
     // CTAs
-    if (!get(tutorial) && get(isAuthenticated)) discordSlideupProbability(); // Not shown in tutorial, and only to authed users
-    if (!get(tutorial) && get(singleplayer)) supporterSlideupProbability(); // Not shown in tutorial, and only in singleplayer (checkout flow would take too long for mid-multiplayer or comp)
+    // Only in Singleplayer, since in other modes there's pressure on the user to continue (on mobile that requires clicking away the slideup)
+    if (!get(tutorial) && get(singleplayer)) {
+        if (get(isAuthenticated)) discordSlideupProbability();
+        if (window.Capacitor?.isPluginAvailable?.("AppReview")) appRatingSlideupProbability();
+        supporterSlideupProbability();
+    }
 
     // Load XP
     await loadResultScreenXP(distance);

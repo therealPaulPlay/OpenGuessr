@@ -4,7 +4,7 @@
 	import IframePopup from "./IframePopup.svelte";
 	import { showNotification } from "openguessr-ui";
 	import { browser } from "$app/environment";
-	import { postSignupAction } from "$lib/stores/context-specific/signupStore";
+	import { postSignupAction } from "$lib/stores/accountStore";
 
 	if (browser) {
 		window.onmessage = async function (e) {
