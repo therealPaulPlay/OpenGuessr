@@ -39,9 +39,12 @@ export async function enableResultScreen() {
     playSound("confirm");
 
     // CTAs
-    if (!get(tutorial) && get(isAuthenticated)) discordSlideupProbability(); // Not shown in tutorial, and only to authed users
-    if (!get(tutorial) && get(singleplayer)) supporterSlideupProbability(); // Not shown in tutorial, and only in singleplayer (checkout flow would take too long for mid-multiplayer or comp)
-    if (!get(tutorial) && window.Capacitor?.isPluginAvailable?.("AppReview")) appRatingSlideupProbability(); // Not shown in tutorial or when app review isn't available
+    // Only in Singleplayer, since in other modes there's pressure on the user to continue (on mobile that requires clicking away the slideup)
+    if (!get(tutorial) && get(singleplayer)) {
+        if (get(isAuthenticated)) discordSlideupProbability();
+        if (window.Capacitor?.isPluginAvailable?.("AppReview")) appRatingSlideupProbability();
+        supporterSlideupProbability();
+    }
 
     // Load XP
     await loadResultScreenXP(distance);
