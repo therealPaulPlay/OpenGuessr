@@ -8,6 +8,7 @@ export const y8Games = writable(false);
 export const playgama = writable(false);
 export const playlightSDK = writable();
 export const nativePlatform = writable(); // "ios", "android", "steam"
+export const mobile = derived(nativePlatform, ($nativePlatform) => ["ios", "android"].includes($nativePlatform));
 export const native = derived(nativePlatform, ($nativePlatform) => Boolean($nativePlatform));
 
 // Platform settings

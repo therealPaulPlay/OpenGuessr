@@ -8,13 +8,13 @@
 		socket,
 		teamAmount,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { crazyGames, inviteLinksDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, inviteLinksDisabled, mobile } from "$lib/stores/context-specific/platformSettingsStore";
 	import { loadFriends, sendMatchInvite } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification, tooltip, showErrorPopup } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 	import { copyShareLink } from "$lib/utils/copyShareLink";
-	import { Eye, Link } from "@lucide/svelte";
+	import { Eye, Link, Share2 } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
@@ -169,7 +169,7 @@
 	<button
 		id="roomcode-link"
 		class="large standard-button bright"
-		{@attach tooltip({ text: "Copy link" })}
+		{@attach tooltip({ text: "Share link" })}
 		disabled={!$roomCode || $inviteLinksDisabled}
 		onclick={() => {
 			playSound("basic_button");
@@ -183,7 +183,11 @@
 			copyShareLink(link);
 		}}
 	>
-		<Link strokeWidth={2.25} size={20} style="margin-bottom: -2px;" />
+		{#if $mobile}
+			<Share2 strokeWidth={2.25} size={20} style="margin-bottom: -2px; margin-right: 1px;" />
+		{:else}
+			<Link strokeWidth={2.25} size={20} style="margin-bottom: -2px;" />
+		{/if}
 	</button>
 	{#if showOpenRoom}
 		<button

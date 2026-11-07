@@ -124,7 +124,6 @@
 	.flag-button {
 		background: none;
 		border: none;
-		cursor: pointer;
 		padding: var(--content-margin);
 		transition:
 			transform 250ms ease,

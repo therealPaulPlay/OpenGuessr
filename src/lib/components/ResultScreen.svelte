@@ -207,49 +207,52 @@
 				>
 					<!-- Distance is usually number + unit, but Country Guessr just has Correct/Wrong -->
 					{#if $countryGuessr}
-						<MapPinned class="distance-icon" style="margin-right: var(--panel-margin)" size={22} strokeWidth={2.25} />
+						<MapPinned
+							class="distance-icon"
+							style="margin-right: var(--panel-margin); flex-shrink: 0;"
+							size={22}
+							strokeWidth={2.25}
+						/>
 					{:else}
 						<RulerDimensionLine
 							class="distance-icon"
-							style="margin-right: var(--panel-margin)"
+							style="margin-right: var(--panel-margin); flex-shrink: 0;"
 							size={22}
 							strokeWidth={2.25}
 						/>
 					{/if}
-					<p id="distance-text">{$distanceText}</p>
+					<p class="distance-text">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
 					<div id="experience-area" class="result-field">
 						<div id="supporter-boost" bind:this={$supporterBoost}>
 							<p id="supporter-boost-text" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
-						<p id="end-screen-level-display" class="content-shadow">Lvl. {level}</p>
-						<div id="experience-bar-container">
-							<div
-								class="experience-bar-resource"
-								class:experience-bar-transition={transitionExperienceBar}
-								class:experience-bar-animation={$earnedExperience > 0}
-								style:width={percentageWidth}
-							></div>
-						</div>
-						<p id="experience-number-text">+ {$animatedExperience.toFixed(0)} XP</p>
-						{#if $streakCountText && $streakMultiplierText}
-							<div id="streak-display">
-								<Flame style="margin-right: 2px; flex-shrink: 0;" size={22} strokeWidth={2.25} />
-								<p id="end-screen-streak-text">
-									{$streakCountText} <span class="streak-multiplier-text">({$streakMultiplierText})</span>
-								</p>
+						<div class="of-left of-right experience-area-inner">
+							<p id="end-screen-level-display" class="content-shadow">Lvl. {level}</p>
+							<div id="experience-bar-container">
+								<div
+									class="experience-bar-resource"
+									class:experience-bar-transition={transitionExperienceBar}
+									class:experience-bar-animation={$earnedExperience > 0}
+									style:width={percentageWidth}
+								></div>
 							</div>
-						{/if}
+							<p id="experience-number-text">+ {$animatedExperience.toFixed(0)} XP</p>
+							{#if $streakCountText && $streakMultiplierText}
+								<div id="streak-display">
+									<Flame style="margin-right: 2px; flex-shrink: 0;" size={22} strokeWidth={2.25} />
+									<p>{$streakCountText} <span class="streak-multiplier-text">({$streakMultiplierText})</span></p>
+								</div>
+							{/if}
+						</div>
 					</div>
 				{:else}
 					<div id="experience-bar-not-signed-in" class="result-field">
-						<p id="signup-prompt-text">
-							<button class="signup-button" onclick={signupPrompt}
-								><CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
-								& save your score!
-							</button>
-						</p>
+						<button class="signup-button" onclick={signupPrompt}
+							><CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
+							& save your score!
+						</button>
 					</div>
 				{/if}
 			{/if}
@@ -319,7 +322,7 @@
 
 	#result-box {
 		display: flex;
-		justify-content: center;
+		justify-content: safe center;
 		/* Stretch to ensure each result field fills the vertical space available */
 		align-items: stretch;
 		color: white;
@@ -328,15 +331,21 @@
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		margin-inline: var(--box-margin);
+		max-width: calc(100% - var(--box-margin) * 2);
+		overflow: hidden;
 	}
 
 	.signup-button {
+		opacity: 0.5;
 		transition: opacity 250ms ease;
-		cursor: pointer;
+		text-wrap: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-inline: var(--box-margin);
 	}
 
 	.signup-button:hover {
-		opacity: 0.5;
+		opacity: 0.25;
 	}
 
 	.no-adverts-text {
@@ -353,8 +362,8 @@
 
 	.result-field {
 		display: flex;
-		justify-content: center;
-		align-items: center;
+		justify-content: safe center;
+		align-items: safe center;
 		background-color: rgba(255, 255, 255, 0.075);
 		border-radius: var(--content-margin);
 		padding: var(--box-margin);
@@ -414,6 +423,10 @@
 	#motivation-text {
 		flex-grow: 100;
 		min-width: 40%;
+		text-align: center;
+	}
+
+	.distance-text {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
@@ -459,8 +472,16 @@
 	#experience-area {
 		position: relative;
 		flex-grow: 100;
-		min-width: 320px;
+	}
+
+	.experience-area-inner {
+		display: flex;
+		justify-content: safe center;
+		align-items: safe center;
 		gap: var(--box-margin);
+		overflow-x: auto;
+		scrollbar-width: none;
+		width: 100%;
 	}
 
 	@keyframes XPFade {
@@ -531,20 +552,11 @@
 		background-color: rgba(255, 255, 255, 0.15);
 		border-radius: 7px;
 		transition: none;
+		min-width: 40px;
 	}
 
 	#experience-bar-not-signed-in {
-		justify-content: space-between;
 		max-height: 50px;
-	}
-
-	#signup-prompt-text {
-		margin-inline: auto;
-		text-wrap: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		opacity: 0.5;
-		padding-inline: var(--box-margin);
 	}
 
 	.experience-bar-resource {
@@ -572,17 +584,8 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	#end-screen-streak-text {
-		font-size: 20px;
-		vertical-align: middle;
-		text-align: center;
-		color: white;
-		text-wrap: nowrap;
-	}
-
 	.streak-multiplier-text {
 		opacity: 0.5;
-		text-wrap: nowrap;
 		margin-left: 2px;
 	}
 
@@ -592,12 +595,12 @@
 		display: flex;
 		align-items: center;
 		flex-direction: row;
+		text-wrap: nowrap;
 	}
 
 	#end-screen-level-display {
 		font-size: 14px;
 		width: auto;
-		vertical-align: middle;
 		text-align: center;
 		padding-inline: var(--box-margin);
 		margin-left: var(--content-margin);
@@ -608,6 +611,7 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		min-width: fit-content;
 		--content-shadow-color: color-mix(in hsl, #00cc00, black 20%);
 	}
 

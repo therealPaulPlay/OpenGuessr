@@ -6,6 +6,7 @@
 	import { blur } from "svelte/transition";
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { inMenu } from "$lib/stores/uiStore";
+	import { MAP_SIZE_TRANSITION_DURATION } from "./Map.svelte";
 
 	let { children } = $props();
 
@@ -16,7 +17,7 @@
 	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu}
 		<div class="floating-close-container">
 			{@render children?.()}
-			<div class="bar-menu floating-map-close-menu" transition:blur={{ duration: 250 }}>
+			<div class="bar-menu floating-map-close-menu" transition:blur={{ duration: MAP_SIZE_TRANSITION_DURATION }}>
 				<button
 					class="standard-button bright floating-button"
 					aria-label="Toggle minimap"
