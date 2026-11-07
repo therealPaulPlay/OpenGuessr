@@ -223,7 +223,7 @@
 						<div id="supporter-boost" bind:this={$supporterBoost}>
 							<p id="supporter-boost-text" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
-						<p id="end-screen-level-display">Lvl. {level}</p>
+						<p id="end-screen-level-display" class="content-shadow">Lvl. {level}</p>
 						<div id="experience-bar-container">
 							<div
 								class="experience-bar-resource"
@@ -603,6 +603,7 @@
 		margin-left: var(--content-margin);
 		color: white;
 		background-color: #00cc00;
+		--content-shadow-color: color-mix(in hsl, #00cc00, black 20%);
 		box-shadow: var(--bulb-shadow);
 		border-radius: 7px;
 		text-wrap: nowrap;

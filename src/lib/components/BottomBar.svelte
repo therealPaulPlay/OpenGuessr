@@ -115,7 +115,8 @@
 				class:bottom-right-menu-no-ads={$adsDisabled}
 			>
 				<button
-					class="standard-button confirm-button bright"
+					class="standard-button confirm-button"
+					class:bright={!$confirmButtonActive}
 					id="confirm-button"
 					class:confirm-active={$confirmButtonActive}
 					style:opacity={$mapInteractive || !$mapExpanded ? "" : "0.5"}
@@ -264,7 +265,6 @@
 	.confirm-active {
 		pointer-events: auto;
 		opacity: 1;
-		background-color: var(--brand-color);
 	}
 
 	:global(.inner-confirm-button-disabled) {

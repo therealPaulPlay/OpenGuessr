@@ -1,9 +1,10 @@
-<div class="supporter-span">Supporter</div>
+<div class="supporter-span content-shadow">Supporter</div>
 
 <style>
 	.supporter-span {
 		border-radius: var(--content-margin);
 		background: var(--bright-green-color);
+		--content-shadow-color: color-mix(in hsl, var(--bright-green-color), black 20%);
 		padding-inline: var(--content-margin);
 		font-size: 20px;
 		margin-left: 3px;
