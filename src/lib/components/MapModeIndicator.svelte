@@ -12,11 +12,12 @@
 		restrictionNames,
 		selectedRestriction,
 	} from "$lib/stores/context-specific/restrictionStore";
-	import { blur, slide } from "svelte/transition";
+	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded, mobilePortrait } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { Chip } from "openguessr-ui";
 	import { inMenu } from "$lib/stores/uiStore";
+	import { MAP_SIZE_TRANSITION_DURATION } from "./Map.svelte";
 
 	let { mobile } = $props();
 
@@ -42,8 +43,8 @@
 
 	function indicatorTransition(node) {
 		return mobile
-			? blur(node, { duration: 250 })
-			: slide(node, { axis: "y", duration: $resultScreenEnabled ? 0 : 150 });
+			? blur(node, { duration: $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION })
+			: slide(node, { axis: "y", duration: $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION });
 	}
 </script>
 
@@ -54,7 +55,10 @@
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:indicatorTransition|global
 	>
-		<div class="map-mode-text-container of-left of-right">
+		<div
+			class="map-mode-text-container of-left of-right"
+			transition:fade|global={{ duration: mobile || $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION / 2 }}
+		>
 			<p id="mode-name">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
@@ -74,22 +78,20 @@
 				</Chip>
 			{/if}
 		</div>
-		{#if $timerText}
-			<p id="map-timer" class="map-mode-text {$mapModeIndicatorFading ? 'fading' : ''}" transition:blur>
-				<Timer size={22} />
-				{$timerText || "00:00"}
-			</p>
-		{/if}
+		<div transition:fade|global={{ duration: mobile || $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION / 2 }}>
+			{#if $timerText}
+				<p id="map-timer" class="map-mode-text {$mapModeIndicatorFading ? 'fading' : ''}" transition:blur>
+					<Timer size={22} />
+					{$timerText || "00:00"}
+				</p>
+			{/if}
+		</div>
 	</div>
 {/if}
 
 <style>
 	.map-mode-indicator {
 		pointer-events: auto;
-		transition:
-			width 250ms ease,
-			border-radius 250ms ease,
-			margin 250ms ease;
 		user-select: none;
 		height: 56px;
 		width: 100%;
@@ -97,6 +99,7 @@
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
 		position: relative;
+		gap: 0;
 	}
 
 	.mobile {
@@ -167,9 +170,9 @@
 		display: flex;
 		align-items: center;
 		gap: var(--content-margin);
-		margin-left: auto;
 		margin-right: var(--panel-margin);
 		font-variant-numeric: tabular-nums;
+		margin-left: 1px;
 	}
 
 	#map-timer.fading {
