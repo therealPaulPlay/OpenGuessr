@@ -603,12 +603,12 @@
 		margin-left: var(--content-margin);
 		color: white;
 		background-color: #00cc00;
-		--content-shadow-color: color-mix(in hsl, #00cc00, black 20%);
 		box-shadow: var(--bulb-shadow);
 		border-radius: 7px;
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		--content-shadow-color: color-mix(in hsl, #00cc00, black 20%);
 	}
 
 	.next-round-area {

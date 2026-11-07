@@ -537,13 +537,13 @@
 
 	#badge-button {
 		background: linear-gradient(0.6turn, rgb(144, 147, 151), #646575);
-		--content-shadow-color: color-mix(in hsl, #646575, black 15%);
 		color: white;
 		border: none;
 		padding-inline: 12px;
 		padding-top: 0px;
 		padding-bottom: 0px;
 		font-size: 20px;
+		--content-shadow-color: color-mix(in hsl, #646575, black 10%);
 	}
 
 	.profile-view-name {

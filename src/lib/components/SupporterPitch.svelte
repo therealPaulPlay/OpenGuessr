@@ -29,12 +29,12 @@
 <style>
 	#view-supporter-benefits {
 		background-color: rgba(126, 210, 140, 0.65);
-		--content-shadow-color: color-mix(in hsl, var(--bright-green-color), black 10%);
 		outline: 3px solid rgba(255, 255, 255, 0.5);
 		flex-grow: 1;
 		border: none;
 		margin: 2px;
 		height: 35px;
+		--content-shadow-color: color-mix(in hsl, var(--bright-green-color), black 10%);
 	}
 
 	.supporter-area {

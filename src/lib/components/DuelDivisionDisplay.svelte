@@ -100,8 +100,8 @@
 		justify-content: center;
 		z-index: 10;
 		background-color: rgb(114, 115, 119);
-		--content-shadow-color: color-mix(in hsl, rgb(114, 115, 119), black 20%);
 		box-shadow: var(--bulb-shadow);
+		--content-shadow-color: color-mix(in hsl, rgb(114, 115, 119), black 20%);
 	}
 
 	.division-text {
