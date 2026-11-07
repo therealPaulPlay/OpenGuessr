@@ -56,7 +56,6 @@
 
 	.hover-text {
 		transition: opacity 250ms ease;
-		cursor: pointer;
 		overflow: hidden;
 		text-wrap: nowrap;
 		text-overflow: ellipsis;

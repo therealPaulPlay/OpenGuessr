@@ -232,7 +232,6 @@
 
 	.opacity-hover {
 		transition: opacity 250ms ease;
-		cursor: pointer;
 		font-size: 25px;
 		text-overflow: ellipsis;
 		max-width: 80%;

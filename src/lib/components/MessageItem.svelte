@@ -292,7 +292,6 @@
 	.alias-button {
 		background: none;
 		border: none;
-		cursor: pointer;
 		padding: 0;
 		opacity: 0.5;
 		font-size: 18px;
@@ -433,7 +432,6 @@
 		box-shadow: var(--bulb-shadow);
 		border-radius: var(--box-margin);
 		padding: 2px var(--content-margin);
-		cursor: pointer;
 		transition: background-color 250ms ease;
 	}
 
@@ -502,7 +500,6 @@
 
 	.reaction-pick {
 		background: none;
-		cursor: pointer;
 		padding: var(--content-margin);
 		transition: opacity 250ms ease;
 	}

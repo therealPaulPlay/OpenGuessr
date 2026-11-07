@@ -785,7 +785,6 @@
 		right: 27px;
 		top: 50%;
 		transform: translateY(-50%);
-		cursor: pointer;
 		padding: 3px;
 		height: auto;
 		opacity: 0.5;

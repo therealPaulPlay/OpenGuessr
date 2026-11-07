@@ -184,7 +184,6 @@
 	.subtle-button {
 		padding-inline: var(--content-margin);
 		opacity: 0.5;
-		cursor: pointer;
 		transition: opacity 250ms ease;
 		text-shadow: 0 0 10px var(--dark-shadow-color);
 	}
