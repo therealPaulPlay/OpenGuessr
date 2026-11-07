@@ -35,9 +35,10 @@
 		UserRoundCheck,
 		MessageSquare,
 		History,
+		Share2,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
-	import { crazyGames, y8Games, playgama } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, y8Games, playgama, mobile } from "$lib/stores/context-specific/platformSettingsStore";
 	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -248,7 +249,11 @@
 						copyShareLink(page.url.origin + "?profile-id=" + $profileId);
 					}}
 				>
-					<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />
+					{#if $mobile}
+						<Share2 strokeWidth={2} style="vertical-align: -2px; margin-right: 1px;" size={20} />
+					{:else}
+						<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />
+					{/if}
 				</button>
 			{/if}
 			{#if $profileData?.dailyCompetitionStreak >= 1}

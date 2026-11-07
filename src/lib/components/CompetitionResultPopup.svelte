@@ -9,9 +9,10 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { copyShareLink } from "$lib/utils/copyShareLink";
-	import { Frown, Link, Smile, TriangleAlert } from "@lucide/svelte";
+	import { Frown, Link, Share2, Smile, TriangleAlert } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { get } from "svelte/store";
+	import { mobile } from "$lib/stores/context-specific/platformSettingsStore";
 
 	let leaderboardEntries = $state([]);
 	let friendsEntries = $state([]);
@@ -155,12 +156,21 @@
 					playSound("basic_button");
 					copyShareLink(page.url.origin + "/competitions?enter=" + $competitionResultId);
 				}}
-				>Copy link<Link
-					size={20}
-					strokeWidth={2.25}
-					style="margin-bottom: -2px; margin-left: var(--content-margin);"
-				/></button
 			>
+				{#if $mobile}
+					Share link<Share2
+						size={20}
+						strokeWidth={2.25}
+						style="margin-bottom: -2px; margin-left: var(--content-margin);"
+					/>
+				{:else}
+					Copy link<Link
+						size={20}
+						strokeWidth={2.25}
+						style="margin-bottom: -2px; margin-left: var(--content-margin);"
+					/>
+				{/if}
+			</button>
 		</div>
 	{/if}
 	<TitleSeparator text="All" />

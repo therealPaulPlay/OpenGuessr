@@ -16,6 +16,7 @@
 		Bookmark,
 		BookmarkOff,
 		Pencil,
+		Share2,
 	} from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { copyShareLink } from "$lib/utils/copyShareLink";
@@ -29,6 +30,7 @@
 	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl.js";
 	import MapCard from "$lib/components/MapCard.svelte";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+	import { mobile } from "$lib/stores/context-specific/platformSettingsStore";
 
 	let { data, isCommunity = true } = $props();
 
@@ -439,14 +441,18 @@
 				{/if}
 				<button
 					id="map-link"
-					{@attach tooltip({ text: "Copy link" })}
+					{@attach tooltip({ text: "Share link" })}
 					class="standard-button bright map-button large"
 					onclick={() => {
 						playSound("basic_button");
 						copyShareLink(page.url.href);
 					}}
 				>
-					<Link strokeWidth={2.25} size={22} style="margin-top: 1px;" />
+					{#if $mobile}
+						<Share2 strokeWidth={2.25} size={22} style="margin-top: 1px; margin-right: 1px;" />
+					{:else}
+						<Link strokeWidth={2.25} size={22} style="margin-top: 1px;" />
+					{/if}
 				</button>
 				{#if map && isCommunity && map.authorId == playerId && playerId != null}
 					<button
