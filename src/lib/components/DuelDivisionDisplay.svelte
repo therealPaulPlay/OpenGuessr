@@ -34,7 +34,7 @@
 
 		{#each divisions as division, index}
 			<div class="division-marker" style="left: {circlePositions[index]}%">
-				<div class="division-circle" class:active-division={4 - index === currentDivision}>
+				<div class="division-circle content-shadow" class:active-division={4 - index === currentDivision}>
 					<span class="division-text">{division}</span>
 				</div>
 			</div>
@@ -101,6 +101,7 @@
 		z-index: 10;
 		background-color: rgb(114, 115, 119);
 		box-shadow: var(--bulb-shadow);
+		--content-shadow-color: color-mix(in hsl, rgb(114, 115, 119), black 20%);
 	}
 
 	.division-text {
@@ -145,6 +146,7 @@
 
 	.active-division {
 		background-color: rgb(160, 162, 166);
+		--content-shadow-color: color-mix(in hsl, rgb(160, 162, 166), black 20%);
 	}
 
 	@media (max-width: 800px) {

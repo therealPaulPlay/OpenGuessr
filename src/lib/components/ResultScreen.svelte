@@ -223,7 +223,7 @@
 						<div id="supporter-boost" bind:this={$supporterBoost}>
 							<p id="supporter-boost-text" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
-						<p id="end-screen-level-display">Lvl. {level}</p>
+						<p id="end-screen-level-display" class="content-shadow">Lvl. {level}</p>
 						<div id="experience-bar-container">
 							<div
 								class="experience-bar-resource"
@@ -608,6 +608,7 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		--content-shadow-color: color-mix(in hsl, #00cc00, black 20%);
 	}
 
 	.next-round-area {

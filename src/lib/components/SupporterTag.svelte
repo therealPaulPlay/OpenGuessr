@@ -1,4 +1,4 @@
-<div class="supporter-span">Supporter</div>
+<div class="supporter-span content-shadow">Supporter</div>
 
 <style>
 	.supporter-span {
@@ -11,6 +11,7 @@
 		position: relative;
 		overflow: hidden;
 		display: inline-flex;
+		--content-shadow-color: color-mix(in hsl, var(--bright-green-color), black 20%);
 	}
 
 	.supporter-span::before {

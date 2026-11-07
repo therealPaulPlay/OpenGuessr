@@ -201,10 +201,12 @@
 
 	.green-button {
 		background-color: #00ac00;
+		--content-shadow-color: color-mix(in hsl, #00ac00, black 20%);
 	}
 
 	.purple-button {
 		background-color: #8e44f0;
+		--content-shadow-color: color-mix(in hsl, #8e44f0, black 10%);
 	}
 
 	.geometas-attribution {

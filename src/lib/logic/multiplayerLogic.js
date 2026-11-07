@@ -153,14 +153,12 @@ export async function createMultiplayerInstance() {
 
         get(socket).onEvent('storageUpdated', (storage) => {
             // Save game info
-            if (storage.map && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
-                multiplayerMap.set(storage.map);
-                roundAmount.set(storage.roundAmount);
-                roundLength.set(storage.roundLength);
-                teamAmount.set(storage.teamAmount);
-                multiplayerStyle.set(storage.style);
-                multiplayerRestriction.set(storage.restriction);
-            }
+            if (storage.map) multiplayerMap.set(storage.map);
+            if (storage.roundAmount) roundAmount.set(storage.roundAmount);
+            if (storage.roundLength) roundLength.set(storage.roundLength);
+            if (storage.teamAmount) teamAmount.set(storage.teamAmount);
+            if (storage.style) multiplayerStyle.set(storage.style);
+            if (storage.restriction) multiplayerRestriction.set(storage.restriction);
 
             // If game has started, go to game page & disable matchmaking
             if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) {

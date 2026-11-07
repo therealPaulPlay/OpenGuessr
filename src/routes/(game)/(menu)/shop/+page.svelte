@@ -793,6 +793,7 @@
 
 	.tier-buy-button-highlighted {
 		background-color: var(--bright-green-color);
+		--content-shadow-color: color-mix(in hsl, var(--bright-green-color), black 20%);
 	}
 
 	.tier-box {

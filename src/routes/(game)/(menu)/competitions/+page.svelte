@@ -349,14 +349,14 @@
 			</button>
 			{#if !expired}
 				<button
-					class="standard-button competition-button bright"
-					class:daily-primary={daily}
+					class="standard-button competition-button"
+					class:bright={!daily}
 					disabled={entered || (authorId != null && authorId == localStorage.getItem("id"))}
 					onclick={() => {
 						playSound("basic_button");
 
 						const action = () => {
-							showConfirmPopup("Enter " + name + "?", "You can only enter a competition once.", () => {
+							showConfirmPopup("Enter competition?", "You can only enter a competition once.", () => {
 								enterCompetition(id);
 							});
 						};
@@ -802,10 +802,6 @@
 
 	:global(.competition-fade-in-item) {
 		animation: fadeIn 250ms ease-in-out;
-	}
-
-	.daily-primary {
-		background-color: var(--brand-color);
 	}
 
 	.daily-competition-streak-display {

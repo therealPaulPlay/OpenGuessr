@@ -34,6 +34,7 @@
 		border: none;
 		margin: 2px;
 		height: 35px;
+		--content-shadow-color: color-mix(in hsl, var(--bright-green-color), black 10%);
 	}
 
 	.supporter-area {
