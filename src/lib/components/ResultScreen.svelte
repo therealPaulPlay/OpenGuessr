@@ -472,6 +472,7 @@
 	#experience-area {
 		position: relative;
 		flex-grow: 100;
+		min-width: 75%;
 	}
 
 	.experience-area-inner {

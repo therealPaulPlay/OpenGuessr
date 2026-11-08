@@ -491,6 +491,7 @@
 		min-height: calc(385px + 10%);
 		/* Needed for the panel fade positioning */
 		position: relative;
+		transition: min-height 250ms ease;
 	}
 
 	.navigation-menu {
@@ -835,6 +836,16 @@
 	@media (max-height: 675px) {
 		.logo-visualization-container {
 			opacity: 0;
+		}
+	}
+
+	@media (max-height: 800px) and (min-width: 550px) {
+		.navigation-inner-options {
+			display: none;
+		}
+
+		.navigation-menu-container {
+			min-height: auto;
 		}
 	}
 </style>
