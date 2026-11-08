@@ -46,6 +46,14 @@
 			? blur(node, { duration: $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION })
 			: slide(node, { axis: "y", duration: $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION });
 	}
+
+	function contentTransition(node, _params, { direction }) {
+		const instant = mobile || $resultScreenEnabled;
+		return fade(node, {
+			delay: instant || direction === "out" ? 0 : MAP_SIZE_TRANSITION_DURATION * (1 / 3),
+			duration: instant ? 0 : MAP_SIZE_TRANSITION_DURATION * (direction === "in" ? 2 / 3 : 1 / 3),
+		});
+	}
 </script>
 
 {#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded && !$inMenu && ((!mobilePortrait.current && !mobile) || (mobilePortrait.current && mobile))}
@@ -55,10 +63,7 @@
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:indicatorTransition|global
 	>
-		<div
-			class="map-mode-text-container of-left of-right"
-			transition:fade|global={{ duration: mobile || $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION / 2 }}
-		>
+		<div class="map-mode-text-container of-left of-right" in:contentTransition|global out:contentTransition|global>
 			<p id="mode-name">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
@@ -78,7 +83,7 @@
 				</Chip>
 			{/if}
 		</div>
-		<div transition:fade|global={{ duration: mobile || $resultScreenEnabled ? 0 : MAP_SIZE_TRANSITION_DURATION / 2 }}>
+		<div in:contentTransition|global out:contentTransition|global>
 			{#if $timerText}
 				<p id="map-timer" class="map-mode-text {$mapModeIndicatorFading ? 'fading' : ''}" transition:blur>
 					<Timer size={22} />
