@@ -44,8 +44,8 @@ Please refer to the [`README.md` of `openguessr-ui`](https://github.com/therealP
 ## Getting involved
 
 > [!NOTE]
-> Using AI for writing code is permitted, though PRs must have undergone thorough human review.
-> While I don't care how contributed code was written, I care deeply about maintaining high code quality standards.
+> Using AI assistance for writing code is permitted, though PRs must have undergone thorough human review.
+> Maintaining high code quality standards is integral to keeping the codebase pleasant to work with.
 
 Contributions are welcome. Please refer to the `LICENSE.md` to learn how your contributions flow into the project.
 To connect with the community, feel free to [join the Discord server](https://discord.com/invite/CSc3MbDrZ8), and if you have any questions, do not hesitate to contact me via this [contact form](https://paulplay.studio/contact).
