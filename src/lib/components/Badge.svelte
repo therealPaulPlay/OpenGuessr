@@ -153,41 +153,41 @@
 
 	.badge-stage-1 {
 		background: linear-gradient(0.6turn, rgb(136, 113, 113), #6f5a5a);
-		--content-shadow-color: color-mix(in hsl, #6f5a5a, black 10%);
+		--content-shadow-color: #6f5a5a;
 	}
 
 	.badge-stage-2 {
 		background: linear-gradient(0.6turn, #30929b, #507d82);
-		--content-shadow-color: color-mix(in hsl, #507d82, black 10%);
+		--content-shadow-color: #507d82;
 	}
 
 	.badge-stage-3 {
 		background: linear-gradient(0.6turn, rgb(142, 70, 232), #7954a6);
-		--content-shadow-color: color-mix(in hsl, #7954a6, black 10%);
+		--content-shadow-color: #7954a6;
 	}
 
 	.badge-stage-4 {
 		background: linear-gradient(0.6turn, #ddbb1f, #aa8928);
-		--content-shadow-color: color-mix(in hsl, #aa8928, black 10%);
+		--content-shadow-color: #aa8928;
 	}
 
 	.badge-stage-supporter-1 {
 		background: linear-gradient(0.6turn, #319532, #568851);
-		--content-shadow-color: color-mix(in hsl, #568851, black 10%);
+		--content-shadow-color: #568851;
 	}
 
 	.badge-stage-supporter-2 {
 		background: linear-gradient(0.6turn, #19ae1b, #459337);
-		--content-shadow-color: color-mix(in hsl, #459337, black 10%);
+		--content-shadow-color: #459337;
 	}
 
 	.badge-stage-supporter-3 {
 		background: linear-gradient(0.6turn, #37d738, #22a826);
-		--content-shadow-color: color-mix(in hsl, #22a826, black 10%);
+		--content-shadow-color: #22a826;
 	}
 
 	.badge-stage-developer {
 		background: linear-gradient(0.6turn, #e31f1f, #8e3030);
-		--content-shadow-color: color-mix(in hsl, #8e3030, black 10%);
+		--content-shadow-color: #8e3030;
 	}
 </style>

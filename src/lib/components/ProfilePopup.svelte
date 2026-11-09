@@ -548,7 +548,7 @@
 		padding-top: 0px;
 		padding-bottom: 0px;
 		font-size: 20px;
-		--content-shadow-color: color-mix(in hsl, #646575, black 10%);
+		--content-shadow-color: #646575;
 	}
 
 	.profile-view-name {
