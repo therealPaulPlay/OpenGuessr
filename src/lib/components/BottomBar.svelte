@@ -2,7 +2,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { chatMobilePopup, inMenu, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
-	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+	import { confirmGuess } from "$lib/utils/confirmGuess";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification, tooltip } from "openguessr-ui";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
@@ -123,7 +123,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						if (!$mapExpanded) return ($mapExpanded = true);
-						if ($confirmButtonActive) confirmButtonClicks();
+						if ($confirmButtonActive) confirmGuess();
 						else if ($mapInteractive) showNotification("Place your pin first.");
 					}}
 				>

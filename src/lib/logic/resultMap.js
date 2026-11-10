@@ -27,7 +27,6 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
     });
 
     const correctLatLng = new L.LatLng(correctLat, correctLon);
-
     let bounds = null; // Boundaries adjusted to guess and correct location
 
     // Add player marker and polyline
@@ -53,15 +52,12 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
     // Add multiplayer markers
     if (get(multiplayer)) {
-        get(socket)?.storage?.guessLocationsArray?.forEach(element => {
+        get(socket)?.storage?.guesses?.forEach(element => {
             // If this is the local one by this player, skip
-            if (element.id === get(socket)?.id) return;
+            if (element.clientId === get(socket)?.id) return;
 
-            // Handle edge cases for coordinates
-            let lat = element.lat ?? 0;
-            let lon = element.lon ?? 0;
-            if (isNaN(lat) || isNaN(lon)) { lat = 0; lon = 0; }
-            lon = wrapBackLon(lon);
+            const lat = element.lat;
+            const lon = wrapBackLon(element.lon);
 
             const multiplayerIcon = new L.Icon({
                 iconUrl: "/img/pins/player_pin" + (element.pin ?? 0) + ".png",
@@ -71,7 +67,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
             });
 
             const multiplayerMarker = new L.Marker([lat, lon], { icon: multiplayerIcon, opacity: 0.75, alt: "", interactive: false, keyboard: false });
-            multiplayerMarker.bindTooltip(element.username, { permanent: true, direction: 'right' });
+            multiplayerMarker.bindTooltip(document.createTextNode(element.username), { permanent: true, direction: 'right' });
             multiplayerMarker.addTo(get(map));
 
             const multiplayerPolyline = new L.Polyline([correctLatLng, [lat, lon]], {
@@ -88,7 +84,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
     }
 
     // Place the destination marker
-    const destinationMarker = new L.Marker([correctLat, correctLon], { icon: resultIcon, alt: "", interactive: false, keyboard: false });
+    const destinationMarker = new L.Marker(correctLatLng, { icon: resultIcon, alt: "", interactive: false, keyboard: false });
     destinationMarker.addTo(get(map));
 
     addedMarkers.update((markers) => {
@@ -105,7 +101,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
         setTimeout(() => flyToLocation(bounds, correctLat, correctLon), 250);
     } else {
         // CountryGuessr: Start zoomed out, then zoom in on destination
-        get(map).setView([correctLat, correctLon], 5, { animate: false });
+        get(map).setView(correctLatLng, 5, { animate: false });
         setTimeout(() => flyToLocation(null, correctLat, correctLon), 250);
     }
 }

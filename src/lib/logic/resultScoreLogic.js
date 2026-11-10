@@ -110,10 +110,10 @@ export async function loadResultScreenXP(distance) {
         earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
         supporterMultiplier = calculatedXP.supporterMultiplier;
 
-        // Add XP to score (players who join during the result screen are not in guessLocationsArray)
-        const hasGuess = get(socket)?.storage?.guessLocationsArray?.some((g) => g.id === get(socket)?.id);
-        if (get(multiplayer) && !hasGuess) showErrorPopup("Points not added", "Since you joined while the result was already shown, your points were not added for this round.");
-        else if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP).catch((error) => {
+        // Add XP to score (if not already done e.g. due to rejoin, and if they made a guess that round)
+        const guess = get(socket)?.storage?.guesses?.find((g) => g.clientId === get(socket)?.id);
+        if (get(multiplayer) && !guess) showErrorPopup("Points not added", "Since you joined while the result was already shown, your points were not added for this round.");
+        else if (get(multiplayer) && !guess.scoreAdded) get(socket)?.sendRequest("addToScore", earnedXP).catch((error) => {
             if (get(multiplayer)) showErrorPopup("Failed to add to score", "An error occurred trying to submit the score addition.", error.message);
             console.error("Error adding to score:", error);
         });

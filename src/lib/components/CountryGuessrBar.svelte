@@ -2,7 +2,7 @@
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { countryGuessrCountriesArray, selectedCountryFieldIndex } from "$lib/stores/context-specific/countryGuessrStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+	import { confirmGuess } from "$lib/utils/confirmGuess";
 	import Flag from "./Flag.svelte";
 	import { blur } from "svelte/transition";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
@@ -11,7 +11,7 @@
 	function selectCountry(index) {
 		playSound("item_select");
 		selectedCountryFieldIndex.set(index);
-		confirmButtonClicks();
+		confirmGuess();
 	}
 </script>
 

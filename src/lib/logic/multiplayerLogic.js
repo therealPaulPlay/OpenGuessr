@@ -3,11 +3,11 @@ import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScr
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
-import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
+import { updateMinimapWithTeamMarkers, updateMinimapWithGuessMarker, resetMap, deferredMapReset } from "$lib/logic/miniMap.js";
 import { safeCancel } from "$lib/logic/matchmakingLogic.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
-import { mapInteractive } from "$lib/stores/context-specific/mapStore.js";
+import { mapInteractive, guessLat, guessLon } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { guestNamePickerPopup, linkJoinPopup, mainMenu } from "$lib/stores/uiStore";
 import {
@@ -147,12 +147,14 @@ export async function createMultiplayerInstance() {
             roomCode.set(newRoomId); // Update roomCode to the new room
 
             // Refresh overlay if it's shown to reflect the new room (it otherwise only updates if the show state changes)
-            if (get(socket)?.storage?.overlay) showMultiplayerOverlay(true);
+            if (get(socket)?.storage?.overlay) showMultiplayerOverlay();
             addPlayerIfMissing();
         });
 
         get(socket).onEvent('storageUpdated', (storage) => {
-            // Save game info
+            multiplayer.set(true);
+
+            // Update game info
             if (storage.map) multiplayerMap.set(storage.map);
             if (storage.roundAmount) roundAmount.set(storage.roundAmount);
             if (storage.roundLength) roundLength.set(storage.roundLength);
@@ -175,20 +177,41 @@ export async function createMultiplayerInstance() {
 
             if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
 
-            if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(storage.overlay);
+            if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) {
+                if (storage.overlay) showMultiplayerOverlay();
+                else multiplayerOverlay.set(false);
+            }
+
+            // Sync the client's minimap guess marker
+            const guess = storage.guesses?.find((g) => g.clientId === get(socket)?.id);
+            if (!get(resultScreenEnabled) && ((guess?.lat ?? 0) !== get(guessLat) || (guess?.lon ?? 0) !== get(guessLon))) {
+                guessLat.set(guess?.lat ?? 0);
+                guessLon.set(guess?.lon ?? 0);
+                updateMinimapWithGuessMarker(guess?.lat, guess?.lon);
+            }
+
+            if (get(teamAmount) > 1 && storage.guesses && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guesses); // Sync team markers
+
+            // Map is interactive while timer is running and the client's guess isn't confirmed
+            // Confirm button is active if there's a guess that hasn't been confirmed (and the result isn't shown - to avoid it animating to inactive on result close)
+            if (storage.confirmedArray?.includes(get(socket)?.id)) {
+                mapInteractive.set(false);
+                confirmButtonActive.set(false);
+            } else {
+                mapInteractive.set(Boolean(storage.timerStart));
+                confirmButtonActive.set(Boolean(guess) && !get(resultScreenEnabled));
+            }
 
             if (storage.chats) loadAndProfanityCheckChat(storage.chats || []);
 
             if (storage.locked != null) roomLocked.set(storage.locked);
-
-            if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
             if (storage.restriction) setRestriction(storage.restriction);
 
             if (storage.currentRound) currentRound.set(storage.currentRound);
 
             if (storage.confirmedArray && storage.players) {
-                const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
+                const confirmedIDs = new Set(storage.confirmedArray);
                 const truncate = (nameString) => nameString.length > 10 ? `${nameString.slice(0, 7)}...` : nameString;
                 const remaining = storage.players
                     .filter((player) => !confirmedIDs.has(player.clientId))
@@ -198,7 +221,7 @@ export async function createMultiplayerInstance() {
 
             // Control result screen
             if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
-                if (storage.showResult == true) {
+                if (storage.showResult) {
                     // Wait result screen continue text in lobbies with others
                     const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5_000) : 0;
                     continueText.set(`Wait ${continueTimeout / 1000}s...`);
@@ -210,11 +233,14 @@ export async function createMultiplayerInstance() {
                     mapBounds.set(storage?.mapBounds || get(defaultBounds));
                     enableResultScreen();
 
-                } else disableResultScreen();
+                } else {
+                    disableResultScreen();
+                    deferredMapReset(); // Clear the result map (multiplayer locations are generated without map reset)
+                }
             }
 
-            // Set coordinates
-            if (storage.location && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) checkGenerationTypeAndGenerate();
+            // Set coordinates (without the map reset, since the guesses and markers are synced from the room storage)
+            if (storage.location && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) checkGenerationTypeAndGenerate(true);
 
             if (storage.countdownActive) multiplayerOverlayCountdown(); // Display countdown
 
@@ -278,9 +304,16 @@ async function showTimeReducedOverlay() {
     } catch (error) { console.warn("Error showing time reduce overlay:", error) }
 }
 
+async function closeResultScreenAndResetMap() {
+    if (get(resultScreenEnabled)) {
+        disableResultScreen();
+        await deferredMapReset();
+    } else resetMap();
+}
+
 export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) {
     try {
-        disableResultScreen(); // Edge case
+        await closeResultScreenAndResetMap();
         await createMultiplayerInstance();
 
         const code = await get(socket)?.createRoom({
@@ -292,7 +325,6 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) 
             map: get(multiplayerMap),
             matchmakingRoom,
         }, sizeLimit);
-        multiplayer.set(true); // Set multiplayer after successful creation
         roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
         return true; // Success
@@ -308,7 +340,7 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) 
 export async function joinMultiplayerRoom(code) {
     try {
         code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces, dashes, and uppercase
-        disableResultScreen(); // Edge case
+        await closeResultScreenAndResetMap();
 
         // Create instance
         try { await createMultiplayerInstance(); } catch (error) {
@@ -318,7 +350,6 @@ export async function joinMultiplayerRoom(code) {
         }
 
         await get(socket).joinRoom(code);
-        multiplayer.set(true); // Set multiplayer after successful join
         roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
 
@@ -351,6 +382,7 @@ export function leaveMultiplayer(destroy = true) {
 
     // Clear running countdown
     multiplayerTimer?.stopTimer();
+    multiplayerTimerTimestamp = null;
     clearInterval(countdownInterval);
     countdownInterval = null; // Tell overlay countdown it is not running
 
@@ -376,9 +408,9 @@ export function leaveMultiplayer(destroy = true) {
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
-        showMultiplayerOverlay(false); // Also makes map interactive
+        multiplayerOverlay.set(false);
+        mapInteractive.set(true);
         updatePlayerArrays(); // Reset multiplayer array to avoid brief pop-in of previous players on subsequent room creations
-        updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         checkGenerationTypeAndGenerate(); // Generate new location to match the singleplayer settings (selected map, timer etc.)
     }
 
@@ -399,7 +431,7 @@ function showEndscreenUI(show) {
     }
 }
 
-// Overlay, Countdown and Winner determination -------------------------------------------------------------------------------------------------------------------------
+// Overlay, countdown and winner determination -------------------------------------------------------------------------------------------------------------------------
 function generateColorForTeam(teamIndex) {
     const baseHues = [200, 0, 120, 60, 300]; // Blue, Yellow, Green, Red, Purple
     const hue = baseHues[(teamIndex) % baseHues.length];
@@ -451,24 +483,20 @@ function updatePlayerArrays() {
     multiplayerTableArray.set(sortedTeams);
 }
 
-function showMultiplayerOverlay(show) {
-    multiplayerOverlay.set(show);
+function showMultiplayerOverlay() {
+    multiplayerOverlay.set(true);
 
-    if (show) {
-        if (!get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
+    if (!get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
 
-        if (!get(socket)?.storage?.gameEnded) {
-            showEndscreenUI(false); // If not at the end, hide endscreen UI
-            if (get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.storage?.currentRound);
-        } else {
-            determineWinner(get(multiplayerTableArray));
-            showEndscreenUI(true); // Display "Play again" & "Exit"
-        }
+    if (!get(socket)?.storage?.gameEnded) {
+        showEndscreenUI(false); // If not at the end, hide endscreen UI
+        if (get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.storage?.currentRound);
+    } else {
+        determineWinner(get(multiplayerTableArray));
+        showEndscreenUI(true); // Display "Play again" & "Exit"
+    }
 
-        overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.storage?.currentRound >= 3 && get(socket)?.storage?.currentRound < get(socket)?.storage?.roundAmount);
-        confirmButtonActive.set(false); // Set the confirm button to the grey inactive state (e.g. for players that mid-join from singleplayer with a pin placed)
-        mapInteractive.set(false); // Disable map
-    } else mapInteractive.set(true);
+    overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.storage?.currentRound >= 3 && get(socket)?.storage?.currentRound < get(socket)?.storage?.roundAmount);
 }
 
 function determineWinner(array) {
@@ -528,10 +556,13 @@ async function multiplayerOverlayCountdown() {
 
 // Timer -------------------------------------------------------------------------------------------------------------------------------------
 let multiplayerTimer;
+let multiplayerTimerTimestamp; // timerStart timestamp the timer was started for
 
 async function startMultiplayerTimer(totalDuration, startTimestamp) {
+    if (startTimestamp === multiplayerTimerTimestamp) return; // Timer already started for this round
+    multiplayerTimerTimestamp = startTimestamp;
     const serverTimestamp = await getServerTimestamp();
+    if (!get(socket)?.storage?.timerStart) return; // Round ended while fetching the server time
     const duration = Math.round(Math.max(0, totalDuration - ((serverTimestamp / 1000) - (startTimestamp / 1000))));
-    if (Math.abs(multiplayerTimer?.getRemainingTime() - duration) <= 1) return; // If the running timer alr has this duration (with slight tolerance), skip
     multiplayerTimer = startTimer(duration);
 }

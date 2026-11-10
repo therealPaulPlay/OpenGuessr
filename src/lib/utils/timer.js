@@ -8,7 +8,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     if (activeTimer) activeTimer.stopTimer(); // If another timer is active, stop it (there should only be 1 timer)
 
     let currentTimerIntervalId;
-    let isRunning = false;
+    let isRunning = true;
     let isPaused = false;
     let timer = durationInSeconds;
     let intervalDuration = durationInSeconds < 1 ? 0.1 : 1; // One blink mode compatibility
@@ -18,7 +18,6 @@ export function startTimer(durationInSeconds, onTimerExpired) {
 
     currentTimerIntervalId = setInterval(function () {
         if (isPaused) return; // Interval keeps running while paused to preserve tick timing
-        isRunning = true;
         timer -= intervalDuration;
 
         // Check expiration after decrementing
@@ -77,16 +76,11 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         updateDisplay();
     }
 
-    function getRemainingTime() {
-        return timer;
-    }
-
     function isTimerActive() {
         return isRunning;
     }
 
     const timerInstance = {
-        getRemainingTime,
         stopTimer,
         pauseTimer,
         resumeTimer,

@@ -13,7 +13,7 @@
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
-	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+	import { confirmGuess } from "$lib/utils/confirmGuess";
 	import { initMap } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
@@ -63,7 +63,7 @@
 		// Allow for pressing the space bar to guess
 		if (event.key === " " && get(confirmButtonActive) && isElementClickable(mapElement)) {
 			event.stopPropagation();
-			confirmButtonClicks();
+			confirmGuess();
 		}
 	}}
 	onpointerover={(event) => {

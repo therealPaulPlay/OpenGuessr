@@ -14,7 +14,7 @@
 	import { showNotification, tooltip, showErrorPopup } from "openguessr-ui";
 	import { playSound } from "$lib/utils/soundManager";
 	import { copyShareLink } from "$lib/utils/copyShareLink";
-	import { Eye, Link, Share2 } from "@lucide/svelte";
+	import { Eye, Link, Send, Share2 } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
@@ -156,7 +156,7 @@
 							sendMatchInvite(entry.id);
 						}}
 					>
-						<img src="/img/send_icon.png" alt="send invite" class="send-icon" />
+						<Send strokeWidth={2.25} size={20} style="margin-bottom: -2px;"/>
 					</button>
 				</div>
 			{/each}
@@ -248,12 +248,6 @@
 		opacity: 0.5;
 		width: 100%;
 		text-align: center;
-	}
-
-	.send-icon {
-		vertical-align: -2px;
-		width: 20px;
-		height: 20px;
 	}
 
 	.send-invite-button {
