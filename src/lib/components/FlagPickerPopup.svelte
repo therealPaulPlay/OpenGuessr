@@ -105,20 +105,18 @@
 	}
 
 	.flag-selector {
-		display: flex;
-		justify-content: flex-start;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+		justify-items: center;
 		align-items: center;
-		width: fit-content;
-		margin-left: 0;
+		width: 100%;
 		padding: var(--panel-margin);
-		min-width: 100%;
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color-dark);
 		border-radius: var(--box-margin);
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 		gap: var(--box-margin);
-		flex-wrap: wrap;
 	}
 
 	.flag-button {

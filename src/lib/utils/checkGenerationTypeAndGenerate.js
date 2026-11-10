@@ -9,6 +9,7 @@ import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
 import { page } from "$app/state";
+import { deferredMapReset } from "$lib/logic/miniMap";
 
 // Check for ?play-map= URLs ---------------------------------------------------------------------------
 let checkedForMapLink = false;
@@ -54,9 +55,12 @@ function setSpecialModes(map) {
   }
 }
 
-export async function checkGenerationTypeAndGenerate() {
+export async function checkGenerationTypeAndGenerate(skipMapReset = false) {
   if (!checkedForMapLink) checkLinkMap();
   if (!checkedForTutorialMap) checkTutorialMap();
+
+  // Clear minimap (new location -> potential previously placed guess marker no longer matches)
+  if (!skipMapReset) deferredMapReset(true);
 
   // Create a new promise that will only execute after the current queue is done
   queue = queue.then(async () => {

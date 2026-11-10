@@ -16,7 +16,6 @@ import { mapExpanded, mapHovered, guessLat, guessLon, mapHoveredImmediate, mobil
 import { saveRoundToLog } from "./saveRoundToLog";
 import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 import { isAuthenticated } from "$lib/stores/accountStore";
-import { MAP_SIZE_TRANSITION_DURATION } from "$lib/components/Map.svelte";
 
 export async function enableResultScreen() {
     if (get(resultScreenEnabled)) return;
@@ -63,9 +62,4 @@ export function disableResultScreen() {
     if (mobilePortrait.current) mapExpanded.set(false); // On mobile, collapse map
     mapHovered.set(false); // Revoke map hover state
     mapHoveredImmediate.set(false); // Revoke immediate map hover state
-
-    // Delayed since the transition from result map size to small map size otherwise shifts the view
-    setTimeout(() => {
-        if (!get(resultScreenEnabled)) resetMap(); // Reset the map for the next round (only if the result screen wasn't re-enabled in the meantime, since that'd clear it)
-    }, MAP_SIZE_TRANSITION_DURATION);
 }

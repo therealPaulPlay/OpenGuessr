@@ -5,7 +5,7 @@ import { currentLocationHeading, currentLocationLatitude, currentLocationLongitu
 import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
 import { setImageGuessrImage } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
-import { resetMap } from '$lib/logic/miniMap';
+import { resetMapView } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
 import { showErrorPopup } from "openguessr-ui";
 import { setMetaGuessrMeta } from './metaGuessrFunctions';
@@ -38,8 +38,8 @@ export async function generateNewLocation(type) {
         showErrorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
     }
 
-    // Delayed since wiping the map during the shrink animation looks jarring
+    // Delayed since the resetting during the map size transition from result map to mini map shifts the view unexpectedly
     setTimeout(() => {
-        if (!get(resultScreenEnabled)) resetMap(); // Reset minimap & re-adjust to potentially new map (only if result screen isn't enabled, since that'd clear it)
+        if (!get(resultScreenEnabled)) resetMapView();
     }, MAP_SIZE_TRANSITION_DURATION);
 }

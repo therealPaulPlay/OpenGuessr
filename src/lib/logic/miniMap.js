@@ -7,8 +7,8 @@ import { guessLat, guessLon, map, addedMarkers, mapInteractive } from "$lib/stor
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
-import { showErrorPopup } from "openguessr-ui";
 import { mapBounds } from "$lib/stores/locationStore";
+import { MAP_SIZE_TRANSITION_DURATION } from "$lib/components/Map.svelte";
 
 // Canonicalize a wrapped-world longitude back
 // For example, if lon is 185 degrees, lon/360 >= 0.5, so it wraps it back by 360, making that -175 in this case
@@ -64,22 +64,28 @@ export function initMap() {
         onMapClick(e.latlng);
     });
 
+    map.set(leafletMap);
+
+    // Has to be set after assigning map (via map.set()) since resetMap() and resetMapView() use map
     leafletMap.whenReady(() => {
-        if (delayedMapReset) {
-            delayedMapReset = false;
+        if (resetMapOnLoad) {
+            resetMapOnLoad = false;
             resetMap();
         }
+        if (resetMapViewOnLoad) {
+            resetMapViewOnLoad = false;
+            resetMapView();
+        }
     })
-
-    map.set(leafletMap);
 };
 
 // Reset map ---------------------------------------------------------------------------------------
-let delayedMapReset = false;
+let resetMapOnLoad = false;
+let resetMapViewOnLoad = false;
 
 // Reset the map and the confirm button
-export function resetMap(light = false) {
-    if (!get(map)) return delayedMapReset = true;
+export function resetMap(forResult = false) {
+    if (!get(map)) return resetMapOnLoad = true;
 
     // Clear all markers
     get(addedMarkers)?.forEach(marker => {
@@ -88,7 +94,7 @@ export function resetMap(light = false) {
     addedMarkers.set([]);
 
     // Reset placed player pin location
-    if (!light) {
+    if (!forResult) {
         guessLat.set(0);
         guessLon.set(0);
     }
@@ -96,13 +102,28 @@ export function resetMap(light = false) {
     // Reset the guess button
     confirmButtonActive.set(false);
 
-    // Set map view to focus on current map
+    if (!forResult) resetMapView();
+}
+
+// Reset the map after the result screen shrink transition to avoid moving the view while it's closing (looks jarring)
+export function deferredMapReset(skipInMultiplayer = false) {
+    return new Promise((res) => setTimeout(() => {
+        if (get(resultScreenEnabled)) return res(); // If another result was opened in the meantime, don't clear it
+        if (skipInMultiplayer && get(multiplayer)) return res(); // If now in a multiplayer room, don't clear its synced state
+        resetMap();
+        res();
+    }, MAP_SIZE_TRANSITION_DURATION));
+}
+
+// Set map view to focus on current map (e.g. on Austria map, it should set the view to frame Austria)
+export function resetMapView() {
+    if (!get(map)) return resetMapViewOnLoad = true;
     const mapCenterAndZoom = get(mapBounds);
-    if (!light) get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
+    get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
 }
 
 // Placing the marker on the minimap ------------------------------------------------------------------------
-let marker;
+let guessMarker;
 
 // Squash and stretch
 function animatePinLanding(pinElement) {
@@ -124,39 +145,50 @@ function onMapClick(latLng) {
         confirmButtonActive.set(true);
         playSound("pin_drop", "pin");
 
-        if (marker) {
-            get(map).removeLayer(marker);
-        }
-
         // Set map marker position to user input
         guessLat.set(latLng.lat);
         guessLon.set(latLng.lng);
+        updateMinimapWithGuessMarker(latLng.lat, latLng.lng);
 
-        let yourIcon = new L.Icon({
+        if (get(multiplayer)) {
+            // Get player and create guess data
+            const player = get(socket)?.storage?.players?.find((p) => p.clientId === get(socket)?.id);
+            const guess = { clientId: get(socket)?.id, userId: player?.userId, lat: latLng.lat, lon: latLng.lng, username: player?.username, pin: player?.pin, teamIndex: player?.teamIndex, scoreAdded: false };
+
+            // Add the guess
+            const existingGuess = get(socket)?.storage?.guesses?.find((g) => g.clientId === get(socket)?.id);
+            if (existingGuess) get(socket)?.updateStorage("guesses", "array-update-matching", existingGuess, guess);
+            else get(socket)?.updateStorage("guesses", "array-add", guess);
+        }
+    } catch (error) {
+        console.error("Error in onMapClick function:", error)
+    }
+}
+
+export function updateMinimapWithGuessMarker(lat, lon) {
+    if (!get(map)) return;
+
+    // Remove existing guess marker
+    if (guessMarker) get(map).removeLayer(guessMarker);
+    addedMarkers.update((markers) => (markers || []).filter((marker) => marker !== guessMarker));
+    guessMarker = null;
+
+    if (lat != null && lon != null) {
+        const yourIcon = new L.Icon({
             iconUrl: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
             iconSize: [35, 35],
             iconAnchor: [17.5, 34],
             popupAnchor: [1, -34]
         });
 
-        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon, alt: "", interactive: false, keyboard: false });
-        marker.addTo(get(map));
+        guessMarker = new L.Marker(new L.LatLng(lat, lon), { icon: yourIcon, alt: "", interactive: false, keyboard: false });
+        guessMarker.addTo(get(map));
+        animatePinLanding(guessMarker.getElement());
 
         addedMarkers.update((markers) => {
             markers = markers || [];
-            return [...markers, marker]
+            return [...markers, guessMarker]
         });
-
-        animatePinLanding(marker.getElement());
-
-        if (get(multiplayer)) {
-            get(socket)?.sendRequest("addGuessMarker", { lat: get(guessLat), lon: get(guessLon) }).catch((error) => {
-                if (get(multiplayer)) showErrorPopup("Failed to add map marker", "An error occurred adding the guess marker for multiplayer.", error.message);
-                console.error("Error adding guess marker for multiplayer:", error);
-            });
-        }
-    } catch (error) {
-        console.error("Error in onMapClick function:", error)
     }
 }
 
@@ -167,29 +199,30 @@ export function updateMinimapWithTeamMarkers(markerArray) {
     drawnTeamMarkers.forEach(existingMarker => {
         get(map)?.removeLayer(existingMarker);
     });
+    addedMarkers.update((markers) => (markers || []).filter((marker) => !drawnTeamMarkers.includes(marker)));
     drawnTeamMarkers = [];
 
     try {
         // Add new markers from markerArray that belong to yourTeam
         markerArray.forEach(element => {
-            let miniMarkerId = element.id;
-            let miniMarkerLat = element.lat;
-            let miniMarkerLon = element.lon;
-            let miniMarkerPinIndex = element.pin;
-            let miniMarkerTeam = element.team;
+            const miniMarkerId = element.clientId;
+            const miniMarkerLat = element.lat;
+            const miniMarkerLon = element.lon;
+            const miniMarkerPinIndex = element.pin;
+            const miniMarkerTeam = element.teamIndex;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
                 const multiplayerLatLng = new L.LatLng(miniMarkerLat, wrapBackLon(miniMarkerLon));
 
-                let newMultiplayerIcon = new L.Icon({
+                const newMultiplayerIcon = new L.Icon({
                     iconUrl: "/img/pins/player_pin" + (miniMarkerPinIndex ?? 0) + ".png",
                     iconSize: [35, 35],
                     iconAnchor: [17.5, 34],
                     popupAnchor: [1, -34]
                 });
 
-                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "", interactive: false, keyboard: false });
+                const marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "", interactive: false, keyboard: false });
                 marker.setOpacity(0.65);
                 marker.addTo(get(map));
 

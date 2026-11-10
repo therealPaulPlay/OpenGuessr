@@ -4,7 +4,7 @@ import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAn
 import { playSound } from "$lib/utils/soundManager";
 import { showErrorPopup } from "openguessr-ui";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+import { confirmGuess } from "$lib/utils/confirmGuess";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { get } from "svelte/store";
@@ -25,7 +25,6 @@ export function loadCompetition() {
     mainMenu.set(false);
     competitionRound.set(0); // Reset round index
     competitionCombinedScore = 0; // Reset combined score
-    disableResultScreen(); // In case result screen is enabled
     setRestriction(get(competitionData)?.restriction);
 
     // Schedule SFX
@@ -33,6 +32,7 @@ export function loadCompetition() {
         playSound("match_start");
     }, 400);
 
+    disableResultScreen(); // In case result screen is enabled
     checkGenerationTypeAndGenerate();
 }
 
@@ -40,7 +40,7 @@ export function loadCompetition() {
 export function checkStartCompetitionTimer() {
     if (get(competition)) {
         competitionRound.set(get(competitionRound) + 1);
-        competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);
+        competitionTimer = startTimer(get(competitionData)?.roundLength, confirmGuess);
     }
 }
 

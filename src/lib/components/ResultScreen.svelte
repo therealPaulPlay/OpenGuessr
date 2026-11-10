@@ -224,7 +224,7 @@
 					<p class="distance-text">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
-					<div id="experience-area" class="result-field">
+					<div class="result-field large-min-width">
 						<div id="supporter-boost" bind:this={$supporterBoost}>
 							<p id="supporter-boost-text" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
@@ -248,7 +248,7 @@
 						</div>
 					</div>
 				{:else}
-					<div id="experience-bar-not-signed-in" class="result-field">
+					<div class="result-field large-min-width">
 						<button class="signup-button" onclick={signupPrompt}
 							><CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
 							& save your score!
@@ -469,12 +469,6 @@
 		height: 50px;
 	}
 
-	#experience-area {
-		position: relative;
-		flex-grow: 100;
-		min-width: 75%;
-	}
-
 	.experience-area-inner {
 		display: flex;
 		justify-content: safe center;
@@ -556,8 +550,10 @@
 		min-width: 40px;
 	}
 
-	#experience-bar-not-signed-in {
-		max-height: 50px;
+	.large-min-width {
+		min-width: 75%;
+		position: relative;
+		flex-grow: 100;
 	}
 
 	.experience-bar-resource {

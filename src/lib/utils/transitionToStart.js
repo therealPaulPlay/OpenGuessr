@@ -7,8 +7,8 @@ import { get } from "svelte/store";
 
 export function transitionToStart() {
   if (!get(multiplayer)) {
-    checkGenerationTypeAndGenerate(); // Generate new location
     disableResultScreen();
+    checkGenerationTypeAndGenerate(); // Generate new location
   }
   if (get(multiplayer)) get(socket)?.updateStorage("showResult", "set", false); // Disable result screen in multiplayer
 }
