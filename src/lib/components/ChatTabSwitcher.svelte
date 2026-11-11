@@ -11,7 +11,7 @@
 	// "New" indicator for new messages in the chat (team/global) player currently isn't in ----------------------------------
 	function countMessages() {
 		const messages = ($chatArray || []).filter(
-			(chat) => chat.clientId != "server" && !$chatMutedPlayers?.includes(chat.clientId),
+			(chat) => chat.clientId && !$chatMutedPlayers?.includes(chat.clientId),
 		);
 		return {
 			global: messages.filter((m) => m.teamIndex == null).length,

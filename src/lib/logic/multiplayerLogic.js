@@ -84,9 +84,10 @@ export async function createMultiplayerInstance() {
 
     // Create the new instance
     try {
-        // Authed users additionally set the bearer, all clients set the clientToken
+        // Authed users additionally set the bearer, guests their guest name, all clients set the clientToken
         const customData = { clientToken: crypto.randomUUID() };
         if (get(isAuthenticated)) customData.bearer = localStorage.getItem("bearer");
+        else customData.guestName = get(guestName) || null;
         clientToken.set(customData.clientToken);
 
         socket.set(new PlaySocket(null, {
@@ -94,19 +95,7 @@ export async function createMultiplayerInstance() {
             customData
         }));
 
-        let playerDataAdded = false;
         let gameHasStarted = false;
-
-        // If player is not already in the room, add player info
-        const addPlayerIfMissing = () => {
-            if (get(socket)?.storage?.players?.findIndex((player) => player.clientId === get(socket)?.id) == -1 && !playerDataAdded) {
-                playerDataAdded = true;
-                get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
-                    if (get(multiplayer)) showErrorPopup("Failed to add player", "An error occurred trying to add this player's data.", error.message);
-                    console.error("Error adding player data in multiplayer:", error);
-                });
-            }
-        }
 
         // Register event listeners
         get(socket).onEvent('status', status => multiplayerStatus.set(status));
@@ -142,13 +131,11 @@ export async function createMultiplayerInstance() {
         });
 
         get(socket).onEvent('moved', (newRoomId) => {
-            playerDataAdded = false; // Reset so addPlayer is sent for the new room
             gameHasStarted = false;
             roomCode.set(newRoomId); // Update roomCode to the new room
 
             // Refresh overlay if it's shown to reflect the new room (it otherwise only updates if the show state changes)
             if (get(socket)?.storage?.overlay) showMultiplayerOverlay();
-            addPlayerIfMissing();
         });
 
         get(socket).onEvent('storageUpdated', (storage) => {
@@ -172,9 +159,6 @@ export async function createMultiplayerInstance() {
             }
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
-            // Player data addition check
-            addPlayerIfMissing();
-
             if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
 
             if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) {
@@ -194,7 +178,7 @@ export async function createMultiplayerInstance() {
 
             // Map is interactive while timer is running and the client's guess isn't confirmed
             // Confirm button is active if there's a guess that hasn't been confirmed (and the result isn't shown - to avoid it animating to inactive on result close)
-            if (storage.confirmedArray?.includes(get(socket)?.id)) {
+            if (storage.confirmedGuessClients?.includes(get(socket)?.id)) {
                 mapInteractive.set(false);
                 confirmButtonActive.set(false);
             } else {
@@ -210,8 +194,8 @@ export async function createMultiplayerInstance() {
 
             if (storage.currentRound) currentRound.set(storage.currentRound);
 
-            if (storage.confirmedArray && storage.players) {
-                const confirmedIDs = new Set(storage.confirmedArray);
+            if (storage.confirmedGuessClients && storage.players) {
+                const confirmedIDs = new Set(storage.confirmedGuessClients);
                 const truncate = (nameString) => nameString.length > 10 ? `${nameString.slice(0, 7)}...` : nameString;
                 const remaining = storage.players
                     .filter((player) => !confirmedIDs.has(player.clientId))
@@ -248,7 +232,7 @@ export async function createMultiplayerInstance() {
             if (!storage.timerStart && multiplayerTimer?.isTimerActive()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
 
             if (storage.timeReducedOverlay != null && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
-                if (storage.timeReducedOverlay && !storage?.confirmedArray?.includes(get(socket)?.id)) showTimeReducedOverlay();
+                if (storage.timeReducedOverlay && !storage?.confirmedGuessClients?.includes(get(socket)?.id)) showTimeReducedOverlay();
                 else timeReducedOverlay.set(false);
             }
 
@@ -311,7 +295,7 @@ async function closeResultScreenAndResetMap() {
     } else resetMap();
 }
 
-export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) {
+export async function createMultiplayerRoom(matchmakingRoom = false) {
     try {
         await closeResultScreenAndResetMap();
         await createMultiplayerInstance();
@@ -324,7 +308,7 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) 
             restriction: get(multiplayerRestriction),
             map: get(multiplayerMap),
             matchmakingRoom,
-        }, sizeLimit);
+        });
         roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
         return true; // Success
