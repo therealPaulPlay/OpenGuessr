@@ -41,7 +41,7 @@
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<span style="overflow-wrap: break-word;"
 					><span
-						style:opacity={chat.clientId == "server" ? 0.75 : 1}
+						style:opacity={!chat.clientId ? 0.75 : 1}
 						class:username-clickable={chat.userId != null}
 						onclick={() => {
 							if (chat.userId == null) return;

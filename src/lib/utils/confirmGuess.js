@@ -8,6 +8,6 @@ export function confirmGuess() {
     if (!get(multiplayer)) enableResultScreen();
     else {
         playSound("lock_guess_in");
-        get(socket)?.updateStorage("confirmedArray", "array-add-unique", get(socket)?.id);
+        get(socket)?.updateStorage("confirmedGuessClients", "array-add-unique", get(socket)?.id);
     }
 }

@@ -63,7 +63,7 @@
 	</div>
 	<button
 		class="standard-button popup-bottom-button large"
-		disabled={$guestName?.length < 3}
+		disabled={$guestName?.trim().length < 3}
 		onclick={async () => {
 			playSound("basic_button");
 			await setName();

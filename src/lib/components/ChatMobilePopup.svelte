@@ -19,7 +19,7 @@
 			$mobileChatLastOpenedMsgCount =
 				$chatArray?.filter(
 					(chat) =>
-						chat.clientId != "server" &&
+						chat.clientId &&
 						!$chatMutedPlayers?.includes(chat.clientId) &&
 						(chat.teamIndex == null || chat.teamIndex == getTeamFromClientId(get(socket)?.id)),
 				)?.length || 0;

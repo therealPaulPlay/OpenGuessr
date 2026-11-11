@@ -11,8 +11,8 @@ import { multiplayer } from "$lib/stores/modeStore";
 
 // Logic -----------------------
 const matchmakingRoomConfigs = {
-    "division-duel": { teamAmount: 1, roundAmount: 5, sizeLimit: 2 },
-    "team-duel": { teamAmount: 2, roundAmount: 5, sizeLimit: 4 },
+    "division-duel": { teamAmount: 1, roundAmount: 5 },
+    "team-duel": { teamAmount: 2, roundAmount: 5 },
 }
 
 // Remove from matchmaking queue - if removed successfully, the server destroys the room (instanceDestroyed -> leaveMultiplayer -> matchmakingActive = false) 
@@ -149,7 +149,7 @@ function createMatchmakingRoom(roomOptions) {
     matchmakingHosting.set(true);
 
     // Create room and submit code for matchmaking (and return promise)
-    return createMultiplayerRoom(roomOptions.sizeLimit, true);
+    return createMultiplayerRoom(true);
 }
 
 async function submitRoomCodeForMatchmaking(type) {

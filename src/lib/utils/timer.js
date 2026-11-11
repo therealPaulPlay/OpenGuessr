@@ -10,7 +10,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     let currentTimerIntervalId;
     let isRunning = true;
     let isPaused = false;
-    let timer = durationInSeconds;
+    let endTimestamp = Date.now() + durationInSeconds * 1000; // When the timer ends as a unix timestamp (in ms)
+    let remainingOnPause;
     let intervalDuration = durationInSeconds < 1 ? 0.1 : 1; // One blink mode compatibility
 
     // Display initial time immediately
@@ -18,10 +19,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
 
     currentTimerIntervalId = setInterval(function () {
         if (isPaused) return; // Interval keeps running while paused to preserve tick timing
-        timer -= intervalDuration;
 
-        // Check expiration after decrementing
-        if (timer <= 0) {
+        if (getRemainingTime() <= 0) {
             stopTimer();
             timerExpired();
             return;
@@ -30,13 +29,19 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         updateDisplay();
     }, intervalDuration * 1000);
 
+    // In seconds, rounded to the interval duration
+    function getRemainingTime() {
+        return Math.round((endTimestamp - Date.now()) / 1000 / intervalDuration) * intervalDuration;
+    }
+
     function updateDisplay() {
-        const minutes = parseInt(timer / 60, 10);
-        const seconds = parseInt(timer % 60, 10);
+        const remainingTime = getRemainingTime();
+        const minutes = parseInt(remainingTime / 60, 10);
+        const seconds = parseInt(remainingTime % 60, 10);
         const formattedTime = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
         timerText.set(formattedTime);
 
-        if (timer < 10 && timer % 1 == 0) {
+        if (remainingTime < 10 && remainingTime % 1 == 0) {
             mapModeIndicatorFading.set(true);
             playSound("ticking_timer", "timerSound");
             littleTimeVignetteVisible.set(true);
@@ -66,6 +71,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     function pauseTimer() {
         if (isPaused || activeTimer !== timerInstance) return;
         isPaused = true;
+        remainingOnPause = endTimestamp - Date.now();
         littleTimeVignetteVisible.set(false);
         stopSound("timerSound");
     }
@@ -73,6 +79,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     function resumeTimer() {
         if (!isPaused || activeTimer !== timerInstance) return;
         isPaused = false;
+        endTimestamp = Date.now() + remainingOnPause;
         updateDisplay();
     }
 
