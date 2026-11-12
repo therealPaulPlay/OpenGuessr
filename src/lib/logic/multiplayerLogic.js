@@ -47,6 +47,7 @@ import { websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { page } from "$app/state";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { checkRejoin } from "$lib/utils/rejoinMultiplayer";
 
 export function getTeamFromClientId(id) {
     const playerArray = get(socket)?.storage?.players?.find(item => item.clientId === id);
@@ -244,7 +245,9 @@ export async function createMultiplayerInstance() {
                 if (reason) {
                     // Kicked as reason is expected during matchmaking cancellation, as the server kicks the player
                     const isCancelKick = get(cancellingMatchmaking) && reason?.toLowerCase()?.includes?.("kicked");
-                    if (!isCancelKick) showErrorPopup("Disconnected from multiplayer", "You are no longer in multiplayer due to the reason below.", reason);
+                    const isAuthedDisconnect = reason?.toLowerCase()?.includes?.("disconnected") && get(isAuthenticated);
+                    if (!isCancelKick && !isAuthedDisconnect) showErrorPopup("Disconnected", "You left multiplayer due to the reason below.", reason);
+                    else if (isAuthedDisconnect) checkRejoin(true);
                 }
                 leaveMultiplayer(false); // If not already left, leave (e.g. on error)
             }
@@ -262,20 +265,25 @@ export async function createMultiplayerInstance() {
 
 // Joining via Links or from other places ----------------------------------------------------------------------------------------------------------------
 // Called in accountLogic after account data was loaded
-export function attemptJoinViaLink() {
+export function checkLinkJoinAndRejoin() {
     let urlParams = page.url.searchParams;
     const code = urlParams.get("join");
+
+    // Room code from query (prioritize query over rejoin)
     if (code) {
         goto(page.url.pathname, { replaceState: true }); // Remove query (goto instead of SvelteKit's replaceState, which crashes if the root layout isn't assigned yet on page load)
         return joinFromAnywhere(code);
-    }
+    } else if (get(isAuthenticated)) checkRejoin(false);
 }
 
 // Join with a popup, without having to go to the join screen
-export async function joinFromAnywhere(roomcode) {
+export async function joinFromAnywhere(roomcode, onSuccess) {
     linkJoinPopup.set(true);
     const success = await joinMultiplayerRoom(roomcode);
-    if (success) linkJoinPopup.set(false);
+    if (success) {
+        linkJoinPopup.set(false);
+        onSuccess?.();
+    }
 }
 
 // Game logic -----------------------------------------------------------------------------------------------------------------

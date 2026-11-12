@@ -28,6 +28,7 @@
 	import PinPopup from "$lib/components/PinPopup.svelte";
 	import BadgePopup from "$lib/components/BadgePopup.svelte";
 	import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
+	import RejoinPopup from "$lib/components/RejoinPopup.svelte";
 	import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
 	import InboxPopup from "$lib/components/InboxPopup.svelte";
 	import OutboxPopup from "$lib/components/OutboxPopup.svelte";
@@ -130,6 +131,7 @@
 <SignupIframe />
 <SettingsPopup />
 <LinkJoinPopup />
+<RejoinPopup />
 <RoundLogPopup />
 <ModerationPopup />
 <ChatMobilePopup />

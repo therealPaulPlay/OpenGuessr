@@ -1,6 +1,6 @@
 <script>
 	import { checkAuthentication, onAuthenticationUpdated } from "$lib/logic/accountLogic";
-	import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
+	import { checkLinkJoinAndRejoin } from "$lib/logic/multiplayerLogic";
 	import { disconnectSSE, initializeSSEConnection } from "$lib/logic/sseLogic";
 	import { selectedPinIndex } from "$lib/stores/accountStore";
 	import { autoAuthenticationDisabled } from "$lib/stores/context-specific/platformSettingsStore";
@@ -12,7 +12,7 @@
 	onMount(() => {
 		// Register callbacks
 		const unsubscribeFunctions = [
-			onAuthenticationUpdated(attemptJoinViaLink),
+			onAuthenticationUpdated(checkLinkJoinAndRejoin),
 			onAuthenticationUpdated((isAuthed) => {
 				if (isAuthed) initializeSSEConnection();
 				else disconnectSSE();
