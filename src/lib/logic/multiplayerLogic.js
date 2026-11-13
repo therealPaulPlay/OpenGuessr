@@ -13,7 +13,7 @@ import { guestNamePickerPopup, linkJoinPopup, mainMenu } from "$lib/stores/uiSto
 import {
     teamAmount, roundAmount, roundLength,
     multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
-    multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
+    multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerGroupedSortedPlayers,
     matchmakingActive, socket,
     roomCode,
     participantCount,
@@ -23,7 +23,7 @@ import {
     guestNamePromise,
     multiplayerRestriction,
     chatMutedPlayers,
-    multiplayerSortedPlayersArray,
+    multiplayerSortedPlayers,
     currentRound,
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
@@ -199,7 +199,7 @@ export async function createMultiplayerInstance() {
                 const confirmedIDs = new Set(storage.confirmedGuessClients);
                 const truncate = (nameString) => nameString.length > 10 ? `${nameString.slice(0, 7)}...` : nameString;
                 const remaining = storage.players
-                    .filter((player) => !confirmedIDs.has(player.clientId))
+                    .filter((player) => !player.disconnected && !confirmedIDs.has(player.clientId))
                     .map((player) => truncate(player.username));
                 remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
             }
@@ -208,7 +208,7 @@ export async function createMultiplayerInstance() {
             if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
                 if (storage.showResult) {
                     // Wait result screen continue text in lobbies with others
-                    const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5_000) : 0;
+                    const continueTimeout = get(socket)?.storage?.players?.filter((p) => !p.disconnected).length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5_000) : 0;
                     continueText.set(`Wait ${continueTimeout / 1000}s...`);
                     setTimeout(() => continueText.set("Continue"), continueTimeout);
 
@@ -438,7 +438,7 @@ function getTeamColorName(teamIndex) {
 function sortPlayersByScore(players = []) {
     return [...players].sort((a, b) => {
         if (a.spectator !== b.spectator) return a.spectator ? 1 : -1; // Move spectators to the bottom
-        return b.score - a.score;
+        return b.score - a.score || a.disconnected - b.disconnected; // Ties go to connected players
     });
 }
 
@@ -450,12 +450,12 @@ function createTeamData(teamIndex) {
 }
 
 function updatePlayerArrays() {
-    const players = get(socket)?.storage?.players || [];
+    const players = (get(socket)?.storage?.players || []).filter((p) => !p.hidden); // Hidden players left in an earlier match
     const sortedPlayers = sortPlayersByScore(players);
-    multiplayerSortedPlayersArray.set(sortedPlayers);
+    multiplayerSortedPlayers.set(sortedPlayers);
 
     if (get(teamAmount) <= 1) {
-        multiplayerTableArray.set(sortedPlayers);
+        multiplayerGroupedSortedPlayers.set(sortedPlayers);
         return;
     }
 
@@ -472,7 +472,7 @@ function updatePlayerArrays() {
         .map(team => ({ ...team, players: sortPlayersByScore(team.players) }))
         .sort((a, b) => b.score - a.score);
 
-    multiplayerTableArray.set(sortedTeams);
+    multiplayerGroupedSortedPlayers.set(sortedTeams);
 }
 
 function showMultiplayerOverlay() {
@@ -484,7 +484,7 @@ function showMultiplayerOverlay() {
         showEndscreenUI(false); // If not at the end, hide endscreen UI
         if (get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.storage?.currentRound);
     } else {
-        determineWinner(get(multiplayerTableArray));
+        determineWinner(get(multiplayerGroupedSortedPlayers));
         showEndscreenUI(true); // Display "Play again" & "Exit"
     }
 
@@ -514,7 +514,7 @@ function determineWinner(array) {
         const winningPlayerData = array[0];
         const followUpPlayerData = array[1] || null;
 
-        if (followUpPlayerData && winningPlayerData?.score == followUpPlayerData?.score) {
+        if (followUpPlayerData && winningPlayerData?.score == followUpPlayerData?.score && winningPlayerData?.disconnected == followUpPlayerData?.disconnected) {
             multiplayerOverlayTitle.set("It's a draw!");
 
         } else {

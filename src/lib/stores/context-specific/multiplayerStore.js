@@ -52,8 +52,8 @@ export const timeReducedOverlay = writable(false);
 // UI - Multiplayer Overlay (Table overlay)
 export const multiplayerOverlay = writable(false);
 export const multiplayerOverlayTitle = writable("Default Title");
-export const multiplayerTableArray = writable([]); // Array used for the table in the overlay (with all players ranked by XP etc.)
-export const multiplayerSortedPlayersArray = writable([]);
+export const multiplayerSortedPlayers = writable([]); // Player array used for moderation panel
+export const multiplayerGroupedSortedPlayers = writable([]); // Player array used for the table in the overlay (grouped by teams)
 export const overlayShowSubtitle = writable(false);
 export const teamMoveClients = writable({});
 

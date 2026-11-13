@@ -25,6 +25,7 @@
 	let inputValue = $state("");
 
 	let messagesContainer = $state();
+	let messageInput = $state();
 	let messageHandler = null;
 	let indicatorHandler = null;
 	let lastIndicatorAt = 0;
@@ -362,7 +363,10 @@
 											null)
 										: null}
 									isContinuation={i > 0 && messages[i - 1].participantId === message.participantId}
-									onreply={(m) => (replyTo = m)}
+									onreply={(m) => {
+										replyTo = m;
+										messageInput.focus();
+									}}
 								/>
 							{/if}
 						{/each}
@@ -404,6 +408,7 @@
 							type="text"
 							maxlength="2000"
 							placeholder="Your message..."
+							bind:this={messageInput}
 							bind:value={inputValue}
 							onkeydown={async (event) => {
 								if (event.key === "Enter" && !event.shiftKey) {
