@@ -6,7 +6,7 @@ The free geography-guessing game. [Play OpenGuessr!](https://openguessr.com)
 
 ## Other parts
 
-This is the main OpenGuessr repository. However, there are more parts that together form OpenGuessr.
+This is the main OpenGuessr repository, but there are more parts that together form OpenGuessr.
 
 ### Core
 
@@ -32,7 +32,7 @@ This is the main OpenGuessr repository. However, there are more parts that toget
 
 ### Noteworthy third-party libraries
 
-- [Google Street View](https://developers.google.com/maps/documentation): Street View powers the 360-degree panoramas.
+- [Google Maps](https://developers.google.com/maps/documentation): Street View powers the 360-degree panoramas.
 - [Leaflet](https://github.com/leaflet/Leaflet): Leaflet is used for various interactive maps.
 - [Pannellum](https://github.com/mpetroff/pannellum): An alternative renderer for panoramas.
 - [D3](https://github.com/d3/d3): A library for creating svg-based visualizations and maps, such as the community-map overview.
@@ -48,6 +48,7 @@ Please refer to the [`README.md` of `openguessr-ui`](https://github.com/therealP
 > Maintaining high code quality standards is integral to keeping the codebase pleasant to work with.
 
 Contributions are welcome. Please refer to the `LICENSE.md` to learn how your contributions flow into the project.
+
 To connect with the community, feel free to [join the Discord server](https://discord.com/invite/CSc3MbDrZ8), and if you have any questions, do not hesitate to contact me via this [contact form](https://paulplay.studio/contact).
 
 If you like the project, giving it a star is highly appreciated! Thank you. ★★★
@@ -64,6 +65,4 @@ Once you've installed the dependencies with `npm install` (or `pnpm install`), s
 
 ### Building
 
-To create a production build of OpenGuessr, run `npm run build`. You can preview the production build with `npm run preview`.
-
-> To deploy the app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+To create a production build of OpenGuessr, run `npm run build`. You can preview the production build with `npm run preview`. For deploying the app, an appropriate adapter needs to be installed and configured (see the SvelteKit config in `vite.config.js`).
