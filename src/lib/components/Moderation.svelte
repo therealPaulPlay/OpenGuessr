@@ -4,7 +4,7 @@
 	import { Popup, Tabs, showErrorPopup } from "openguessr-ui";
 	import {
 		chatMutedPlayers,
-		multiplayerSortedPlayersArray,
+		multiplayerSortedPlayers,
 		socket,
 		roomLocked,
 	} from "$lib/stores/context-specific/multiplayerStore";
@@ -29,10 +29,10 @@
 		<div class="general-actions-scroll of-left of-right">
 			<button
 				class="standard-button bright"
-				disabled={$chatMutedPlayers?.length === get(socket)?.storage?.players?.length - 1}
+				disabled={$chatMutedPlayers?.length === get(socket)?.storage?.players?.filter((p) => !p.disconnected).length - 1}
 				onclick={() => {
 					playSound("basic_button");
-					$chatMutedPlayers = get(socket)?.storage?.players?.reduce((acc, el) => {
+					$chatMutedPlayers = get(socket)?.storage?.players?.filter((p) => !p.disconnected).reduce((acc, el) => {
 						if (el.clientId !== get(socket)?.id) acc.push(el.clientId);
 						return acc;
 					}, []);
@@ -81,7 +81,7 @@
 	<div class="player-box">
 		<div class="player-box-scroll of-top of-bottom">
 			{#key $chatMutedPlayers}
-				{#each $multiplayerSortedPlayersArray as { clientId, username, score, userId, spectator }}
+				{#each $multiplayerSortedPlayers.filter((p) => !p.disconnected) as { clientId, username, score, userId, spectator }}
 					<div
 						class="player-entry of-left of-right"
 						class:your-entry={clientId && clientId == get(socket)?.id}

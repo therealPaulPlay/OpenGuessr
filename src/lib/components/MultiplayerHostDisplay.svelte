@@ -3,7 +3,7 @@
 	import {
 		participantCount,
 		loadedFriendsData,
-		multiplayerTableArray,
+		multiplayerGroupedSortedPlayers,
 		roomCode,
 		socket,
 		teamAmount,
@@ -82,13 +82,14 @@
 
 <!-- Team and player display -->
 <div class="multiplayer-host-settings teams-display">
-	{#if $teamAmount === 1 || !$multiplayerTableArray?.length}
+	{#if $teamAmount === 1 || !$multiplayerGroupedSortedPlayers?.length}
+		{const connectedPlayers = $derived($multiplayerGroupedSortedPlayers.filter((p) => !p.disconnected))}
 		<p class="player-box-element">
 			<span>No team:</span>
-			{#if $multiplayerTableArray?.length > 0}
-				{#each $multiplayerTableArray as player, i}
+			{#if connectedPlayers.length > 0}
+				{#each connectedPlayers as player, i}
 					<span class="player-name-inline"
-						>{truncatePlayerName(player.username)}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
+						>{truncatePlayerName(player.username)}{#if i < connectedPlayers.length - 1}<span>,&nbsp;</span>{/if}
 					</span>
 				{/each}
 			{:else}
@@ -96,12 +97,13 @@
 			{/if}
 		</p>
 	{:else}
-		{#each Object.values($multiplayerTableArray) as team}
+		{#each Object.values($multiplayerGroupedSortedPlayers) as team}
 			{const teamIndex = $derived(team.teamIndex)}
+			{const connectedTeamPlayers = $derived(team.players?.filter((p) => !p.disconnected) ?? [])}
 			<p class="player-box-element player-box-teams">
 				<span>{`Team ${teamIndex + 1}:`}</span>
-				{#if team.players?.length > 0}
-					{#each team.players as player, i (player.clientId)}
+				{#if connectedTeamPlayers.length > 0}
+					{#each connectedTeamPlayers as player, i (player.clientId)}
 						<span class="player-name-inline">
 							{truncatePlayerName(player.username)}
 							<select
@@ -114,11 +116,11 @@
 								}}
 							>
 								<!-- Generate select options for every team -->
-								{#each Object.values($multiplayerTableArray) as teamObject}
+								{#each Object.values($multiplayerGroupedSortedPlayers) as teamObject}
 									{const index = $derived(teamObject.teamIndex)}
 									<option value={index} selected={player.teamIndex == index}>Team {index + 1}</option>
 								{/each}
-							</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
+							</select>{#if i < connectedTeamPlayers.length - 1}<span>,&nbsp;</span>{/if}
 						</span>
 					{/each}
 				{:else}

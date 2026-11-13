@@ -5,7 +5,7 @@
 		multiplayerOverlayTitle,
 		rematchButtonVisible,
 		leaveMatchButtonVisible,
-		multiplayerTableArray,
+		multiplayerGroupedSortedPlayers,
 		teamAmount,
 		socket,
 		overlayShowSubtitle,
@@ -33,10 +33,10 @@
 		{/if}
 		<div class="multiplayer-table of-top of-bottom of-length-1.5">
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			{#if $multiplayerTableArray.length > 0}
+			{#if $multiplayerGroupedSortedPlayers.length > 0}
 				{#if $teamAmount > 1}
 					<!-- Teams version -->
-					{#each $multiplayerTableArray as team}
+					{#each $multiplayerGroupedSortedPlayers as team}
 						{#if team.players?.length}
 							<div
 								class="team-box"
@@ -61,12 +61,12 @@
 										>{(team.score ?? 0).toLocaleString()} Pts.
 									</p>
 								</div>
-								{#each team.players as { username, elo, score, userId, badge, flag, spectator }}
+								{#each team.players as { username, elo, score, userId, badge, flag, spectator, disconnected }}
 									<div
 										transition:slide
 										class="multiplayer-overlay-entry"
 										style:box-shadow="var(--box-shadow)"
-										class:half-transparent={spectator}
+										class:half-transparent={spectator || disconnected}
 									>
 										<div class="multiplayer-entry-player-info">
 											<div
@@ -90,6 +90,9 @@
 												{#if spectator}
 													{@render spectatorDisplay()}
 												{/if}
+												{#if disconnected}
+													{@render disconnectedDisplay()}
+												{/if}
 											</div>
 											<p class="multiplayer-entry-player-score" style:opacity="0.5">{score?.toLocaleString()} Pts.</p>
 										</div>
@@ -100,12 +103,12 @@
 					{/each}
 				{:else}
 					<!-- No teams version -->
-					{#each $multiplayerTableArray as { clientId, username, elo, score, userId, badge, flag, spectator }}
+					{#each $multiplayerGroupedSortedPlayers as { clientId, username, elo, score, userId, badge, flag, spectator, disconnected }}
 						<div
 							transition:slide
 							class="multiplayer-overlay-entry"
 							style:box-shadow="var(--panel-shadow)"
-							class:half-transparent={spectator}
+							class:half-transparent={spectator || disconnected}
 							class:your-entry={clientId && clientId == get(socket)?.id}
 						>
 							<div class="multiplayer-entry-player-info">
@@ -129,6 +132,9 @@
 									{/if}
 									{#if spectator}
 										{@render spectatorDisplay()}
+									{/if}
+									{#if disconnected}
+										{@render disconnectedDisplay()}
 									{/if}
 								</div>
 								<p class="multiplayer-entry-player-score">{score?.toLocaleString()} Pts.</p>
@@ -166,7 +172,7 @@
 					{const teamIndex = getTeamFromClientId(get(socket)?.id)}
 					{let playAnotherRequested = $state(false)}
 					{let preparedCount = $derived($teamMoveClients[teamIndex]?.length)}
-					{let hasTeammate = $derived($multiplayerTableArray.find((team) => team.teamIndex === teamIndex)?.players?.length > 1)}
+					{let hasTeammate = $derived($multiplayerGroupedSortedPlayers.find((team) => team.teamIndex === teamIndex)?.players?.filter((p) => !p.disconnected).length > 1)}
 					<div class="overlay-button-container bar-menu">
 						<button
 							class="standard-button overlay-button bright large"
@@ -196,14 +202,20 @@
 {/if}
 
 {#snippet eloDisplay(elo = "Default")}
-	<div class="elo-display">
+	<div class="text-badge">
 		<p>{elo?.toLocaleString()} Elo</p>
 	</div>
 {/snippet}
 
 {#snippet spectatorDisplay()}
-	<div class="elo-display">
+	<div class="text-badge">
 		<p>Spectator</p>
+	</div>
+{/snippet}
+
+{#snippet disconnectedDisplay()}
+	<div class="text-badge">
+		<p>Disconnected</p>
 	</div>
 {/snippet}
 
@@ -272,7 +284,7 @@
 		gap: 6px;
 	}
 
-	.elo-display {
+	.text-badge {
 		padding: var(--panel-margin);
 		box-shadow: var(--bulb-shadow);
 		border-radius: var(--content-margin);
@@ -284,7 +296,7 @@
 		background-color: rgba(255, 255, 255, 0.15);
 	}
 
-	.elo-display p {
+	.text-badge p {
 		font-size: 20px !important;
 	}
 

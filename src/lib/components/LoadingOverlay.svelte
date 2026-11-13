@@ -12,14 +12,12 @@
 </script>
 
 {#if $loadingScreenVisible || $resultScreenEnabled}
-	<!-- Only fade slowly when launched to the main menu (e.g.resultScreenEnabled not for ?play-map)-->
-	{const slowInitialFade = $derived(initialPageLoad && $inMenu)}
 	<div
 		class="loading-overlay"
 		transition:fade={{
-			duration: slowInitialFade ? 500 : 150,
-			delay: slowInitialFade ? 500 : undefined,
-			easing: slowInitialFade ? quadOut : undefined,
+			duration: initialPageLoad ? 500 : 150,
+			delay: initialPageLoad ? 500 : undefined,
+			easing: initialPageLoad ? quadOut : undefined,
 		}}
 	>
 		{#if !$inMenu}

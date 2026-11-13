@@ -570,6 +570,7 @@
 		position: absolute;
 		top: 9px;
 		right: 16px;
+		z-index: 1;
 	}
 
 	.friend-online-dot {
