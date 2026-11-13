@@ -6,7 +6,7 @@ The free geography-guessing game. [Play OpenGuessr!](https://openguessr.com)
 
 ## Other parts
 
-This is the main OpenGuessr repository. However, there are more parts that together form OpenGuessr.
+This is the main OpenGuessr repository, but there are more parts that together form OpenGuessr.
 
 ### Core
 
