@@ -620,7 +620,6 @@
 	#expired-competition-area {
 		min-height: 200px;
 		margin-bottom: var(--layout-margin);
-		grid-auto-rows: 1fr;
 	}
 
 	.competition-description {
