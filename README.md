@@ -26,16 +26,16 @@ This is the main OpenGuessr repository, but there are more parts that together f
 
 ### Platforms built for OpenGuessr
 
-- [OpenReport](https://github.com/therealPaulPlay/OpenReport) ([website](https://openreport.paulplay.studio)): The moderation platform used in OpenGuessr. Includes the mod dashboards and report forms.
-- [Bugspot](https://github.com/therealPaulPlay/bugspot-ai) ([website](https://bugspot.dev)): An intelligent ai-enabled bug report platform used for collecting bugs.
+- [OpenReport](https://github.com/therealPaulPlay/OpenReport) ([website](https://openreport.paulplay.studio)): The moderation platform. Includes the mod dashboards and report forms.
+- [Bugspot](https://github.com/therealPaulPlay/bugspot-ai) ([website](https://bugspot.dev)): An AI-enabled bug report platform used for collecting bug reports and logs.
 - [Playlight](https://github.com/therealPaulPlay/Playlight-Site) ([website](https://playlight.dev)): A platform for recommending other high-quality web games.
 
 ### Noteworthy third-party libraries
 
 - [Google Maps](https://developers.google.com/maps/documentation): Street View powers the 360-degree panoramas.
 - [Leaflet](https://github.com/leaflet/Leaflet): Leaflet is used for various interactive maps.
-- [Pannellum](https://github.com/mpetroff/pannellum): An alternative renderer for panoramas.
-- [D3](https://github.com/d3/d3): A library for creating svg-based visualizations and maps, such as the community-map overview.
+- [Pannellum](https://github.com/mpetroff/pannellum): Used as an alternative renderer for panoramas.
+- [D3](https://github.com/d3/d3): A library for creating SVG-based visualizations, e.g. used for the community map overview.
 
 ## Styling, icons, and text formatting
 

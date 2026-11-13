@@ -10,7 +10,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Bug, InfinityIcon, Layers, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
-	import { discordInviteUrl, educationUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { discordInviteUrl, educationUrl, gitHubUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
 	import { loadStreakDays } from "$lib/utils/getCompetitions";
@@ -386,14 +386,14 @@
 							</button>
 							<button
 								class="standard-button bright link-button large"
-								aria-label="Twitter"
-								{@attach tooltip({ text: "Twitter" })}
+								aria-label="GitHub"
+								{@attach tooltip({ text: "GitHub" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://x.com/PaulPlayStudio", "_blank");
+									window.open($gitHubUrl, "_blank");
 								}}
 							>
-								<img src="/img/twitter.png" alt="X logo" class="navigation-icon" />
+								<img src="/img/github.png" alt="X logo" class="navigation-icon" />
 							</button>
 							<button
 								class="standard-button bright link-button large"
