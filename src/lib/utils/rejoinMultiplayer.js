@@ -30,37 +30,39 @@ export async function checkRejoin(interactive = true) {
         // Clear the active room so that on further reloads it does not prompt the user again
         localStorage.removeItem("rejoinRoom");
 
-        // Ask server whether this room still exists and ensure the player is returning to it
-        try {
-            const response = await fetch(get(apiUrl) + "/matchmaking/can-rejoin", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("bearer")
-                },
-                body: JSON.stringify({
-                    ...parsedData,
-                    id: localStorage.getItem("id")
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => null);
-                throw new Error(errorData?.error || response.status);
-            }
-
-            const data = await response.json();
-            if (!data.rejoinable) return; // If the room can't be rejoined, exit (e.g. if the room no longer exists)
-
-        } catch (error) {
-            console.error("Failed to check if room is rejoinable:", error);
-            return showErrorPopup("Error checking rejoin", "An error occurred checking whether the previous multiplayer room can be rejoined.", error.message);
-        }
-
-        // Open the rejoin popup and inform the user
+        // Interactive shows after a disconnect (where the connection can still be down), non-interactive after a page reload
         if (interactive) {
             rejoinRoomCode.set(code);
             rejoinPopup.set(true);
-        } else joinFromAnywhere(code);
+        } else {
+            // Ask server whether this room still exists and ensure the player is returning to it
+            try {
+                const response = await fetch(get(apiUrl) + "/matchmaking/can-rejoin", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("bearer")
+                    },
+                    body: JSON.stringify({
+                        ...parsedData,
+                        id: localStorage.getItem("id")
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.error || response.status);
+                }
+
+                const data = await response.json();
+                if (!data.rejoinable) return; // If the room can't be rejoined, exit (e.g. if the room no longer exists)
+
+            } catch (error) {
+                console.error("Failed to check if room is rejoinable:", error);
+                return showErrorPopup("Error checking rejoin", "An error occurred checking whether the previous multiplayer room can be rejoined.", error.message);
+            }
+
+            joinFromAnywhere(code);
+        }
     }
 }
