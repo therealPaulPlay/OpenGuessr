@@ -12,7 +12,7 @@
 	</div>
 
 	<p>
-		You were disconnected from Multiplayer. Please re-establish an internet connection, then click <i>rejoin</i> to reconnect
+		You were disconnected from Multiplayer. Please re-establish an internet connection, then click <i>Rejoin</i> to reconnect
 		to the room.
 	</p>
 
