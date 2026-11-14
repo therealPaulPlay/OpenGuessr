@@ -10,7 +10,7 @@
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { fetchTournaments } from "$lib/utils/tournamentUtils";
+	import { fetchTournaments } from "$lib/utils/fetchTournaments";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 

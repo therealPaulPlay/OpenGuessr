@@ -11,7 +11,7 @@ import { multiplayer } from "$lib/stores/modeStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
-import { fetchTournaments } from "$lib/utils/tournamentUtils";
+import { fetchTournaments } from "$lib/utils/fetchTournaments";
 import { showProfile } from "$lib/utils/showProfile";
 import { disposeHeadlessChatClient, initHeadlessChatClient } from "$lib/logic/headlessChatLogic";
 import { hcClient } from "$lib/stores/context-specific/headlessChatStore";

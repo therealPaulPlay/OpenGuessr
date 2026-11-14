@@ -1,5 +1,5 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
-import { getLocationCoordinates } from '$lib/logic/locationGeneration';
+import { getLocationCoordinates } from '$lib/utils/getLocationCoordinates';
 import { countryGuessr, imageGuessr, metaGuessr } from "$lib/stores/modeStore";
 import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId, currentLocationPitch } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
