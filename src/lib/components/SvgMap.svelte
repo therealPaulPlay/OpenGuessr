@@ -8,7 +8,6 @@
 		zoom = $bindable(1),
 		width = 800,
 		height = 250,
-		interactive = true,
 		locationList,
 		markerList,
 		lineList,
@@ -165,7 +164,6 @@
 	let lastX, lastY;
 
 	function handleZoom(event) {
-		if (!interactive) return;
 		event.preventDefault();
 
 		const rect = mapContainer.getBoundingClientRect();
@@ -191,14 +189,13 @@
 	}
 
 	function handleMouseDown(event) {
-		if (!interactive) return;
 		isDragging = true;
 		lastX = event.clientX;
 		lastY = event.clientY;
 	}
 
 	function handleMouseMove(event) {
-		if (!interactive || !isDragging) return;
+		if (!isDragging) return;
 		// Store the initial rect for reference
 		const rect = mapContainer.getBoundingClientRect();
 		translateX += (event.clientX - lastX) * (width / rect.width);
@@ -218,7 +215,7 @@
 	let lastTouchDistance = null;
 
 	function handleTouchStart(event) {
-		if (!interactive) return;
+		event.stopPropagation();
 		if (event.touches.length === 1) {
 			isTouching = true;
 			const touch = event.touches[0];
@@ -232,7 +229,7 @@
 	}
 
 	function handleTouchMove(event) {
-		if (!interactive) return;
+		event.stopPropagation();
 
 		if (isTouching && event.touches.length === 1) {
 			event.preventDefault(); // Prevent page scroll
@@ -289,14 +286,12 @@
 	}
 
 	function getTouchDistance(touches) {
-		if (!interactive) return;
 		const dx = touches[0].clientX - touches[1].clientX;
 		const dy = touches[0].clientY - touches[1].clientY;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
 	onMount(() => {
-		if (!interactive) return;
 		mapContainer.addEventListener("touchstart", handleTouchStart);
 		mapContainer.addEventListener("touchmove", handleTouchMove);
 		mapContainer.addEventListener("touchend", handleTouchEnd);
@@ -349,7 +344,7 @@
 	// Size ratio of elements on the map
 	const sr = $derived.by(() => {
 		if (!innerWidth.current) return 1;
-		if (innerWidth.current < 500) return 2;
+		if (innerWidth.current < 500) return 2.5;
 		else return 1;
 	});
 </script>
@@ -371,7 +366,7 @@
 			onmouseup={handleMouseUp}
 			onmouseleave={handleMouseUp}
 			fill="white"
-			class="position-relative {interactive ? 'pointer-events-auto' : 'pointer-events-none'}"
+			class="position-relative pointer-events-auto"
 		>
 			<g>
 				<g>
@@ -471,6 +466,7 @@
 		overflow: hidden;
 		height: 100%;
 		width: 100%;
+		touch-action: none;
 	}
 
 	.position-relative {
