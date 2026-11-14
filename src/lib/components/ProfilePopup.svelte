@@ -738,7 +738,6 @@
 		box-shadow: var(--box-shadow);
 		width: fit-content;
 		max-width: 100%;
-		padding: var(--box-margin);
 	}
 
 	.management-box-content {
@@ -746,6 +745,7 @@
 		justify-content: flex-start;
 		overflow-y: auto;
 		gap: var(--box-margin);
+		padding: var(--box-margin);
 		align-items: center;
 		scrollbar-width: none;
 	}
