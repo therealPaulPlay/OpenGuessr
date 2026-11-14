@@ -1,6 +1,6 @@
 <script>
 	import MapCard from "$lib/components/MapCard.svelte";
-	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, gitHubUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { onMount } from "svelte";
 
 	const highlightedVideos = [
@@ -114,24 +114,26 @@
 	<br />
 	<p>
 		Additionally, there should be as little friction as possible for players, hence why loading up the page immediately
-		puts you into the geography-guessing action. No pop-ups or other annoyances, with an optional tutorial integrated
-		into the core interface.
+		preloads the first location enabling you to get into the geography-guessing action right away. No pop-ups or other
+		annoyances, with an optional tutorial available.
 	</p>
 	<br />
 	<p>
-		While the complete website isn't, parts of OpenGuessr are open-source, specifically the reusable chunks that other
-		developers or players might find useful:
+		While the core website isn't open source, it is source-available and the source code can be found <a
+			href={$gitHubUrl}
+			target="_blank">here on GitHub</a
+		>. There are a few open-source parts of the game, specifically the reusable chunks that other developers might find
+		useful:
 	</p>
 	<br />
 	<ul>
 		<li>PlaySocketJS: The multiplayer library made for OpenGuessr.</li>
-		<li>Headless-chat: The system that powers the built-in messenger.</li>
-		<li>Fast-profanity-filter: This library ensures that player-created text is free of profane words.</li>
-		<li>Overfade: The library enables smooth fade-in/out scroll transitions.</li>
+		<li>headless-chat: The system that powers the built-in messenger.</li>
+		<li>fast-profanity-filter: This library ensures that player-created text is free of profane words.</li>
+		<li>overfade: This library enables smooth fade-in/out scroll transitions.</li>
 		<li>Bugspot: The intelligent bug reporting system built for the game.</li>
 		<li>OpenReport: The report and moderation system that keeps OpenGuessr fair.</li>
 		<li>OpenGuessr Education: The educational offshoot of the game which includes articles and quizzes.</li>
-		<li>OpenGuessr-UI: The OpenGuessr user interface. While not open-source, it is source-available.</li>
 	</ul>
 	<br />
 	<br />
