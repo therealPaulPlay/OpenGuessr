@@ -13,7 +13,7 @@ export async function getLocationCoordinates(type) {
     if (type == "SINGLEPLAYER") return await getCoordinatesFromServer();
     else if (type == "MULTIPLAYER") return getMultiplayerCoordinates();
     else if (type == "COMPETITION") return await getCompetitionCoordinates();
-    else throw new Error("Incorrect location type passed to getLocationCoordinates() in locationGeneration.js!");
+    else throw new Error("Incorrect location type passed to getLocationCoordinates() in getLocationCoordinates.js!");
 }
 
 // For singleplayer (from-server) generation

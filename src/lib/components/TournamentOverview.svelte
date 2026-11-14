@@ -3,7 +3,7 @@
 	import { tournamentInfoPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip, Chip, Collapsible } from "openguessr-ui";
-	import { fetchTournaments } from "$lib/utils/tournamentUtils";
+	import { fetchTournaments } from "$lib/utils/fetchTournaments";
 	import { CalendarCheck2, Clock, Info, Medal, Ticket } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";

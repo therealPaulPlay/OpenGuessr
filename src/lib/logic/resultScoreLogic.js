@@ -31,7 +31,7 @@ async function streakCalculation() {
     if (await getCountryFromCoords(get(guessLat), get(guessLon)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
     } else {
-        if (streak >= 2) showResultScreenSlideup("Streak lost", `You lost your streak of ${streak}.`);
+        if (streak >= 2) showResultScreenSlideup("Streak lost", `Your country streak of ${streak} ended.`);
         if (streak >= 1) updateProfileIfNewBestStreak(streak);
         streak = 0; // Reset streak
     }
