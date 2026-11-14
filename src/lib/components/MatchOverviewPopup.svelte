@@ -68,7 +68,7 @@
 		{:else}
 			<!-- Both views stay mounted so switching tabs doesn't remount/reload them -->
 			<div class="view-pane" class:hidden={viewMode !== "Map"}>
-				<SvgMap width={700} height={400} interactive={true} {markerList} {lineList} />
+				<SvgMap width={700} height={400} {markerList} {lineList} />
 				<div class="score-panel bar-menu">
 					{#each currentRound.guesses as guess (guess.userId)}
 						<div class="score-row">
