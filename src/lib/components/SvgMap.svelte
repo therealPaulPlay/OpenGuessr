@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from "svelte";
+	import { innerWidth } from "svelte/reactivity/window";
 	import { geoPath, geoMercator } from "d3-geo";
 	import { feature } from "topojson-client";
 
@@ -344,6 +345,13 @@
 		frameMap();
 		loaded = true;
 	});
+
+	// Size ratio of elements on the map
+	const sr = $derived.by(() => {
+		if (!innerWidth.current) return 1;
+		if (innerWidth.current < 500) return 2;
+		else return 1;
+	});
 </script>
 
 <div class="map-container {className}" bind:this={mapContainer}>
@@ -387,8 +395,8 @@
 							x2={line.x2}
 							y2={line.y2}
 							stroke="var(--brand-color)"
-							stroke-width="1.5"
-							stroke-dasharray="4 3"
+							stroke-width={1.5 * sr}
+							stroke-dasharray={4 * sr + " " + 3 * sr}
 							vector-effect="non-scaling-stroke"
 						/>
 					{/each}
@@ -402,20 +410,24 @@
 							class="point-feature"
 							transform={`translate(${point.x},${point.y})`}
 						>
-							<!-- Outline + fill passes to match the flag's halo style (no inner stroke over the fill). -->
-							<circle r="7" fill="var(--overlay-color)" />
-							<circle r="5" fill="var(--brand-color)" class="point-circle" />
+							<!-- Outline + fill passes to match the flag's halo style (no inner stroke over the fill) -->
+							<circle r={7 * sr} fill="var(--overlay-color)" />
+							<circle r={5 * sr} fill="var(--brand-color)" class="point-circle" />
 						</g>
 					{/each}
 				</g>
 
 				<g>
-					<!-- projectedMarkers is sorted so flags render last (on top of dots). -->
+					<!-- projectedMarkers is sorted so flags render last (on top of dots) -->
 					{#each projectedMarkers as marker (marker.uniqueKey)}
 						<g class="marker-feature" transform={`translate(${marker.x},${marker.y})`}>
 							{#if marker.shape === "flag"}
-								<!-- Lucide flag icon, anchored at the pole base. Drawn in two passes (dark outline, then brand fill) so the halo is uniform on cloth and pole. -->
-								<g transform="translate(-3.2,-17.6) scale(0.8)" stroke-linecap="round" stroke-linejoin="round">
+								<!-- Lucide flag icon, anchored at the pole base. Drawn in two passes (dark outline, then brand fill) so the halo is uniform on cloth and pole -->
+								<g
+									transform={`translate(${-3.2 * sr + " ," + -17.6 * sr}) scale(${0.8 * sr})`}
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
 									<path
 										d={FLAG_CLOTH_PATH}
 										fill="var(--overlay-color)"
@@ -427,14 +439,15 @@
 									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--brand-color)" stroke-width="2" />
 								</g>
 							{:else}
-								<circle r="7" fill="var(--overlay-color)" />
-								<circle r="5" fill="var(--brand-color)" />
+								<circle r={7 * sr} fill="var(--overlay-color)" />
+								<circle r={5 * sr} fill="var(--brand-color)" />
 							{/if}
 							{#if marker.label}
 								<text
 									class="marker-label"
+									font-size={18 * sr + "px"}
 									x="0"
-									y={marker.shape === "flag" ? -22 : -14}
+									y={marker.shape === "flag" ? -22 * sr : -14 * sr}
 									text-anchor="middle"
 									fill="white">{marker.label.length > 12 ? marker.label.slice(0, 12) + "…" : marker.label}</text
 								>
@@ -500,7 +513,6 @@
 	}
 
 	.marker-label {
-		font-size: 18px;
 		font-weight: 600;
 		paint-order: stroke;
 		stroke: var(--overlay-color);
