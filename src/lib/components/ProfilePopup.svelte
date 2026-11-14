@@ -376,7 +376,7 @@
 		{#if selectedTabIndex == 1 && $profileId != localStorage.getItem("id")}
 			<div transition:slide={{ duration: 250 }} class="duel-history-box-container">
 				<div class="duel-history-box" transition:blur|global={{ duration: 250 }}>
-					<p style:padding-inline="var(--content-margin)" style:flex-grow="100">View player's duel history</p>
+					<p style:padding-inline="var(--content-margin)" style:flex-grow="100">View their duel history</p>
 					<button
 						class="standard-button bright"
 						style:flex-grow="1"
