@@ -6,7 +6,7 @@ export const websocketUrl = readable("wss://accounts.openguessr.com/socket");
 // Misc
 export const educationUrl = readable("https://education.openguessr.com");
 export const discordInviteUrl = readable("https://discord.gg/CSc3MbDrZ8");
-export const gitHubUrl = readable("https:/github.com/therealPaulPlay/OpenGuessr");
+export const gitHubUrl = readable("https://github.com/therealPaulPlay/OpenGuessr");
 export const discordBotUrl = readable("https://discord.com/oauth2/authorize?client_id=1540490382255726722");
 export const googleOauthClientId = readable("173042266770-kumghsvt3aaparhacqv9b3g9hr2uvt4h.apps.googleusercontent.com");
 export const appleOauthServicesId = readable("com.paulplay.openguessr.signin");
