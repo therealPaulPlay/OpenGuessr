@@ -234,7 +234,7 @@
 		}}
 	>
 		More
-		<Plus strokeWidth={2.75} size={20} style="margin-bottom: -3px; margin-left: var(--content-margin);" />
+		<Plus strokeWidth={2.25} size={20} style="margin-bottom: -3px; margin-left: var(--content-margin);" />
 	</button>
 {/snippet}
 
