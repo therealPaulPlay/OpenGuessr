@@ -56,7 +56,7 @@
 	import Authentication from "$lib/components/Authentication.svelte";
 
 	// Load panorama, ads, overfade etc.
-	onMount(async () => {
+	onMount(() => {
 		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
