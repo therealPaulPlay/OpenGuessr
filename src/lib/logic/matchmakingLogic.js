@@ -63,6 +63,27 @@ export function findDuel() {
     else action();
 }
 
+// Abandon an ongoing division duel on intentional leave
+export async function abandonDivisionDuel() {
+    try {
+        const response = await fetch(get(apiUrl) + "/matchmaking/abandon-division-duel", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify({ code: get(roomCode), id: localStorage.getItem("id") })
+        });
+        if (!response.ok) {
+            const error = await response.json().then((data) => data.error).catch(() => { });
+            throw new Error(error ?? response.status);
+        }
+    } catch (error) {
+        console.error("Error abandoning division duel:", error);
+        showErrorPopup("Failed to abandon duel", "An error occurred trying to abandon the division duel.", error.message);
+    }
+}
+
 // Team duel (2v2) -----------------------
 export function createTeamDuelRoom() {
     goto("/multiplayer/team-duel");
