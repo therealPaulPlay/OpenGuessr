@@ -4,7 +4,7 @@ import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers, updateMinimapWithGuessMarker, resetMap, deferredMapReset } from "$lib/logic/miniMap.js";
-import { safeCancel } from "$lib/logic/matchmakingLogic.js";
+import { safeCancel, abandonDivisionDuel } from "$lib/logic/matchmakingLogic.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapInteractive, guessLat, guessLon } from "$lib/stores/context-specific/mapStore.js";
@@ -368,6 +368,9 @@ export function leaveMultiplayer(destroy = true) {
     matchmakingSubmitted.set(false);
 
     if (destroy) {
+        // If in a division duel, abandon it immediately (since this is an intentional leave)
+        if (get(socket)?.storage?.divisionRoom && get(socket)?.storage?.gameStarted && !get(socket)?.storage?.divisionDuelProcessed) abandonDivisionDuel();
+
         get(socket)?.destroy(); // Destroy peer
         socket.set(null); // Remove reference
     }

@@ -98,8 +98,8 @@ export async function initializeSSEConnection() {
                                 duelResultPopup.set(true);
                             }
 
-                            // If the duel is still ongoing, leave
-                            if (get(multiplayer) && !get(socket)?.storage?.gameEnded) {
+                            // If the duel was abandoned (opponent left, and the duel was still pre-final-result), leave
+                            if (get(multiplayer) && data?.abandoned && get(socket)?.storage?.duelUuid === data?.duelUuid) {
                                 didWin ? showNotification("Your opponent disconnected.") : showNotification("You disconnected.");
                                 leaveMultiplayer();
                             }
