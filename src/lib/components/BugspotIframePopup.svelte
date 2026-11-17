@@ -6,7 +6,7 @@
 	let consoleLogs = [];
 	let frozenUrl; // Store frozen URL when popup opens
 	
-	const bugspotFormUrl = "https://bugspot.dev/form/7c145412-d318-4683-b504-681d630a08ee";
+	const bugspotFormUrl = "https://bugspot.paulplay.studio/form/7c145412-d318-4683-b504-681d630a08ee";
 
 	onMount(() => {
 		try {
