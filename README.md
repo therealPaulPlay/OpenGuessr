@@ -27,7 +27,7 @@ This is the main OpenGuessr repository, but there are more parts that together f
 ### Platforms built for OpenGuessr
 
 - [OpenReport](https://github.com/therealPaulPlay/OpenReport) ([website](https://openreport.paulplay.studio)): The moderation platform. Includes the mod dashboards and report forms.
-- [Bugspot](https://github.com/therealPaulPlay/bugspot-ai) ([website](https://bugspot.dev)): An AI-enabled bug report platform used for collecting bug reports and logs.
+- [Bugspot](https://github.com/therealPaulPlay/bugspot-ai) ([website](https://bugspot.paulplay.studio)): An AI-enabled bug report platform used for collecting bug reports and logs.
 - [Playlight](https://github.com/therealPaulPlay/Playlight-Site) ([website](https://playlight.dev)): A platform for recommending other high-quality web games.
 
 ### Noteworthy third-party libraries
