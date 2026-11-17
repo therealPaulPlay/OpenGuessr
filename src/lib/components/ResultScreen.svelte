@@ -50,29 +50,39 @@
 	let continueButtonEl = $state();
 
 	let transitionExperienceBar = $state(true);
+	let fillingToLevelUp = $state(false);
 	let lastPercentageWidthNumber;
+	let levelUpTimeout;
+
+	function setExperienceBar(percentage, { transition = true, filling = false } = {}) {
+		transitionExperienceBar = transition;
+		fillingToLevelUp = filling;
+		percentageWidth = percentage + "%";
+	}
 
 	experience.subscribe((_value) => {
-		level = getLevel();
-
 		const percentageWidthNumber = Math.max(7, getLevelFraction() * 100); // Minimum 7% to prevent weird thin line
 		const leveledUp = lastPercentageWidthNumber > percentageWidthNumber;
 		lastPercentageWidthNumber = percentageWidthNumber;
 
+		clearTimeout(levelUpTimeout);
+
 		if (leveledUp) {
-			// On level-up: snap to 0% without transition, then animate to the new value
-			// Double rAF ensures the browser paints the 0% state before the transition starts
-			transitionExperienceBar = false;
-			percentageWidth = "0%";
-			requestAnimationFrame(() => {
+			// On level-up, quickly fill the bar to 100%, then snap to 0% without transition and animate to the new value
+			setExperienceBar(100, { filling: true });
+
+			levelUpTimeout = setTimeout(() => {
+				setExperienceBar(0, { transition: false });
+				level = getLevel();
+
+				// Double rAF ensures the browser paints the 0% state before the transition starts
 				requestAnimationFrame(() => {
-					transitionExperienceBar = true;
-					percentageWidth = percentageWidthNumber + "%";
+					requestAnimationFrame(() => setExperienceBar(percentageWidthNumber));
 				});
-			});
+			}, 400);
 		} else {
-			transitionExperienceBar = true;
-			percentageWidth = percentageWidthNumber + "%";
+			level = getLevel();
+			setExperienceBar(percentageWidthNumber);
 		}
 	});
 
@@ -236,6 +246,8 @@
 									class:experience-bar-transition={transitionExperienceBar}
 									class:experience-bar-animation={$earnedExperience > 0}
 									style:width={percentageWidth}
+									style:transition-duration={fillingToLevelUp ? "400ms" : null}
+									style:transition-timing-function={fillingToLevelUp ? "ease-in" : null}
 								></div>
 							</div>
 							<p id="experience-number-text">+ {$animatedExperience.toFixed(0)} XP</p>
