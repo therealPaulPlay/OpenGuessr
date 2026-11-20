@@ -336,7 +336,7 @@
 </script>
 
 <svelte:head>
-	<title>{map ? "Play " + map?.name + " GeoGuessr for free on OpenGuessr" : ""}</title>
+	<title>{map ? map?.name + " - Map" : ""}</title>
 </svelte:head>
 
 <div class="main-container">
