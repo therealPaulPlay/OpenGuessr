@@ -565,8 +565,8 @@
 	}
 
 	.link-box {
-		border-bottom-left-radius: min(var(--layout-margin), calc(env(safe-area-inset-bottom) * 1000));
-		border-bottom-right-radius: min(var(--layout-margin), calc(env(safe-area-inset-bottom) * 1000));
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
 		padding-bottom: max(var(--panel-margin), env(safe-area-inset-bottom));
 		width: fit-content;
 		margin-top: var(--box-margin);
