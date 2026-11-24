@@ -4,7 +4,7 @@
 	import { mapHovered } from "$lib/stores/context-specific/mapStore";
 </script>
 
-<div id="map-holder" class="map-holder" class:map-hover={$mapHovered} class:map-holder-to-result={$resultScreenEnabled}>
+<div id="map-holder" class="map-holder safe-margin-bottom" class:map-hover={$mapHovered} class:map-holder-to-result={$resultScreenEnabled}>
 	{@render children?.()}
 </div>
 
@@ -30,11 +30,12 @@
 		width: 55%;
 	}
 
-	/* map Holder class on result screen */
+	/* map holder class on result screen */
 	:global(.map-holder-to-result) {
 		bottom: 0 !important;
 		right: 0 !important;
 		left: 0 !important;
+		margin: 0 !important;
 		z-index: 12 !important;
 		width: 100% !important;
 		height: 100% !important;
@@ -49,6 +50,7 @@
 			right: 0;
 			bottom: 0;
 			z-index: 10;
+			margin-bottom: 0 !important;
 		}
 	}
 </style>
