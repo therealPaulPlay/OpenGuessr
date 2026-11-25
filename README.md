@@ -11,8 +11,8 @@ This is the main OpenGuessr repository, but there are more parts that together f
 ### Core
 
 - [openguessr-ui](https://github.com/therealPaulPlay/openguessr-ui): The OpenGuessr user interface design system.
+- [openguessr-account-server](https://github.com/therealPaulPlay/openguessr-account-server): The main backend.
 - [openguessr-location-server](https://github.com/therealPaulPlay/openguessr-location-server): The live location generation server.
-- openguessr-account-server: The main backend. *Currently closed-source for security purposes.*
 - openguessr-native: Thin native wrappers. *Currently closed-source. It includes the Xcode and Android Studio configuration files.*
 - [OpenGuessr Education](https://github.com/therealPaulPlay/OpenGuessrEducation) ([website](https://education.openguessr.com)): The educational side of OpenGuessr. Quizzes, articles, guides, and more.
 - [Geometas](https://github.com/therealPaulPlay/geometas) ([website](https://geometas.com)): The educational meta-learning site. Also powers MetaGuessr and supplies metas to OpenGuessr Education.
