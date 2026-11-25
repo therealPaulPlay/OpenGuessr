@@ -29,8 +29,8 @@ export async function initializeSSEConnection() {
         try {
             if (eventSource) eventSource.close();
 
-            // Create a new EventSource connection with the user ID as a query parameter
-            eventSource = new EventSource(`${get(apiUrl)}/events?userId=${userId}`);
+            // Create a new EventSource connection with the user ID and bearer as query parameters
+            eventSource = new EventSource(`${get(apiUrl)}/events?userId=${userId}&bearer=${encodeURIComponent(localStorage.getItem("bearer"))}`);
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
@@ -45,7 +45,11 @@ export async function initializeSSEConnection() {
                     // Handle different event types
                     switch (data.type) {
                         case 'headless-chat':
-                            get(hcClient)?.receive(data.data);
+                            try {
+                                get(hcClient)?.receive(data.data);
+                            } catch (error) {
+                                console.error("Error receiving headless-chat data:", error);
+                            }
                             break;
 
                         case 'room-invite':
