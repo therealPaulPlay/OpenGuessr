@@ -45,7 +45,11 @@ export async function initializeSSEConnection() {
                     // Handle different event types
                     switch (data.type) {
                         case 'headless-chat':
-                            get(hcClient)?.receive(data.data);
+                            try {
+                                get(hcClient)?.receive(data.data);
+                            } catch (error) {
+                                console.error("Error receiving headless-chat data:", error);
+                            }
                             break;
 
                         case 'room-invite':
