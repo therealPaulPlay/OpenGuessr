@@ -29,8 +29,8 @@ export async function initializeSSEConnection() {
         try {
             if (eventSource) eventSource.close();
 
-            // Create a new EventSource connection with the user ID as a query parameter
-            eventSource = new EventSource(`${get(apiUrl)}/events?userId=${userId}`);
+            // Create a new EventSource connection with the user ID and bearer as query parameters
+            eventSource = new EventSource(`${get(apiUrl)}/events?userId=${userId}&bearer=${encodeURIComponent(localStorage.getItem("bearer"))}`);
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
