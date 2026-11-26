@@ -410,7 +410,7 @@
 		margin-top: var(--content-margin);
 		padding-inline: var(--content-margin);
 		color: white;
-		font-size: 20px;
+		font-size: 22px;
 		opacity: 0.5;
 	}
 
@@ -500,11 +500,8 @@
 	table,
 	thead {
 		display: block;
-	}
-
-	table {
 		color: white;
-		font-size: 20px;
+		font-size: 22px;
 	}
 
 	tbody {
@@ -574,7 +571,7 @@
 			content: attr(data-label);
 			display: block;
 			margin-bottom: var(--content-margin);
-			font-size: 18px;
+			font-size: 20px;
 			opacity: 0.5;
 		}
 	}
