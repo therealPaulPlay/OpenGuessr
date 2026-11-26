@@ -10,7 +10,13 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Bug, InfinityIcon, Layers, PencilRuler, Play, Section, UserRoundPlus } from "@lucide/svelte";
-	import { discordInviteUrl, educationUrl, gitHubUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import {
+		discordInviteUrl,
+		educationUrl,
+		gitHubUrl,
+		redditUrl,
+		youTubeUrl,
+	} from "$lib/stores/context-specific/apiConfigStore";
 	import CompetitionStreakCalendar from "./CompetitionStreakCalendar.svelte";
 	import MapItem from "./MapItem.svelte";
 	import { loadStreakDays } from "$lib/utils/getCompetitions";
@@ -134,8 +140,11 @@
 										goto("/maps");
 										playSound("basic_button");
 									}}
-									cover={MoreMapsVisualization}
-								/>
+								>
+									{#snippet cover()}
+										<MoreMapsVisualization />
+									{/snippet}
+								</MapItem>
 							{/snippet}
 							<div class="navigation-box-scroll map-select-scroll of-left of-right of-length-2">
 								{#if $baseMaps.every((e) => !isMapSelected(e.map)) && browser}
@@ -368,7 +377,7 @@
 								{@attach tooltip({ text: "Reddit" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://www.reddit.com/r/OpenGuessr/", "_blank");
+									window.open($redditUrl, "_blank");
 								}}
 							>
 								<img src="/img/reddit.png" alt="Reddit logo" class="navigation-icon" />
@@ -379,7 +388,7 @@
 								{@attach tooltip({ text: "YouTube" })}
 								onclick={() => {
 									playSound("basic_button");
-									window.open("https://www.youtube.com/@OpenGuessrOfficial", "_blank");
+									window.open($youTubeUrl, "_blank");
 								}}
 							>
 								<img src="/img/youtube.png" alt="X logo" class="navigation-icon" />
