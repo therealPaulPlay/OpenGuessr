@@ -15,9 +15,7 @@
 	in:blur|global
 	onclick={() => {
 		playSound("basic_button");
-		goto(
-			"/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""),
-		);
+		goto("/maps/community/" + formatMapNameForUrl(map.name) + (forMultiplayer ? "?for-multiplayer=true" : ""));
 	}}
 	role="menu"
 	tabindex="0"
@@ -60,7 +58,7 @@
 		display: flex;
 		flex-direction: column;
 		transition:
-			scale 250ms ease,
+			scale 150ms ease,
 			filter 250ms ease;
 		cursor: pointer;
 		flex-basis: 30%;
@@ -73,10 +71,12 @@
 		overflow: hidden;
 	}
 
-	.map-item:hover,
-	.map-item:active {
-		scale: 0.99;
+	.map-item:hover {
 		filter: brightness(0.7);
+	}
+
+	.map-item:active {
+		scale: 0.95;
 	}
 
 	.author-name {
