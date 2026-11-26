@@ -86,19 +86,6 @@
 	}}
 />
 
-<!-- Keywords -->
-<h1 style:display="none">
-	Free GeoGuessr alternative with unlimited playtime and multiplayer. Play GeoGuessr free of charge and learn geography
-	by guessing where you are!
-</h1>
-
-<h2 style:display="none">
-	OpenGuessr is like GeoGuessr, but free and unlimited, enabling you to guess the location without a subscription
-	(kostenlos, gratis). The game includes online multiplayer to play with friends, is unblocked, partially open-source,
-	and uses Google Street View. Can you guess the country, or even guess where you are? Travel across the world map today
-	and become the next Rainbolt.
-</h2>
-
 <!-- Log user in -->
 <Authentication />
 

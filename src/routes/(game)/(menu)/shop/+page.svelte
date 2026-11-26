@@ -16,6 +16,7 @@
 		specialOfferRarity,
 	} from "$lib/stores/context-specific/shopStore";
 	import { CircleArrowUp, CirclePlus, Clock } from "@lucide/svelte";
+	import { youTubeUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { onMount } from "svelte";
 	import { scale, slide } from "svelte/transition";
 	import {
@@ -310,7 +311,7 @@
 				class="standard-button bright social-pin-button"
 				onclick={() => {
 					playSound("basic_button");
-					window.open("https://www.youtube.com/@OpenGuessrOfficial?sub_confirmation=true", "_blank");
+					window.open($youTubeUrl + "?sub_confirmation=true", "_blank");
 					setTimeout(handleShopYouTubePin, 250);
 				}}
 			>

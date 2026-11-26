@@ -2,30 +2,31 @@
 	import { baseMaps, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { Plus } from "@lucide/svelte";
 
+	let { plus = true } = $props();
+
 	let mapList = $derived([
 		...$baseMaps,
 		...$specialMaps,
 		{ imgUrlTiny: "/img/map-covers/map-covers-tiny/quiz_cover.jpg" },
 	]);
 
+	// Rotates the list so each row starts with a different map
 	function offset(array, amount = 1) {
-		const end = array.slice(-amount);
-		array = [...end, ...array];
-		return array;
+		const shift = amount % array.length;
+		return [...array.slice(array.length - shift), ...array.slice(0, array.length - shift)];
 	}
 </script>
 
 <div class="container">
 	<!-- Angled infinitely flowing by maps -->
-	<!-- 6 vertically stacked lines of flowing maps -->
+	<!-- 8 vertically stacked lines of flowing maps -->
 	<div class="vertical-stack">
-		{#each { length: 6 }, index}
+		{#each { length: 8 }, index}
 			{@const shuffledMapList = offset([...mapList], index * 2)}
-			<div class="horizontal-flex" style:margin-left={index * 15 + "px"}>
-				<!-- Render the same shuffled row twice so translating by -50% loops it -->
-				{#each [...shuffledMapList, ...shuffledMapList] as map}
+			<div class="horizontal-flex" style:margin-left={(index % 6) * 15 + "px"}>
+				{#each [...shuffledMapList.slice(-3), ...shuffledMapList] as map}
 					<div class="map">
-						<img class="map-image" src={map.imgUrlTiny} alt="" />
+						<img class="map-image" src={map.imgUrlTiny} alt="" loading="lazy" />
 					</div>
 				{/each}
 			</div>
@@ -33,7 +34,9 @@
 	</div>
 	<!-- Plus in the center -->
 	<div class="center-container">
-		<Plus size={28} strokeWidth={1.75} style="filter: drop-shadow(0 0 5px rgba(0, 0, 0, 1))" />
+		{#if plus}
+			<Plus size={28} strokeWidth={1.75} style="filter: drop-shadow(0 0 5px rgba(0, 0, 0, 1))" />
+		{/if}
 	</div>
 </div>
 
@@ -75,6 +78,7 @@
 	.horizontal-flex {
 		display: flex;
 		width: max-content;
+		translate: -111px 0;
 	}
 
 	.map {
