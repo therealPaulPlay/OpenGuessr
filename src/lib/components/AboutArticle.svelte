@@ -392,8 +392,7 @@
 	}
 
 	.figures {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		display: flex;
 		gap: var(--layout-margin);
 		margin-bottom: var(--box-margin);
 	}
@@ -487,6 +486,11 @@
 			min-height: 90px;
 			margin-bottom: 0;
 		}
+
+		.figures {
+			flex-direction: column;
+			gap: calc(var(--layout-margin) + var(--box-margin));
+		}
 	}
 
 	.table-container {
@@ -549,6 +553,7 @@
 		tbody tr {
 			grid-template-columns: 1fr 1fr;
 			row-gap: var(--content-margin);
+			padding-bottom: var(--layout-margin);
 		}
 
 		tbody th {

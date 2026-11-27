@@ -27,7 +27,7 @@ export const faq = readable([
     },
     {
         question: "Can I play with friends?",
-        answer: "Yes! Create a multiplayer room and share the room code with your friends (or add them on OpenGuessr). You can also chat with them via the in-game messenger, or take on other players in duels and 2v2s.",
+        answer: "Yes! Create a multiplayer room (holds up to 500 players) and share the code with your friends, or add them on OpenGuessr. You can even chat with them via an in-game messenger and team up for matchmade 2v2.",
     },
     {
         question: "Is OpenGuessr unblocked at school?",
